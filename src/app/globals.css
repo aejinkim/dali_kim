@@ -1,26 +1,239 @@
 @import "tailwindcss";
 
+@theme {
+  /* ── Portfolio brand colors (Figma-sourced) ── */
+  --color-brand-bg: #F3F0E6;
+  --color-brand-line: #111111;
+  --color-brand-text: #111111;
+  --color-brand-text-muted: #555555;
+
+  /* ── Design system colors (design.md) ── */
+  --color-midnight-ink: #001011;
+  --color-storm-gray: #0f1e1f;
+  --color-accent-blue: #007aff;
+  --color-vanilla-cream: #fcfbf8;
+  --color-ash-mist: #c1c4c2;
+  --color-parchment: #ededea;
+
+  /* ── Fonts ── */
+  --font-mono: var(--font-google-sans-flex), monospace;
+  --font-sans: var(--font-google-sans-flex), sans-serif;
+  --font-serif: var(--font-google-sans-flex), sans-serif;
+
+  /* ── Type scale (design.md) ── */
+  --text-caption: 16px;
+  --leading-caption: 1.5;
+  --tracking-caption: 0.01px;
+
+  --text-body-sm: 18px;
+  --leading-body-sm: 1.4;
+  --tracking-body-sm: 0.01px;
+
+  --text-body: 21px;
+  --leading-body: 1.4;
+  --tracking-body: -0.012px;
+
+  --text-subheading: 24px;
+  --leading-subheading: 1.1;
+  --tracking-subheading: -0.012px;
+
+  --text-heading-sm: 32px;
+  --leading-heading-sm: 1.1;
+  --tracking-heading-sm: -0.02px;
+
+  --text-heading: 36px;
+  --leading-heading: 1.1;
+  --tracking-heading: -0.02px;
+
+  --text-heading-lg: 72px;
+  --leading-heading-lg: 0.9;
+  --tracking-heading-lg: -0.025px;
+
+  --text-display: 101px;
+  --leading-display: 0.8;
+  --tracking-display: -0.025px;
+
+  /* ── Spacing (8px base grid) ── */
+  --spacing-8: 8px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-72: 72px;
+  --spacing-80: 80px;
+  --spacing-96: 96px;
+  --spacing-160: 160px;
+
+  /* ── Border radius (design.md named radii) ── */
+  --radius-badge: 8px;
+  --radius-card: 20px;
+  --radius-button: 24px;
+  --radius-decorative: 48px;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: transparent;
+  --foreground: #111111;
+  --section-gap: 48px;
+  --card-padding: 24px;
+  --element-gap: 24px;
+  scrollbar-width: thin;
+  scrollbar-color: #111111 transparent;
+
+  /* Fluid gutter: 20px@768 → 36px@1440 */
+  --page-gutter: clamp(20px, calc(1.71px + 2.381vw), 36px);
+
+  /* Fluid hero: 62px@1024 → 86px@1440 */
+  --hero-font-size: clamp(62px, calc(2.93px + 5.769vw), 86px);
+
+  /* Fluid toggle: 1024 → 1440 */
+  --toggle-pill-width:  clamp(88px,  calc(9.23px + 7.692vw), 120px);
+  --toggle-pill-height: clamp(40px,  calc(5.54px + 3.365vw),  54px);
+  --toggle-btn-size:    clamp(33px,  calc(-1.46px + 3.365vw), 47px);
+  --toggle-icon-size:   clamp(21px,  calc(-1.15px + 2.163vw), 30px);
+  --toggle-square-size: clamp(18px,  calc(-1.69px + 1.923vw), 26px);
+
+  /* Nav */
+  --nav-gutter: var(--page-gutter);
+  --nav-v-pad: 0px;
+  --nav-height: 67px;
+  --nav-font-size: clamp(13px, calc(8.07px + 0.481vw), 15px);
+
+  /* Fluid bio: 32px@1024 → 46px@1440 */
+  --bio-font-size: clamp(32px, calc(-2.46px + 3.365vw), 46px);
+  --bio-container-width: min(915px, 66vw);
+  --bio-tag-font: clamp(14px, calc(9.07px + 0.481vw), 16px);
+  --bio-tag-dot:  clamp(10px, calc(5.07px + 0.481vw), 12px);
+
+  /* Fluid projects: 24/14px@1024 → 40/20px@1440 */
+  --project-subtitle-size: clamp(14px,   calc(-0.77px + 1.442vw),  20px);
+  --project-title-size:    clamp(24px,   calc(-15.38px + 3.846vw), 40px);
+  --project-title-tracking: clamp(-1.6px, calc(0.617px - 0.154vw), -0.96px);
+
+  /* Footer CTA: 60px from 768px up to 1440px */
+  --footer-cta-size: 60px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+/* ≥1440px: values stay flat until 1920, then grow smoothly to large-screen max */
+@media (min-width: 1440px) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --page-gutter:    clamp(36px,  calc(36px  + (100vw - 1440px) * 0.00833),   48px);
+    --hero-font-size: clamp(86px,  calc(86px  + (100vw - 1920px) * 0.08906),  143px);
+    --toggle-pill-width:  clamp(120px, calc(120px + (100vw - 1920px) * 0.04688), 150px);
+    --toggle-pill-height: clamp(54px,  calc(54px  + (100vw - 1920px) * 0.02188),  68px);
+    --toggle-btn-size:    clamp(47px,  calc(47px  + (100vw - 1920px) * 0.01875),  59px);
+    --toggle-icon-size:   clamp(30px,  calc(30px  + (100vw - 1920px) * 0.01250),  38px);
+    --toggle-square-size: clamp(26px,  calc(26px  + (100vw - 1920px) * 0.01094),  33px);
+    --nav-font-size: 15px;
+    --bio-font-size: clamp(46px,  calc(46px  + (100vw - 1920px) * 0.04063),  72px);
+    --bio-container-width: min(clamp(915px, calc(-240px + 60.16vw), 1300px), 66vw);
+    --bio-tag-font:  clamp(16px,  calc(16px  + (100vw - 1920px) * 0.00625),  20px);
+    --bio-tag-dot:   clamp(12px,  calc(12px  + (100vw - 1920px) * 0.003125), 14px);
+    --project-subtitle-size: clamp(20px,   calc(20px  + (100vw - 1920px) * 0.01250),  28px);
+    --project-title-size:    clamp(40px,   calc(40px  + (100vw - 1920px) * 0.02500),  56px);
+    --project-title-tracking: clamp(-2.88px, calc(-1.6px + (100vw - 1920px) * -0.002), -1.6px);
+    --footer-cta-size: clamp(60px, calc(60px + (100vw - 1440px) * 0.1667), 160px);
   }
 }
 
+@media (max-width: 1024px) {
+  :root {
+    --nav-v-pad: 16px;
+    --nav-height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --hero-font-size: 38px;
+    --toggle-pill-width: 53px;
+    --toggle-pill-height: 24px;
+    --toggle-btn-size: 21px;
+    --toggle-icon-size: 21px;
+    --toggle-square-size: 12px;
+    --bio-font-size: 16px;
+    --bio-container-width: 100%;
+    --bio-tag-font: 12px;
+    --bio-tag-dot: 8px;
+    --project-subtitle-size: 14px;
+    --project-title-size: 24px;
+    --project-title-tracking: -0.96px;
+    --footer-cta-size: 36px;
+  }
+}
+
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #F3F0E6; border-left: 1px solid #111111; }
+::-webkit-scrollbar-thumb { background: #111111; }
+
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-google-sans-flex), "Helvetica Neue", sans-serif;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Structural Grid (case study pages) ── */
+.grid-line-container {
+  background-color: #F3F0E6;
+  border: 1px solid #111111;
+  border-radius: 0 0 var(--radius-button) var(--radius-button);
+  overflow: hidden;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+.grid-line-row { border-bottom: 1px solid #111111; }
+.grid-line-col { border-right: 1px solid #111111; }
+.grid-line-col:last-child { border-right: none; }
+
+/* ── Hover effects ── */
+.hover-invert { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+.hover-invert:hover { background-color: #111111; color: #EBECEC; }
+.hover-invert:hover svg { stroke: #EBECEC; fill: #EBECEC; }
+
+/* ── Work thumbnail (case study pages) ── */
+.work-thumbnail {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: grayscale(100%);
+}
+.work-thumbnail:hover { filter: grayscale(0%); transform: scale(1.02); }
+
+@keyframes pixel-weight {
+  from { font-weight: 100; }
+  to   { font-weight: 900; }
+}
+
+@keyframes hero-img-float {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.82) rotate(var(--rot)); }
+  12%  { opacity: 1; transform: translate(-50%, -58%) scale(1)    rotate(var(--rot)); }
+  88%  { opacity: 1; transform: translate(-50%, -72%) scale(1)    rotate(var(--rot)); }
+  100% { opacity: 0; transform: translate(-50%, -80%) scale(0.92) rotate(var(--rot)); }
+}
+
+/* ── Layout containers ── */
+.max-site-width { max-width: 1200px; width: 100%; margin: 0 auto; }
+.content-width { max-width: 1920px; width: 100%; margin: 0 auto; }
+
+/* ── Case Study page hovers ── */
+.case-study-nav-back {
+  transition: opacity 200ms ease;
+}
+.case-study-nav-back:hover {
+  opacity: 1 !important;
+}
+
+.case-study-action-btn {
+  background-color: transparent;
+  color: #0a0a0a;
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+.case-study-action-btn:hover {
+  background-color: #0a0a0a !important;
+  color: #ffffff !important;
 }
