@@ -4,15 +4,17 @@ import { useState, useEffect } from 'react';
 
 
 function Logo({ tone = 'dark' }: { tone?: 'dark' | 'light' }) {
+  const bg = tone === 'light' ? '#0a0a0a' : '#ffffff';
+  const fg = tone === 'light' ? '#ffffff' : '#0a0a0a';
   return (
     <div
       className="flex items-center justify-center"
       style={{
         width: '78px',
         height: '21px',
-        backgroundColor: '#0a0a0a',
+        backgroundColor: bg,
         borderRadius: '50%',
-        color: '#ffffff',
+        color: fg,
         fontSize: '11px',
         fontWeight: 800,
         letterSpacing: '-0.02em',
@@ -36,7 +38,7 @@ const NAV_RIGHT: NavLink[] = [
 ];
 const ALL_LINKS = [...NAV_LEFT, ...NAV_RIGHT];
 
-export default function FixedHeader({ alwaysVisible = false, tone = 'dark' }: { alwaysVisible?: boolean; tone?: 'dark' | 'light' }) {
+export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alwaysVisible?: boolean; tone?: 'dark' | 'light' }) {
   const [scrolled, setScrolled] = useState(false);
   const [dark, setDark] = useState(false);
   const [navOpacity, setNavOpacity] = useState(1);

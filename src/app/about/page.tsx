@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState, type CSSProperties } from 'react';
-import FixedHeader from '@/components/FixedHeader';
+import Navbar from '@/components/main/Navbar';
 
 interface Particle {
   x: number; y: number;
@@ -181,9 +181,9 @@ export default function AboutPage() {
   if (isMobile) {
     return (
       <>
-        <FixedHeader alwaysVisible />
+        <Navbar alwaysVisible />
         <div style={{
-          background: '#0e0e0e',
+          background: 'var(--color-about-bg)',
           minHeight: '100vh',
           paddingTop: '85px',
           paddingBottom: '60px',
@@ -209,7 +209,7 @@ export default function AboutPage() {
             Hi there, I&apos;m Dali
           </h1>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px', width: '100%' }}>
-            <div style={{ background: '#232323', border: '1px solid #787878', padding: '12px', width: '100%', maxWidth: '332px' }}>
+            <div style={{ background: 'var(--color-about-card-bg)', border: '1px solid var(--color-about-card-border)', padding: '12px', width: '100%', maxWidth: '332px' }}>
               {PARAGRAPHS.map((text, i) => (
                 <p key={i} style={{
                   fontFamily: 'var(--font-google-sans-flex), sans-serif',
@@ -226,7 +226,7 @@ export default function AboutPage() {
               letterSpacing: '-0.24px', color: '#ffffff',
               textDecoration: 'none', textAlign: 'center',
             }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#aaaaaa')}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-text-dim)')}
               onMouseLeave={e => (e.currentTarget.style.color = '#ffffff')}
             >Get in touch</a>
           </div>
@@ -238,13 +238,13 @@ export default function AboutPage() {
   // Tablet + Desktop — sticky scroll animation
   return (
     <>
-      <FixedHeader alwaysVisible />
+      <Navbar alwaysVisible />
 
       <div ref={scrollDriverRef} style={{ height: `calc(300vh + ${boxOverflow}px)`, position: 'relative' }}>
         <div style={{
           position: 'sticky', top: 0,
           width: '100vw', height: '100vh',
-          backgroundColor: '#000000',
+          backgroundColor: 'var(--color-canvas-bg)',
           overflow: 'clip',
         }}>
           <SpaceCanvas />
@@ -313,11 +313,11 @@ export default function AboutPage() {
                 { bottom: -4, left: -4 },
                 { bottom: -4, right: -4 },
               ] as CSSProperties[]).map((pos, i) => (
-                <div key={i} style={{ position: 'absolute', width: 9, height: 9, background: '#d9d9d9', ...pos }} />
+                <div key={i} style={{ position: 'absolute', width: 9, height: 9, background: 'var(--color-thumbnail-placeholder)', ...pos }} />
               ))}
               <div style={{
-                background: '#232323',
-                border: '1px solid #787878',
+                background: 'var(--color-about-card-bg)',
+                border: '1px solid var(--color-about-card-border)',
                 padding: '20px',
                 opacity: textProgress,
                 transition: 'opacity 200ms linear',
@@ -354,7 +354,7 @@ export default function AboutPage() {
                 flexShrink: 0,
                 marginTop: 'auto',
               }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#aaaaaa')}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-text-dim)')}
               onMouseLeave={e => (e.currentTarget.style.color = '#ffffff')}
             >
               Get in touch

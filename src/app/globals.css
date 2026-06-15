@@ -2,74 +2,22 @@
 
 @theme {
   /* ── Portfolio brand colors (Figma-sourced) ── */
-  --color-brand-bg: #F3F0E6;
+  --color-brand-bg: #ffffff;
   --color-brand-line: #111111;
-  --color-brand-text: #111111;
-  --color-brand-text-muted: #555555;
+  --color-canvas-bg: #000000;
+  --color-thumbnail-placeholder: #d9d9d9;
+  --color-ink: #0a0a0a;
+  --color-hover-light: #EBECEC;
+  --color-about-bg: #0e0e0e;
+  --color-about-card-bg: #232323;
+  --color-about-card-border: #787878;
+  --color-text-dim: #aaaaaa;
 
-  /* ── Design system colors (design.md) ── */
-  --color-midnight-ink: #001011;
-  --color-storm-gray: #0f1e1f;
-  --color-accent-blue: #007aff;
-  --color-vanilla-cream: #fcfbf8;
-  --color-ash-mist: #c1c4c2;
-  --color-parchment: #ededea;
-
-  /* ── Fonts ── */
-  --font-mono: var(--font-google-sans-flex), monospace;
-  --font-sans: var(--font-google-sans-flex), sans-serif;
-  --font-serif: var(--font-google-sans-flex), sans-serif;
-
-  /* ── Type scale (design.md) ── */
-  --text-caption: 16px;
-  --leading-caption: 1.5;
+  /* ── Type scale — only tokens actually used in code ── */
   --tracking-caption: 0.01px;
 
-  --text-body-sm: 18px;
-  --leading-body-sm: 1.4;
-  --tracking-body-sm: 0.01px;
-
-  --text-body: 21px;
-  --leading-body: 1.4;
-  --tracking-body: -0.012px;
-
-  --text-subheading: 24px;
-  --leading-subheading: 1.1;
-  --tracking-subheading: -0.012px;
-
-  --text-heading-sm: 32px;
-  --leading-heading-sm: 1.1;
-  --tracking-heading-sm: -0.02px;
-
-  --text-heading: 36px;
-  --leading-heading: 1.1;
-  --tracking-heading: -0.02px;
-
-  --text-heading-lg: 72px;
-  --leading-heading-lg: 0.9;
-  --tracking-heading-lg: -0.025px;
-
-  --text-display: 101px;
-  --leading-display: 0.8;
-  --tracking-display: -0.025px;
-
-  /* ── Spacing (8px base grid) ── */
-  --spacing-8: 8px;
-  --spacing-16: 16px;
-  --spacing-24: 24px;
-  --spacing-32: 32px;
-  --spacing-48: 48px;
-  --spacing-64: 64px;
-  --spacing-72: 72px;
-  --spacing-80: 80px;
-  --spacing-96: 96px;
-  --spacing-160: 160px;
-
-  /* ── Border radius (design.md named radii) ── */
-  --radius-badge: 8px;
-  --radius-card: 20px;
+  /* ── Border radius ── */
   --radius-button: 24px;
-  --radius-decorative: 48px;
 }
 
 :root {
@@ -166,8 +114,8 @@
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #F3F0E6; border-left: 1px solid #111111; }
-::-webkit-scrollbar-thumb { background: #111111; }
+::-webkit-scrollbar-track { background: var(--color-brand-bg); border-left: 1px solid var(--color-brand-line); }
+::-webkit-scrollbar-thumb { background: var(--color-brand-line); }
 
 body {
   background-color: var(--background);
@@ -180,22 +128,22 @@ body {
 
 /* ── Structural Grid (case study pages) ── */
 .grid-line-container {
-  background-color: #F3F0E6;
-  border: 1px solid #111111;
+  background-color: var(--color-brand-bg);
+  border: 1px solid var(--color-brand-line);
   border-radius: 0 0 var(--radius-button) var(--radius-button);
   overflow: hidden;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
 }
-.grid-line-row { border-bottom: 1px solid #111111; }
-.grid-line-col { border-right: 1px solid #111111; }
+.grid-line-row { border-bottom: 1px solid var(--color-brand-line); }
+.grid-line-col { border-right: 1px solid var(--color-brand-line); }
 .grid-line-col:last-child { border-right: none; }
 
 /* ── Hover effects ── */
 .hover-invert { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-.hover-invert:hover { background-color: #111111; color: #EBECEC; }
-.hover-invert:hover svg { stroke: #EBECEC; fill: #EBECEC; }
+.hover-invert:hover { background-color: var(--color-brand-line); color: var(--color-hover-light); }
+.hover-invert:hover svg { stroke: var(--color-hover-light); fill: var(--color-hover-light); }
 
 /* ── Work thumbnail (case study pages) ── */
 .work-thumbnail {
@@ -230,10 +178,10 @@ body {
 
 .case-study-action-btn {
   background-color: transparent;
-  color: #0a0a0a;
+  color: var(--color-ink);
   transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
 }
 .case-study-action-btn:hover {
-  background-color: #0a0a0a !important;
-  color: #ffffff !important;
+  background-color: var(--color-ink) !important;
+  color: var(--color-brand-bg) !important;
 }

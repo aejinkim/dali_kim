@@ -63,7 +63,7 @@ export function parseMarkdownToHtml(markdown: string): string {
     if (match) {
       const content = match[1];
       if (!inList) {
-        lines[i] = `<ul class="list-disc pl-6 my-4 space-y-2 text-gray-300">\n  <li>${content}</li>`;
+        lines[i] = `<ul style="list-style:disc;padding-left:24px;margin:16px 0;display:flex;flex-direction:column;gap:8px;color:rgba(10,10,10,0.7)">\n  <li>${content}</li>`;
         inList = true;
       } else {
         lines[i] = `  <li>${content}</li>`;
@@ -88,17 +88,17 @@ export function parseMarkdownToHtml(markdown: string): string {
       return row.split('|').map((c: string) => c.trim()).filter(Boolean);
     });
 
-    const headerHtml = `<thead><tr class="border-b border-brand-border">
-      ${headers.map((h: string) => `<th class="px-4 py-2 text-left font-semibold text-white text-sm">${h}</th>`).join('')}
+    const headerHtml = `<thead><tr style="border-bottom:1px solid rgba(0,0,0,0.12)">
+      ${headers.map((h: string) => `<th style="padding:8px 16px;text-align:left;font-weight:600;color:#0a0a0a;font-size:13px">${h}</th>`).join('')}
     </tr></thead>`;
 
     const bodyHtml = `<tbody>
-      ${rows.map((row: string[]) => `<tr class="border-b border-brand-border/40 hover:bg-white/5 transition-colors">
-        ${row.map((c: string) => `<td class="px-4 py-2 text-gray-300 text-sm">${c}</td>`).join('')}
+      ${rows.map((row: string[]) => `<tr style="border-bottom:1px solid rgba(0,0,0,0.06)">
+        ${row.map((c: string) => `<td style="padding:8px 16px;color:rgba(10,10,10,0.65);font-size:13px">${c}</td>`).join('')}
       </tr>`).join('')}
     </tbody>`;
 
-    return `<div class="my-6 overflow-x-auto rounded-lg border border-brand-border"><table class="min-w-full divide-y divide-brand-border bg-gray-900/25">${headerHtml}${bodyHtml}</table></div>`;
+    return `<div style="margin:24px 0;overflow-x:auto;border-radius:8px;border:1px solid rgba(0,0,0,0.1)"><table style="min-width:100%;border-collapse:collapse;background:rgba(0,0,0,0.02)">${headerHtml}${bodyHtml}</table></div>`;
   });
 
   // 9. Paragraphs (split by double newline, skip elements that are already HTML tags)
@@ -108,7 +108,7 @@ export function parseMarkdownToHtml(markdown: string): string {
     if (trimmed.startsWith('<h') || trimmed.startsWith('<pre') || trimmed.startsWith('<ul') || trimmed.startsWith('<div') || trimmed.startsWith('<blockquote') || trimmed.startsWith('<table')) {
       return trimmed;
     }
-    return `<p class="leading-relaxed text-gray-300 my-4">${trimmed.replace(/\n/g, '<br />')}</p>`;
+    return `<p style="line-height:1.7;color:rgba(10,10,10,0.7);margin:16px 0">${trimmed.replace(/\n/g, '<br />')}</p>`;
   }).join('\n');
 
   return html;

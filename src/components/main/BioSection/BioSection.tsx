@@ -22,7 +22,7 @@ const SKILL_TAGS: Array<{ label: string; color: string }> = [
   { label: 'Vibe coding',         color: '#B8F0B0' },
   { label: 'Financial UX',        color: '#000000' },
   { label: 'Web3 Product Design', color: '#FFB0C8' },
-  { label: 'Mobil App',           color: '#4F9CFF' },
+  { label: 'Mobile App',          color: '#4F9CFF' },
   { label: 'Design System',       color: '#D4F542' },
   { label: 'Graphic Design',      color: '#00E87A' },
   { label: 'Pitch Deck',          color: '#C8AAFF' },

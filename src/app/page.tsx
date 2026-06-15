@@ -1,9 +1,9 @@
 import { getCaseStudies } from '@/lib/markdown';
-import FixedHeader from '@/components/FixedHeader';
-import HeroSection from '@/components/HeroSection';
-import BioSection from '@/components/BioSection';
-import ProjectsSection from '@/components/ProjectsSection';
-import FooterSection from '@/components/FooterSection';
+import Navbar from '@/components/main/Navbar';
+import HeroSection from '@/components/main/HeroSection';
+import BioSection from '@/components/main/BioSection';
+import ProjectsSection from '@/components/main/ProjectsSection';
+import FooterSection from '@/components/main/FooterSection';
 
 export const revalidate = 60;
 
@@ -19,7 +19,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <FixedHeader />
+      <Navbar />
       <HeroSection />
       <BioSection />
       <ProjectsSection studies={caseStudies} metadata={PROJECT_META} />

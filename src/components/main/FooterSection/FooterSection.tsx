@@ -64,6 +64,7 @@ export default function FooterSection() {
     const resize = () => {
       canvas.width  = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
+      if (canvas.width === 0 || canvas.height === 0) return;
       dotsRef.current = buildDots(canvas.width, canvas.height);
     };
 
@@ -127,7 +128,7 @@ export default function FooterSection() {
   }, []);
 
   return (
-    <section style={{ position: 'relative', backgroundColor: '#000000', height: '100vh', overflow: 'hidden' }}>
+    <section style={{ position: 'relative', backgroundColor: 'var(--color-canvas-bg)', height: '100vh', overflow: 'hidden' }}>
       <canvas
         ref={canvasRef}
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}

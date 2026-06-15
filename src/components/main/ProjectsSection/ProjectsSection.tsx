@@ -99,7 +99,7 @@ function ProjectCard({
         onMouseMove={onMouseMove}
         onMouseLeave={onMouseLeave}
       >
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: '#d9d9d9' }} />
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'var(--color-thumbnail-placeholder)' }} />
         {meta.thumbnail && (meta.thumbnail.endsWith('.mp4') ? (
           <video src={meta.thumbnail} autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
         ) : (
@@ -185,8 +185,8 @@ export default function ProjectsSection({
 
   if (isMobile) {
     return (
-      <section id="projects" style={{ backgroundColor: '#ffffff' }}>
-        <div style={{ width: '100%', height: 1, backgroundColor: '#111111' }} />
+      <section id="projects" style={{ backgroundColor: 'var(--color-brand-bg)' }}>
+        <div style={{ width: '100%', height: 1, backgroundColor: 'var(--color-brand-line)' }} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: '40px var(--page-gutter)' }}>
           {studies.map((study, i) => {
             const meta = m(i);
@@ -197,7 +197,7 @@ export default function ProjectsSection({
                   href={`/case-studies/${study.slug}`}
                   style={{ display: 'block', width: '100%', aspectRatio: '3 / 2', position: 'relative', overflow: 'hidden' }}
                 >
-                  <div style={{ position: 'absolute', inset: 0, backgroundColor: '#d9d9d9' }} />
+                  <div style={{ position: 'absolute', inset: 0, backgroundColor: 'var(--color-thumbnail-placeholder)' }} />
                   {meta.thumbnail && (meta.thumbnail.endsWith('.mp4') ? (
                     <video src={meta.thumbnail} autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
@@ -236,8 +236,8 @@ export default function ProjectsSection({
   };
 
   return (
-    <section id="projects" style={{ backgroundColor: '#ffffff' }}>
-      <div style={{ width: '100%', height: 1, backgroundColor: '#111111' }} />
+    <section id="projects" style={{ backgroundColor: 'var(--color-brand-bg)' }}>
+      <div style={{ width: '100%', height: 1, backgroundColor: 'var(--color-brand-line)' }} />
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 100, marginTop: 63, paddingBottom: 200 }}>
         {studies.length >= 2 && (

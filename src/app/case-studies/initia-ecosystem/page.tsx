@@ -1,4 +1,4 @@
-import FixedHeader from '@/components/FixedHeader';
+import Navbar from '@/components/main/Navbar';
 import type { CSSProperties, ReactNode } from 'react';
 
 const FONT = 'var(--font-google-sans-flex), sans-serif';
@@ -296,7 +296,7 @@ function Footer() {
 export default function InitiaPage() {
   return (
     <main style={{ backgroundColor: CASE_STUDY.color.white, color: CASE_STUDY.color.ink }}>
-      <FixedHeader alwaysVisible tone="light" />
+      <Navbar alwaysVisible tone="light" />
       <div
         className="content-width"
         style={{

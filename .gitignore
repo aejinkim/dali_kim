@@ -43,10 +43,17 @@ next-env.d.ts
 # local devlogs
 devlog/
 
-# AI tool directories
+# AI tool directories & agent rules
 .claude/
 .agent/
 .codex/
 .gemini/
+CLAUDE.md
+AGENTS.md
 design.md
 
+# docs
+!docs/
+
+# AI harness scripts
+install.sh
