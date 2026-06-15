@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 
 
 function Logo({ tone = 'dark' }: { tone?: 'dark' | 'light' }) {
-  const bg = tone === 'light' ? '#0a0a0a' : '#ffffff';
-  const fg = tone === 'light' ? '#ffffff' : '#0a0a0a';
+  const bg = tone === 'light' ? 'var(--color-ink)' : 'var(--color-brand-bg)';
+  const fg = tone === 'light' ? 'var(--color-brand-bg)' : 'var(--color-ink)';
   return (
     <div
       className="flex items-center justify-center"
@@ -73,7 +73,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
   }, []);
 
   const lightTone = tone === 'light';
-  const textColor = lightTone ? '#0a0a0a' : '#ffffff';
+  const textColor = lightTone ? 'var(--color-ink)' : 'var(--color-brand-bg)';
   const effectiveScrolled = alwaysVisible ? true : scrolled;
   const effectiveDark = alwaysVisible ? true : dark;
   const bg = lightTone
@@ -131,7 +131,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
               className="hover:opacity-50 transition-opacity duration-200"
               style={{
                 fontFamily: 'var(--font-google-sans-flex), sans-serif',
-                fontSize: 13,
+                fontSize: '13px',
                 color: textColor,
                 letterSpacing: '-0.13px',
                 textDecoration: 'none',
@@ -144,7 +144,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
 
         <div
           className="md:hidden overflow-hidden transition-all duration-300 ease-in-out"
-          style={{ maxHeight: menuOpen ? '400px' : '0', background: 'rgba(243,240,230,0.97)' }}
+          style={{ maxHeight: menuOpen ? '400px' : '0', background: 'var(--color-brand-bg)' }}
         >
           <div className="flex flex-col px-6 pb-6 gap-5">
             {ALL_LINKS.map(({ label, href, external }) => (
@@ -154,7 +154,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
                 {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 onClick={() => setMenuOpen(false)}
                 className="text-[15px] tracking-widest font-medium hover:opacity-50 transition-opacity border-b pb-4"
-                style={{ color: '#111111', borderColor: 'rgba(0,0,0,0.08)', fontFamily: 'var(--font-google-sans-flex), sans-serif' }}
+                style={{ color: 'var(--color-ink)', borderColor: 'rgba(0,0,0,0.08)', fontFamily: 'var(--font-google-sans-flex), sans-serif' }}
               >
                 {label}
               </a>
@@ -181,7 +181,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
             width: '52px',
             height: '52px',
             borderRadius: '50%',
-            backgroundColor: '#E53535',
+            backgroundColor: 'var(--color-nav-accent)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -195,7 +195,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
           <div style={{ position: 'relative', width: 18, height: 18 }}>
             <div
               style={{
-                position: 'absolute', top: 8, left: 0, width: 18, height: 1.5, background: '#fff',
+                position: 'absolute', top: 8, left: 0, width: 18, height: 1.5, background: 'var(--color-brand-bg)',
                 transform: menuOpen ? 'rotate(45deg)' : 'rotate(0deg)',
                 transformOrigin: 'center',
                 transition: 'transform 300ms ease',
@@ -203,7 +203,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
             />
             <div
               style={{
-                position: 'absolute', top: 0, left: 8, width: 1.5, height: 18, background: '#fff',
+                position: 'absolute', top: 0, left: 8, width: 1.5, height: 18, background: 'var(--color-brand-bg)',
                 transform: menuOpen ? 'rotate(45deg)' : 'rotate(0deg)',
                 transformOrigin: 'center',
                 transition: 'transform 300ms ease',
@@ -221,7 +221,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
             fontSize: '10px',
             fontWeight: 500,
             letterSpacing: '0.18em',
-            color: '#ffffff',
+            color: 'var(--color-brand-bg)',
             textTransform: 'uppercase',
           }}
         >
@@ -232,7 +232,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
       <div
         className="fixed inset-0 z-40 hidden md:flex flex-col items-center justify-center"
         style={{
-          backgroundColor: '#0a0a0a',
+          backgroundColor: 'var(--color-ink)',
           opacity: menuOpen ? 1 : 0,
           pointerEvents: menuOpen ? 'auto' : 'none',
           transition: 'opacity 400ms ease',
@@ -256,7 +256,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
                 fontSize: 'clamp(28px, 4vw, 56px)',
                 fontWeight: 300,
                 letterSpacing: '-0.02em',
-                color: '#ffffff',
+                color: 'var(--color-brand-bg)',
                 textDecoration: 'none',
               }}
             >

@@ -202,7 +202,7 @@ export default function AboutPage() {
             fontWeight: 300,
             lineHeight: 1.3,
             letterSpacing: '-0.24px',
-            color: '#ffffff',
+            color: 'var(--color-brand-bg)',
             textAlign: 'center',
             margin: 0,
           }}>
@@ -216,18 +216,18 @@ export default function AboutPage() {
                   fontWeight: 300, fontSize: '12px', lineHeight: 1.3,
                   letterSpacing: '-0.01em', margin: 0,
                   marginBottom: i < PARAGRAPHS.length - 1 ? '1em' : 0,
-                  color: '#ffffff',
+                  color: 'var(--color-brand-bg)',
                 }}>{text}</p>
               ))}
             </div>
             <a href="mailto:jiny0410@gmail.com" style={{
               fontFamily: 'var(--font-google-sans-flex), sans-serif',
               fontSize: '24px', fontWeight: 300, lineHeight: 1.4,
-              letterSpacing: '-0.24px', color: '#ffffff',
+              letterSpacing: '-0.24px', color: 'var(--color-brand-bg)',
               textDecoration: 'none', textAlign: 'center',
             }}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-text-dim)')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#ffffff')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-brand-bg)')}
             >Get in touch</a>
           </div>
         </div>
@@ -279,7 +279,7 @@ export default function AboutPage() {
             fontWeight: 300,
             lineHeight: 1,
             letterSpacing: '-0.02em',
-            color: '#ffffff',
+            color: 'var(--color-brand-bg)',
             pointerEvents: 'none',
             whiteSpace: 'nowrap',
             zIndex: 0,
@@ -331,7 +331,7 @@ export default function AboutPage() {
                     letterSpacing: '-0.01em',
                     margin: 0,
                     marginBottom: i < PARAGRAPHS.length - 1 ? '1em' : 0,
-                    color: '#ffffff',
+                    color: 'var(--color-brand-bg)',
                   }}>{text}</p>
                 ))}
               </div>
@@ -345,7 +345,7 @@ export default function AboutPage() {
                 fontWeight: 300,
                 lineHeight: 1.4,
                 letterSpacing: '-0.01em',
-                color: '#ffffff',
+                color: 'var(--color-brand-bg)',
                 textDecoration: 'none',
                 textAlign: 'center',
                 opacity: touchProgress,
@@ -355,7 +355,7 @@ export default function AboutPage() {
                 marginTop: 'auto',
               }}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-text-dim)')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#ffffff')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-brand-bg)')}
             >
               Get in touch
             </a>

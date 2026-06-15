@@ -115,7 +115,7 @@ function ProjectCard({
             width: 80,
             height: 80,
             borderRadius: '50%',
-            backgroundColor: '#ffffff',
+            backgroundColor: 'var(--color-brand-bg)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -139,7 +139,7 @@ function ProjectCard({
             fontSize: 'var(--project-subtitle-size)',
             lineHeight: 1,
             letterSpacing: '-0.96px',
-            color: '#000000',
+            color: 'var(--color-ink)',
             margin: '0 0 8px',
           }}
         >
@@ -152,7 +152,7 @@ function ProjectCard({
             fontSize: 'var(--project-title-size)',
             lineHeight: 1,
             letterSpacing: 'var(--project-title-tracking)',
-            color: '#000000',
+            color: 'var(--color-ink)',
             margin: 0,
           }}
         >
@@ -177,7 +177,7 @@ export default function ProjectsSection({
     return () => window.removeEventListener('resize', update);
   }, []);
 
-  const fallback: Meta = { subtitle: '', thumbnail: '/initia_thumbnail.png', date: '2026' };
+  const fallback: Meta = { subtitle: '', thumbnail: '', date: '2026' };
   const s = (i: number) => studies[i];
   const m = (i: number) => metadata[studies[i]?.slug] ?? fallback;
 
@@ -210,13 +210,13 @@ export default function ProjectsSection({
                     fontFamily: 'var(--font-google-sans-flex), sans-serif',
                     fontWeight: 300, fontSize: 'var(--project-subtitle-size)',
                     lineHeight: 1, letterSpacing: '-0.56px',
-                    color: '#000000', margin: '0 0 4px',
+                    color: 'var(--color-ink)', margin: '0 0 4px',
                   }}>{meta.subtitle}</p>
                   <p style={{
                     fontFamily: 'var(--font-google-sans-flex), sans-serif',
                     fontWeight: 500, fontSize: 'var(--project-title-size)',
                     lineHeight: 1, letterSpacing: 'var(--project-title-tracking)',
-                    color: '#000000', margin: 0,
+                    color: 'var(--color-ink)', margin: 0,
                   }}>{shortTitle}</p>
                 </div>
               </div>

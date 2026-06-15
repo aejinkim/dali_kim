@@ -13,6 +13,19 @@
   --color-about-card-border: #787878;
   --color-text-dim: #aaaaaa;
 
+  /* ── Skill tag accent colors (BioSection dots) ── */
+  --color-tag-pink: #FF3D9A;
+  --color-tag-mint: #B8F0B0;
+  --color-tag-blush: #FFB0C8;
+  --color-tag-blue: #4F9CFF;
+  --color-tag-lime: #D4F542;
+  --color-tag-green: #00E87A;
+  --color-tag-lavender: #C8AAFF;
+  --color-tag-peach: #FFB8A0;
+
+  /* ── Navigation ── */
+  --color-nav-accent: #E53535;
+
   /* ── Type scale — only tokens actually used in code ── */
   --tracking-caption: 0.01px;
 
@@ -22,12 +35,12 @@
 
 :root {
   --background: transparent;
-  --foreground: #111111;
+  --foreground: var(--color-brand-line);
   --section-gap: 48px;
   --card-padding: 24px;
   --element-gap: 24px;
   scrollbar-width: thin;
-  scrollbar-color: #111111 transparent;
+  scrollbar-color: var(--color-brand-line) transparent;
 
   /* Fluid gutter: 20px@768 → 36px@1440 */
   --page-gutter: clamp(20px, calc(1.71px + 2.381vw), 36px);
@@ -170,10 +183,11 @@ body {
 
 /* ── Case Study page hovers ── */
 .case-study-nav-back {
+  opacity: 0.7;
   transition: opacity 200ms ease;
 }
 .case-study-nav-back:hover {
-  opacity: 1 !important;
+  opacity: 1;
 }
 
 .case-study-action-btn {
@@ -182,6 +196,6 @@ body {
   transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
 }
 .case-study-action-btn:hover {
-  background-color: var(--color-ink) !important;
-  color: var(--color-brand-bg) !important;
+  background-color: var(--color-ink);
+  color: var(--color-brand-bg);
 }

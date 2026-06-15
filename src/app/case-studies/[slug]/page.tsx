@@ -15,9 +15,9 @@ const CASE_META: Record<string, {
   link?: string;
 }> = {
   'initia-ecosystem':         { thumbnail: '/Initiamian.webm',       year: '2023 – 2026', industry: 'Blockchain / Web3',    scope: 'Brand, Product, Design System' },
-  'anchor-protocol':          { thumbnail: '/anchor_thumbnail.png',  year: '2021 – 2023', industry: 'DeFi / Finance',       scope: 'UX Design, Research' },
+  'anchor-protocol':          { thumbnail: '',                       year: '2021 – 2023', industry: 'DeFi / Finance',       scope: 'UX Design, Research' },
   'fount-robo-advisor':       { thumbnail: '/fount_thumbnail.png',   year: '2020 – 2021', industry: 'WealthTech',            scope: 'Product Design' },
-  'satrec-satellite-control': { thumbnail: '/satrec_thumbnail.png',  year: '2017 – 2018', industry: 'Aerospace',             scope: 'UX Design, Research' },
+  'satrec-satellite-control': { thumbnail: '',                       year: '2017 – 2018', industry: 'Aerospace',             scope: 'UX Design, Research' },
 };
 
 const FONT = 'var(--font-google-sans-flex), sans-serif';
@@ -65,12 +65,11 @@ export default async function CaseStudyPage({ params }: PageProps) {
             fontSize: '14px',
             fontWeight: 400,
             letterSpacing: '-0.01em',
-            color: '#0a0a0a',
+            color: 'var(--color-ink)',
             textDecoration: 'none',
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            opacity: 0.7,
           }}
         >
           ← Dali Kim
@@ -185,7 +184,6 @@ export default async function CaseStudyPage({ params }: PageProps) {
                   fontSize: '13px',
                   fontWeight: 400,
                   letterSpacing: '-0.01em',
-                  color: '#0a0a0a',
                   textDecoration: 'none',
                   padding: '10px 20px',
                   border: '1px solid rgba(0,0,0,0.18)',
@@ -259,7 +257,6 @@ export default async function CaseStudyPage({ params }: PageProps) {
             fontSize: '14px',
             fontWeight: 400,
             letterSpacing: '-0.01em',
-            color: '#0a0a0a',
             textDecoration: 'none',
             padding: '10px 24px',
             border: '1px solid rgba(0,0,0,0.18)',

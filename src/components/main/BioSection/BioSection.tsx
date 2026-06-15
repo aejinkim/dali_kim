@@ -10,7 +10,7 @@ const N = ALL_WORDS.length;
 
 const SLIDE_END = 0.2;
 const REVEAL_END = 0.84;   // text fully revealed by this progress point
-const REVEAL_WINDOW = 0.03;
+const REVEAL_WINDOW = 0.16;
 
 const wordRevealThreshold = (idx: number) =>
   (idx / N) * (1 - REVEAL_WINDOW) + REVEAL_WINDOW;
@@ -18,15 +18,15 @@ const wordRevealThreshold = (idx: number) =>
 const TAGS_START = 0.91;   // tags appear after reveal
 
 const SKILL_TAGS: Array<{ label: string; color: string }> = [
-  { label: 'AI-Native Product',   color: '#FF3D9A' },
-  { label: 'Vibe coding',         color: '#B8F0B0' },
-  { label: 'Financial UX',        color: '#000000' },
-  { label: 'Web3 Product Design', color: '#FFB0C8' },
-  { label: 'Mobile App',          color: '#4F9CFF' },
-  { label: 'Design System',       color: '#D4F542' },
-  { label: 'Graphic Design',      color: '#00E87A' },
-  { label: 'Pitch Deck',          color: '#C8AAFF' },
-  { label: 'Motion Graphic',      color: '#FFB8A0' },
+  { label: 'AI-Native Product',   color: 'var(--color-tag-pink)' },
+  { label: 'Vibe coding',         color: 'var(--color-tag-mint)' },
+  { label: 'Financial UX',        color: 'var(--color-canvas-bg)' },
+  { label: 'Web3 Product Design', color: 'var(--color-tag-blush)' },
+  { label: 'Mobile App',          color: 'var(--color-tag-blue)' },
+  { label: 'Design System',       color: 'var(--color-tag-lime)' },
+  { label: 'Graphic Design',      color: 'var(--color-tag-green)' },
+  { label: 'Pitch Deck',          color: 'var(--color-tag-lavender)' },
+  { label: 'Motion Graphic',      color: 'var(--color-tag-peach)' },
 ];
 
 const CARD_TRIGGERS = [
@@ -144,7 +144,7 @@ export default function BioSection() {
               fontSize: 'var(--bio-font-size)',
               lineHeight: 1.3,
               letterSpacing: '-0.01em',
-              color: '#111111',
+              color: 'var(--color-ink)',
               position: 'relative',
               zIndex: 1,
               maxWidth: 'calc(100% - 56px)',
@@ -172,7 +172,7 @@ export default function BioSection() {
                       fontSize: 'var(--bio-tag-font)',
                       lineHeight: 1.4,
                       letterSpacing: '-0.12px',
-                      color: '#111111',
+                      color: 'var(--color-ink)',
                       whiteSpace: 'nowrap',
                     }}>{label}</span>
                   </div>
@@ -288,7 +288,7 @@ export default function BioSection() {
                 fontSize: 'var(--bio-font-size)',
                 lineHeight: 1.25,
                 letterSpacing: '-0.01em',
-                color: '#111111',
+                color: 'var(--color-ink)',
                 position: 'relative',
                 zIndex: 1,
               }}
@@ -360,7 +360,7 @@ export default function BioSection() {
                           fontSize: 'var(--bio-tag-font)',
                           lineHeight: '140%',
                           letterSpacing: '-0.2px',
-                          color: '#111111',
+                          color: 'var(--color-ink)',
                           whiteSpace: 'nowrap',
                         }}
                       >

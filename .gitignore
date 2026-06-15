@@ -52,8 +52,7 @@ CLAUDE.md
 AGENTS.md
 /design.md
 
-# docs
-!docs/
+# docs (tracked; !docs/ would be a no-op here — no parent ignore rule to negate)
 
 # AI harness scripts
 install.sh
