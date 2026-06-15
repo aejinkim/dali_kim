@@ -50,7 +50,7 @@ devlog/
 .gemini/
 CLAUDE.md
 AGENTS.md
-design.md
+/design.md
 
 # docs
 !docs/
