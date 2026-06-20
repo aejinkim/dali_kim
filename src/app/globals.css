@@ -4,7 +4,9 @@
   /* ── Portfolio brand colors (Figma-sourced) ── */
   --color-brand-bg: #ffffff;
   --color-brand-line: #111111;
+  --color-hero-bg: #d9d7d0;
   --color-canvas-bg: #000000;
+  --color-surface-inverse: #ffffff;
   --color-thumbnail-placeholder: #d9d9d9;
   --color-ink: #0a0a0a;
   --color-hover-light: #EBECEC;
@@ -25,6 +27,11 @@
 
   /* ── Navigation ── */
   --color-nav-accent: #E53535;
+
+  /* ── Project cards ── */
+  --color-project-card-light: #f5f4f0;
+  --color-project-card-blue: #1B4EFD;
+  --color-project-card-dark: #0d0d0d;
 
   /* ── Type scale — only tokens actually used in code ── */
   --tracking-caption: 0.01px;

@@ -10,7 +10,7 @@ const N = ALL_WORDS.length;
 
 const SLIDE_END = 0.2;
 const REVEAL_END = 0.84;   // text fully revealed by this progress point
-const REVEAL_WINDOW = 0.16;
+const REVEAL_WINDOW = 0.07;
 
 const wordRevealThreshold = (idx: number) =>
   (idx / N) * (1 - REVEAL_WINDOW) + REVEAL_WINDOW;

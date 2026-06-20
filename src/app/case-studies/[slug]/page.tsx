@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getCaseStudyBySlug, parseMarkdownToHtml } from '@/lib/markdown';
 
@@ -18,6 +19,7 @@ const CASE_META: Record<string, {
   'anchor-protocol':          { thumbnail: '',                       year: '2021 – 2023', industry: 'DeFi / Finance',       scope: 'UX Design, Research' },
   'fount-robo-advisor':       { thumbnail: '/fount_thumbnail.png',   year: '2020 – 2021', industry: 'WealthTech',            scope: 'Product Design' },
   'satrec-satellite-control': { thumbnail: '',                       year: '2017 – 2018', industry: 'Aerospace',             scope: 'UX Design, Research' },
+  'virtuswap':                { thumbnail: '/virtuswap_01.jpg',      year: '2022',        industry: 'DeFi / Finance',       scope: 'Brand Identity, Visual Design, Landing Page' },
 };
 
 const FONT = 'var(--font-google-sans-flex), sans-serif';
@@ -57,7 +59,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
         alignItems: 'center',
         justifyContent: 'space-between',
       }}>
-        <a
+        <Link
           href="/"
           className="case-study-nav-back"
           style={{
@@ -73,7 +75,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
           }}
         >
           ← Dali Kim
-        </a>
+        </Link>
         <span style={{
           fontFamily: FONT,
           fontSize: '11px',
@@ -240,7 +242,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
         flexWrap: 'wrap',
         gap: '24px',
       }}>
-        <a href="/" style={{
+        <Link href="/" style={{
           fontFamily: FONT,
           fontSize: '14px',
           fontWeight: 400,
@@ -249,7 +251,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
           textDecoration: 'none',
         }}>
           ← Back to work
-        </a>
+        </Link>
         <a href="mailto:jiny0410@gmail.com"
           className="case-study-action-btn"
           style={{

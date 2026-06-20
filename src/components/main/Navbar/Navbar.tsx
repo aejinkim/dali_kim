@@ -45,8 +45,9 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
   const [menuOpen, setMenuOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
+  useEffect(() => { setLoaded(true); }, []);
+
   useEffect(() => {
-    setLoaded(true);
     if (alwaysVisible) return;
     const onScroll = () => {
       const y = window.scrollY;

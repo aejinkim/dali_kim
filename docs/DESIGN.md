@@ -52,7 +52,9 @@ ComponentName/
 |------|-----|-----------|
 | `--color-brand-bg` | `#ffffff` | 페이지 기본 배경, 스크롤바 트랙 |
 | `--color-brand-line` | `#111111` | 테두리, 구분선, 스크롤바 thumb |
-| `--color-canvas-bg` | `#000000` | Hero/Footer 섹션 배경 |
+| `--color-hero-bg` | `#d9d7d0` | Hero 섹션 기준 배경 |
+| `--color-canvas-bg` | `#000000` | Footer 캔버스, 다크 캔버스 배경 |
+| `--color-surface-inverse` | `#ffffff` | 다크 섹션 위 텍스트/아이콘 |
 | `--color-thumbnail-placeholder` | `#d9d9d9` | 썸네일 로드 전 placeholder |
 | `--color-ink` | `#0a0a0a` | 라이트 섹션 텍스트, 버튼 배경 |
 | `--color-hover-light` | `#EBECEC` | hover-invert 상태 텍스트 |
@@ -60,19 +62,24 @@ ComponentName/
 | `--color-about-card-bg` | `#232323` | About 페이지 카드 배경 |
 | `--color-about-card-border` | `#787878` | About 페이지 카드 테두리 |
 | `--color-text-dim` | `#aaaaaa` | hover 시 muted 텍스트 |
+| `--color-nav-accent` | `#E53535` | INDEX 버튼 |
+| `--color-project-card-light` | `#f5f4f0` | Project card theme 1 |
+| `--color-project-card-blue` | `#1B4EFD` | Project card theme 2 |
+| `--color-project-card-dark` | `#0d0d0d` | Project card theme 3 |
 
 ### 섹션별 색상 맥락
 
 | 요소 | 값 |
 |------|-----|
-| Hero background | `var(--color-canvas-bg)` `#000000` |
+| Hero background | `var(--color-hero-bg)` `#d9d7d0` |
+| Footer canvas background | `var(--color-canvas-bg)` `#000000` |
 | Bio / Projects background | `var(--color-brand-bg)` `#ffffff` |
 | Light section text | `var(--color-ink)` `#0a0a0a` |
-| Dark section text | `#ffffff` |
-| Nav INDEX button | `#E53535` |
-| Project card theme 1 | `#f5f4f0` |
-| Project card theme 2 | `#1B4EFD` |
-| Project card theme 3 | `#0d0d0d` |
+| Dark section text | `var(--color-surface-inverse)` `#ffffff` |
+| Nav INDEX button | `var(--color-nav-accent)` `#E53535` |
+| Project card theme 1 | `var(--color-project-card-light)` `#f5f4f0` |
+| Project card theme 2 | `var(--color-project-card-blue)` `#1B4EFD` |
+| Project card theme 3 | `var(--color-project-card-dark)` `#0d0d0d` |
 
 ---
 
@@ -187,6 +194,13 @@ style={{ backgroundColor: 'var(--color-brand-bg)', padding: 'var(--page-gutter)'
 style={{ backgroundColor: '#ffffff', padding: '36px' }}
 className="bg-[#F3F0E6]"
 ```
+
+### 토큰 업데이트 순서
+
+1. `src/app/globals.css`의 `@theme` 또는 `:root`에 토큰을 먼저 추가한다.
+2. 컴포넌트에서는 HEX/RGBA를 직접 반복하지 않고 `var(--token)`을 사용한다.
+3. 공용 토큰을 바꾸기 전에 사용 범위를 확인한다. Hero와 Footer처럼 시각 맥락이 다른 영역은 토큰을 분리한다.
+4. 변경한 토큰은 이 문서의 활성 토큰 표와 섹션별 색상 맥락에 함께 기록한다.
 
 ### 컴포넌트 너비
 

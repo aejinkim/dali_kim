@@ -1,6 +1,7 @@
 ---
 title: "Fount Robo-Advisor: FinTech Platform Scaling to 1.5T KRW AUM"
 date: "2026-05-22"
+displayOrder: 3
 summary: "How I led product design and branding for South Korea's leading AI-driven wealth management platform, acting as a hybrid PM."
 tags: ["FinTech", "Robo-Advisor", "Mobile App UX", "Product Management"]
 ---

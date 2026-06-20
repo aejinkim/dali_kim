@@ -5,6 +5,7 @@ export interface CaseStudyData {
   slug: string;
   title: string;
   date: string;
+  displayOrder?: number;
   summary: string;
   tags: string[];
   content: string;
@@ -211,10 +212,14 @@ export async function getCaseStudies(): Promise<CaseStudyData[]> {
         const tagsVal = metadata.tags;
         const tags = Array.isArray(tagsVal) ? tagsVal : (tagsVal ? [tagsVal] : []);
 
+        const orderVal = metadata.displayOrder;
+        const displayOrder = orderVal ? parseInt(String(orderVal), 10) : undefined;
+
         fileStudies.push({
           slug,
           title,
           date,
+          displayOrder,
           summary,
           tags,
           content: bodyText.trim(),
@@ -240,7 +245,14 @@ export async function getCaseStudies(): Promise<CaseStudyData[]> {
       }));
     }
 
-    return fileStudies.sort((a, b) => b.date.localeCompare(a.date));
+    return fileStudies.sort((a, b) => {
+      if (a.displayOrder !== undefined && b.displayOrder !== undefined) {
+        return a.displayOrder - b.displayOrder;
+      }
+      if (a.displayOrder !== undefined) return -1;
+      if (b.displayOrder !== undefined) return 1;
+      return b.date.localeCompare(a.date);
+    });
   } catch (error) {
     console.error('Error reading case studies:', error);
     return Object.entries(MOCK_CASE_STUDIES).map(([slug, study]) => ({

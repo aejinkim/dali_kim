@@ -1,6 +1,7 @@
 ---
 title: "Satrec Initiative: Satellite Ground Control Segment UX"
 date: "2026-05-21"
+displayOrder: 4
 summary: "Designing operator interfaces for satellite status monitoring, positioning data, and orbital simulations across 10+ space missions."
 tags: ["Aerospace & Defense", "Mission Control UX", "Data Visualization", "Simulation Systems"]
 ---

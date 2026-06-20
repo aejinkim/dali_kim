@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Navbar from '@/components/main/Navbar';
 import type { CSSProperties, ReactNode } from 'react';
 
@@ -7,7 +8,7 @@ const CASE_STUDY = {
   color: {
     ink: '#000000',
     white: '#ffffff',
-    dim: 'rgba(10,10,10,0.45)',
+    dim: '#000000',
     line: 'rgba(0,0,0,0.08)',
     pillBorder: '#d1d1d1',
     tag: '#474747',
@@ -281,7 +282,7 @@ function Footer() {
       alignItems: 'center',
       marginTop: CASE_STUDY.space.xl,
     }}>
-      <a href="/" style={TYPE.footer}>← Dali Kim</a>
+      <Link href="/" style={TYPE.footer}>← Dali Kim</Link>
       <a href="mailto:jiny0410@gmail.com" style={{
         ...TYPE.footer,
         color: CASE_STUDY.color.ink,

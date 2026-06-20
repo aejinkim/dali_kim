@@ -80,9 +80,11 @@ export default function FooterSection() {
     canvas.addEventListener('mousemove', onMove);
     canvas.addEventListener('mouseleave', onLeave);
 
+    const canvasBg = getComputedStyle(document.documentElement).getPropertyValue('--color-canvas-bg').trim();
+
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#000000';
+      ctx.fillStyle = canvasBg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       const { x: mx, y: my } = mouseRef.current;
@@ -150,7 +152,7 @@ export default function FooterSection() {
           color: 'rgba(255,255,255,0.5)',
           marginBottom: '16px',
         }}>
-          Let's Connect
+          Let&apos;s Connect
         </span>
         <a
           href="mailto:jiny0410@gmail.com"
@@ -159,7 +161,7 @@ export default function FooterSection() {
             fontSize: 'var(--footer-cta-size)',
             fontWeight: 300,
             letterSpacing: '-0.02em',
-            color: '#ffffff',
+            color: 'var(--color-surface-inverse)',
             textDecoration: 'none',
             pointerEvents: 'auto',
             boxSizing: 'border-box',
@@ -205,7 +207,7 @@ export default function FooterSection() {
               textDecoration: 'none',
               transition: 'color 200ms ease',
             }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-surface-inverse)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.6)')}
           >
             {label}

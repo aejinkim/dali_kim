@@ -1,6 +1,7 @@
 ---
 title: "Anchor Protocol: Redesigning DeFi Savings to $16B+ TVL"
 date: "2026-05-23"
+displayOrder: 2
 summary: "How I led product design for Terraform Labs' flagship DeFi savings product, making stablecoin yields as simple as a bank account."
 tags: ["DeFi Savings", "Web3 UX", "Anchor Protocol", "Product Design"]
 ---

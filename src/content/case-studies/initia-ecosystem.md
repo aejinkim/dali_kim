@@ -1,6 +1,7 @@
 ---
 title: "Initia Ecosystem: Scaling Brand & Visual UX from Zero to Mainnet"
 date: "2026-05-24"
+displayOrder: 1
 summary: "How I built Initia's visual identity, wallet, DEX, and cross-chain bridge from zero to mainnet, scaling design alongside $25M+ in funding."
 tags: ["Design Systems", "Web3 UX", "Initia Wallet", "L1 Blockchain"]
 ---

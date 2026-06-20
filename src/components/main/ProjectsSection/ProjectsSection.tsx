@@ -14,6 +14,7 @@ interface Meta {
   subtitle: string;
   thumbnail: string;
   date: string;
+  href?: string;
 }
 
 function useCursor() {
@@ -86,7 +87,7 @@ function ProjectCard({
       }}
     >
       <Link
-        href={`/case-studies/${study.slug}`}
+        href={meta.href ?? `/case-studies/${study.slug}`}
         style={{
           display: 'block',
           width: tall ? '100%' : '75%',
@@ -126,7 +127,7 @@ function ProjectCard({
           }}
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M7 17L17 7M17 7H7M17 7V17" stroke="#0d1e1f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M7 17L17 7M17 7H7M17 7V17" stroke="var(--color-ink)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
       </Link>
@@ -194,7 +195,7 @@ export default function ProjectsSection({
             return (
               <div key={study.slug} style={{ display: 'flex', flexDirection: 'column', gap: 16, paddingBottom: 40 }}>
                 <Link
-                  href={`/case-studies/${study.slug}`}
+                  href={metadata[study.slug]?.href ?? `/case-studies/${study.slug}`}
                   style={{ display: 'block', width: '100%', aspectRatio: '3 / 2', position: 'relative', overflow: 'hidden' }}
                 >
                   <div style={{ position: 'absolute', inset: 0, backgroundColor: 'var(--color-thumbnail-placeholder)' }} />
@@ -248,8 +249,17 @@ export default function ProjectsSection({
         )}
         {studies.length >= 4 && (
           <div style={rowStyle}>
-            <ProjectCard study={s(2)} meta={m(2)} tall={false} flip={true} />
-            <ProjectCard study={s(3)} meta={m(3)} tall={true} />
+            <ProjectCard study={s(3)} meta={m(3)} tall={false} />
+            <ProjectCard study={s(2)} meta={m(2)} tall={true} />
+          </div>
+        )}
+        {studies.length >= 5 && (
+          <div style={rowStyle}>
+            <ProjectCard study={s(4)} meta={m(4)} tall={true} />
+            {studies.length >= 6
+              ? <ProjectCard study={s(5)} meta={m(5)} tall={false} />
+              : <div style={{ flex: '1 0 0' }} />
+            }
           </div>
         )}
       </div>
