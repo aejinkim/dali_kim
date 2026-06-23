@@ -55,7 +55,11 @@ CLAUDE.md
 AGENTS.md
 /design.md
 
-# docs (tracked; !docs/ would be a no-op here — no parent ignore rule to negate)
+# local design & reference docs
+/design/
+/docs/brief.md
+/docs/design-decisions.md
+/reference/
 
 # AI harness scripts
 install.sh

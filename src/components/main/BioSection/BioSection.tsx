@@ -105,7 +105,7 @@ export default function BioSection() {
       <section id="about" className="bg-white" style={{ position: 'relative' }}>
         <div style={{ position: 'relative', padding: '40px var(--page-gutter) 60px', overflow: 'hidden' }}>
           <img
-            src="/dali_kim_photo2.png"
+            src="/assets/shared/dali_kim_photo2.png"
             alt=""
             style={{
               position: 'absolute', right: 0, top: 0,
@@ -116,7 +116,7 @@ export default function BioSection() {
             }}
           />
           <video
-            src="/bio_blockchain1.mp4"
+            src="/assets/shared/bio_blockchain1.mp4"
             autoPlay muted loop playsInline
             style={{
               position: 'absolute', left: 'var(--page-gutter)', top: 68,
@@ -127,7 +127,7 @@ export default function BioSection() {
             }}
           />
           <img
-            src="/gk2_01.png"
+            src="/assets/shared/gk2_01.png"
             alt=""
             style={{
               position: 'absolute', right: 0, top: 130,
@@ -231,7 +231,7 @@ export default function BioSection() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     key={trigger.key}
-                    src="/dali_kim_photo2.png"
+                    src="/assets/shared/dali_kim_photo2.png"
                     alt=""
                     style={{
                       ...sharedStyle,
@@ -248,7 +248,7 @@ export default function BioSection() {
                 return (
                   <video
                     key={trigger.key}
-                    src="/bio_blockchain1.mp4"
+                    src="/assets/shared/bio_blockchain1.mp4"
                     autoPlay
                     muted
                     loop
@@ -268,7 +268,7 @@ export default function BioSection() {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   key={trigger.key}
-                  src="/gk2_01.png"
+                  src="/assets/shared/gk2_01.png"
                   alt=""
                   style={{
                     ...sharedStyle,

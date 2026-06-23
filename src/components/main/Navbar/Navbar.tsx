@@ -43,9 +43,6 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
   const [dark, setDark] = useState(false);
   const [navOpacity, setNavOpacity] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => { setLoaded(true); }, []);
 
   useEffect(() => {
     if (alwaysVisible) return;
@@ -92,7 +89,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
           background: bg,
           backdropFilter: blurVal,
           WebkitBackdropFilter: blurVal,
-          opacity: alwaysVisible ? 1 : (loaded ? navOpacity : 0),
+          opacity: alwaysVisible ? 1 : navOpacity,
           pointerEvents: !alwaysVisible && navOpacity < 0.05 ? 'none' : 'auto',
           transition: 'background 300ms ease',
         }}
@@ -170,7 +167,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
           top: '33px',
           right: 'var(--page-gutter)',
           gap: '10px',
-          opacity: loaded ? (1 - navOpacity) : 0,
+          opacity: 1 - navOpacity,
           pointerEvents: dark ? 'auto' : 'none',
           transition: 'opacity 200ms ease',
         }}

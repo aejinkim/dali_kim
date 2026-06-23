@@ -174,7 +174,7 @@ var(--font-google-sans-flex)
 ```ts
 const PROJECT_META = {
   'initia-ecosystem':         { subtitle: '0→1 Brand & Full Product Suite Design',  thumbnail: '/initia_glass169_2.mp4', date: '2026' },
-  'anchor-protocol':          { subtitle: 'DeFi Savings Protocol UX to $16B+ TVL',  thumbnail: '',                       date: '2023' },
+  'anchor':                   { subtitle: 'DeFi Savings Protocol UX to $16B+ TVL',  thumbnail: '',                       date: '2023' },
   'fount-robo-advisor':       { subtitle: 'Robo-Advisor Wealth Management Platform', thumbnail: '',                       date: '2021' },
   'satrec-satellite-control': { subtitle: 'GEO-KOMPSAT Mission Ground Control UX',  thumbnail: '',                       date: '2018' },
 };

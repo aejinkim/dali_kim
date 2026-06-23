@@ -1,69 +1,29 @@
 import Link from 'next/link';
 import Navbar from '@/components/main/Navbar';
-import type { CSSProperties, ReactNode } from 'react';
+import { CS, TYPE } from '../_shared/tokens';
+import {
+  SplitSection,
+  Stack,
+  SectionTitle,
+  Body,
+  SubTitle,
+  DisplayText,
+  Divider,
+  Pill,
+  FullBleedImage,
+} from '../_shared/components';
 
-const FONT = 'var(--font-google-sans-flex), sans-serif';
-
-const CS = {
+const PAGE = {
   color: {
-    ink: '#000000',
-    white: '#ffffff',
-    dim: '#000000',
-    line: 'rgba(0,0,0,0.08)',
-    pillBorder: '#d1d1d1',
-    tag: '#474747',
     teal: '#0EA882',
     tealMuted: 'rgba(14,168,130,0.08)',
   },
-  size: {
-    frame: 'clamp(1438px, calc(712px + 50.4167vw), 1680px)',
-    inset: 40,
-    half: 800,
-    headerIntro: 'clamp(538px, calc(112px + 29.5833vw), 680px)',
-    leftText: 420,
-    leftMediaGap: 80,
-    dot: 12,
-    tagHeight: 31,
-  },
-  space: {
-    section: 100,
-    xl: 80,
-    stack: 44,
-    paragraph: 20,
-    quoteGap: 56,
-    captionText: 14,
-    captionBottom: 24,
-    mediaTight: 16,
-    headerTop: 'clamp(152px, calc(92px + 4.1667vw), 172px)',
-  },
-} as const;
-
-const TYPE = {
-  h2_52: text('clamp(40px, calc(4px + 2.5vw), 52px)', 500, 1.3, '-0.01em'),
-  h3_32: text('clamp(28px, calc(16px + 0.8333vw), 32px)', 500, 1.3, '-0.01em', { margin: '0 0 8px' }),
-  h3_32SemiBold: text(32, 600, 1.3, '-0.32px'),
-  h3_20Regular: text(20, 400, 1.3, '-0.2px', { margin: '0 0 24px' }),
-  pTitle_16Bold: text(16, 700, 1.3, '-0.16px', { margin: '0 0 12px' }),
-  p16: text(16, 400, 1.5, '-0.16px'),
-  p16SemiBold: text(16, 600, 1.5, '-0.16px'),
-  p56Regular: text('clamp(42px, 2.9167vw, 56px)', 400, 1.2, '-0.01em'),
-  p28Regular: text(28, 400, 1.2, '-0.28px'),
-  tag12: text(12, 400, 'normal', undefined, { color: CS.color.tag }),
-  footer: text(14, 400, 1.4, undefined, {
-    color: CS.color.dim,
-    textDecoration: 'none',
-  }),
-} satisfies Record<string, CSSProperties>;
-
-const MEDIA_STYLE = {
-  cover: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } satisfies CSSProperties,
-  fluid: { width: '100%', height: 'auto', display: 'block' } satisfies CSSProperties,
 };
 
 const META = [
   { label: 'Role', value: 'Senior Product Designer' },
   { label: 'Scope', value: 'Product Design\nUX Research\nDesign System' },
-  { label: 'Company', value: 'Terraform Labs\n2021 – 2023' },
+  { label: 'Impact', value: '$16B Peak TVL\nMass Retail Adoption' },
 ] as const;
 
 const COMPLEXITY_ITEMS = [
@@ -103,92 +63,7 @@ const DELIVERABLES = [
   'Investor and partner collateral: decks and visual assets for ecosystem growth',
 ] as const;
 
-function text(
-  fontSize: number | string,
-  fontWeight: number,
-  lineHeight: number | string,
-  letterSpacing?: string,
-  extra?: CSSProperties
-): CSSProperties {
-  return {
-    fontFamily: FONT,
-    fontSize,
-    fontWeight,
-    lineHeight,
-    letterSpacing,
-    color: CS.color.ink,
-    margin: 0,
-    ...extra,
-  };
-}
 
-function SplitSection({
-  title,
-  children,
-  pt = CS.space.section,
-  pb = CS.space.section,
-}: {
-  title?: ReactNode;
-  children: ReactNode;
-  pt?: number;
-  pb?: number;
-}) {
-  return (
-    <section style={{ display: 'flex', alignItems: 'flex-start', paddingTop: pt, paddingBottom: pb }}>
-      <div style={{ flex: '0 0 50%' }}>{title}</div>
-      <div style={{ flex: '0 0 50%' }}>{children}</div>
-    </section>
-  );
-}
-
-function Stack({ children, gap = CS.space.stack }: { children: ReactNode; gap?: number }) {
-  return <div style={{ display: 'flex', flexDirection: 'column', gap }}>{children}</div>;
-}
-
-function SectionTitle({ children }: { children: ReactNode }) {
-  return <p style={TYPE.h2_52}>{children}</p>;
-}
-
-function Body({ children, muted = false, style }: { children: ReactNode; muted?: boolean; style?: CSSProperties }) {
-  return <p style={{ ...TYPE.p16, ...(muted ? { color: CS.color.dim } : null), ...style }}>{children}</p>;
-}
-
-function SubTitle({ children }: { children: ReactNode }) {
-  return <p style={TYPE.h3_32}>{children}</p>;
-}
-
-function DisplayText({ children, style }: { children: ReactNode; style?: CSSProperties }) {
-  return <p style={{ ...TYPE.p56Regular, ...style }}>{children}</p>;
-}
-
-function Divider() {
-  return <div style={{ height: 1, background: CS.color.line }} />;
-}
-
-function Pill({ children }: { children: ReactNode }) {
-  return (
-    <span style={{
-      ...TYPE.tag12,
-      height: CS.size.tagHeight,
-      padding: '0 10px',
-      border: `1.5px solid ${CS.color.pillBorder}`,
-      borderRadius: 100,
-      display: 'inline-flex',
-      alignItems: 'center',
-    }}>
-      {children}
-    </span>
-  );
-}
-
-function FullBleedImage({ src, aspect = '16 / 9' }: { src: string; aspect?: string }) {
-  return (
-    <div style={{ width: '100%', aspectRatio: aspect, overflow: 'hidden' }}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt="" style={MEDIA_STYLE.cover} />
-    </div>
-  );
-}
 
 function NarrativeHook() {
   return (
@@ -263,11 +138,11 @@ function DesignDecisions() {
                 <Body muted>{item.challenge}</Body>
               </div>
               <div style={{
-                background: CS.color.tealMuted,
-                borderLeft: `2px solid ${CS.color.teal}`,
+                background: PAGE.color.tealMuted,
+                borderLeft: `2px solid ${PAGE.color.teal}`,
                 padding: '16px 20px',
               }}>
-                <p style={{ ...TYPE.tag12, color: CS.color.teal, marginBottom: 8, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Decision</p>
+                <p style={{ ...TYPE.tag12, color: PAGE.color.teal, marginBottom: 8, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Decision</p>
                 <Body>{item.decision}</Body>
               </div>
             </div>
@@ -343,7 +218,7 @@ function Footer() {
         ...TYPE.footer,
         color: CS.color.ink,
         padding: '10px 24px',
-        border: '1px solid rgba(0,0,0,0.2)',
+        border: `1px solid ${CS.color.lineStrong}`,
         borderRadius: 100,
       }}>Get in touch</a>
     </footer>
@@ -360,13 +235,13 @@ export default function AnchorPage() {
           maxWidth: CS.size.frame,
           margin: '0 auto',
           overflow: 'hidden',
-          padding: `0 ${CS.size.inset}px`,
+          padding: '0 var(--cs-page-inset)',
           boxSizing: 'border-box',
         }}
       >
         <PageHeader />
 
-        <FullBleedImage src="/anchor_thumbnail.png" />
+        <FullBleedImage src="/anchor_thumbnail.png" aspect="16 / 9" />
 
         <NarrativeHook />
 
@@ -413,18 +288,18 @@ export default function AnchorPage() {
           </div>
         </SplitSection>
 
-        <FullBleedImage src="/anchor_01.png" />
+        <FullBleedImage src="/anchor_01.png" aspect="16 / 9" />
 
         <ScaleStats />
 
-        <FullBleedImage src="/anchor_02.png" />
+        <FullBleedImage src="/anchor_02.png" aspect="16 / 9" />
 
         <DesignDecisions />
 
-        <FullBleedImage src="/anchor_03.png" />
+        <FullBleedImage src="/anchor_03.png" aspect="16 / 9" />
 
         <div style={{ marginTop: CS.space.mediaTight }}>
-          <FullBleedImage src="/anchor_04.png" />
+          <FullBleedImage src="/anchor_04.png" aspect="16 / 9" />
         </div>
 
         <div style={{ paddingTop: CS.space.section }}>
@@ -445,10 +320,10 @@ export default function AnchorPage() {
           </Stack>
         </SplitSection>
 
-        <FullBleedImage src="/anchor_2_01.png" />
+        <FullBleedImage src="/anchor_2_01.png" aspect="16 / 9" />
 
         <div style={{ marginTop: CS.space.mediaTight }}>
-          <FullBleedImage src="/anchor_2_02.png" />
+          <FullBleedImage src="/anchor_2_02.png" aspect="16 / 9" />
         </div>
 
         <div style={{ paddingTop: CS.space.section }}>
@@ -488,11 +363,11 @@ export default function AnchorPage() {
               Anchor Protocol reached $16 billion in TVL at its peak, making it the largest DeFi savings protocol in the Terra ecosystem and one of the largest in the world at the time.
             </Body>
             <div style={{
-              background: CS.color.tealMuted,
-              borderLeft: `2px solid ${CS.color.teal}`,
+              background: PAGE.color.tealMuted,
+              borderLeft: `2px solid ${PAGE.color.teal}`,
               padding: '20px 24px',
             }}>
-              <p style={{ ...TYPE.tag12, color: CS.color.teal, marginBottom: 10, letterSpacing: '0.08em', textTransform: 'uppercase' }}>What the design did</p>
+              <p style={{ ...TYPE.tag12, color: PAGE.color.teal, marginBottom: 10, letterSpacing: '0.08em', textTransform: 'uppercase' }}>What the design did</p>
               <p style={{ ...TYPE.p28Regular, lineHeight: 1.4 }}>Lowered the floor for who could participate in DeFi yield. Non-crypto-native savers deposited because the product felt like something they already knew how to use.</p>
             </div>
             <DeliverableList />
