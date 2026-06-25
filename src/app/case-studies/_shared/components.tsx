@@ -14,9 +14,9 @@ export function SplitSection({
   pb?: number;
 }) {
   return (
-    <section style={{ display: 'flex', alignItems: 'flex-start', paddingTop: pt, paddingBottom: pb }}>
-      <div style={{ flex: '0 0 50%' }}>{title}</div>
-      <div style={{ flex: '0 0 50%' }}>{children}</div>
+    <section className="cs-split-section" style={{ paddingTop: pt, paddingBottom: pb }}>
+      <div className="cs-split-left">{title}</div>
+      <div className="cs-split-right">{children}</div>
     </section>
   );
 }
@@ -136,9 +136,9 @@ export function CaptionMediaRow({
 
 export function HalfCaptionBlock({ caption, children, pt = 0 }: { caption: string; children: ReactNode; pt?: number }) {
   return (
-    <section style={{ display: 'flex', paddingTop: pt, paddingBottom: CS.space.captionBottom }}>
-      <div style={{ flex: '0 0 50%' }} />
-      <div style={{ flex: '0 0 50%' }}>
+    <section className="cs-half-caption-block" style={{ paddingTop: pt, paddingBottom: CS.space.captionBottom }}>
+      <div className="cs-half-spacer" />
+      <div className="cs-half-content">
         <Caption>{caption}</Caption>
         <Body style={{ marginTop: CS.space.captionText }}>{children}</Body>
       </div>

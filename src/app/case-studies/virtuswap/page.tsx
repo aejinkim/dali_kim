@@ -84,15 +84,12 @@ function DeliverableList() {
 
 function PageHeader() {
   return (
-    <header style={{
-      display: 'flex',
-      alignItems: 'flex-start',
-      justifyContent: 'space-between',
+    <header className="cs-page-header" style={{
       minHeight: 153,
       paddingTop: CS.space.headerTop,
       paddingBottom: CS.space.section,
     }}>
-      <div style={{ width: CS.size.headerIntro }}>
+      <div className="cs-page-header-intro">
         <p style={TYPE.h3_32SemiBold}>VirtuSwap Branding</p>
         <p style={TYPE.h3_20Regular}>DeFi Exchange Visual Identity</p>
         <div style={{ display: 'flex', gap: 8 }}>
@@ -100,7 +97,7 @@ function PageHeader() {
           <Pill href="https://twitter.com/VirtuSwap">@VirtuSwap ›</Pill>
         </div>
       </div>
-      <div style={{ width: CS.size.half, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}>
+      <div className="cs-page-header-meta">
         {META.map(({ label, value }) => (
           <div key={label}>
             <p style={TYPE.pTitle_16Bold}>{label}</p>
@@ -152,24 +149,6 @@ export default function VirtuSwapPage2() {
 
         <FullBleedImage src="/assets/virtuswap/virtuswap_01-1.jpg" />
 
-        <section style={{
-          paddingTop: CS.space.section,
-          paddingBottom: CS.space.section,
-          borderTop: `1px solid ${CS.color.line}`,
-          borderBottom: `1px solid ${CS.color.line}`,
-        }}>
-          <DisplayText style={{ maxWidth: 900 }}>
-            Not aesthetics first.<br />
-            Conviction first.
-          </DisplayText>
-          <Body muted style={{ marginTop: CS.space.quoteGap, maxWidth: 580 }}>
-            The founding team gave the brand three words: intelligence, efficiency, elegance. Not as mood board keywords, but as constraints. Every visual decision had to earn its place against this standard.
-          </Body>
-          <Body muted style={{ marginTop: CS.space.paragraph, maxWidth: 580 }}>
-            Most DeFi projects land in one of two categories: technically impressive but visually forgettable, or visually striking but lacking substance. VirtuSwap needed to occupy the gap between them.
-          </Body>
-        </section>
-
         <SplitSection title={<SectionTitle>Project Overview</SectionTitle>}>
           <Stack>
             <div>
@@ -178,7 +157,7 @@ export default function VirtuSwapPage2() {
             </div>
             <div>
               <SubTitle>My Role</SubTitle>
-              <Body>As the sole designer on contract, I owned the entire visual system — from defining brand philosophy and building the logo to producing weekly content assets and shipping the landing page. Working directly with the founding team, I translated complex financial engineering into a brand that felt credible, ambitious, and distinctly VirtuSwap.</Body>
+              <Body>As the sole designer, I owned the entire visual system — from defining brand philosophy and building the logo to producing weekly content assets and shipping the landing page. Working directly with the founding team, I translated complex financial engineering into a brand that felt credible, ambitious, and distinctly VirtuSwap.</Body>
             </div>
           </Stack>
         </SplitSection>
@@ -217,13 +196,13 @@ export default function VirtuSwapPage2() {
           <Body>
             The protocol&apos;s belief is simple: the market has accepted unnecessary friction for too long. Trading costs are a solved problem, or they should be. VirtuSwap exists to prove it.
           </Body>
-          <Body muted>
+          <Body>
             This belief shaped every visual decision. A brand built on optimization has no room for decoration that doesn&apos;t earn its place.
           </Body>
         </CaptionMediaRow>
 
-        <div style={{ display: 'flex', paddingTop: CS.space.section, paddingBottom: CS.space.section }}>
-          <div style={{ flex: `0 0 ${CS.size.leftText + CS.size.leftMediaGap}px` }} />
+        <div className="cs-quote-block" style={{ paddingTop: CS.space.section, paddingBottom: CS.space.section }}>
+          <div className="cs-offset-spacer" />
           <div>
             <DisplayText>Efficiency is not just a feature. It is the brand.</DisplayText>
             <Body style={{ marginTop: CS.space.quoteGap }}>
@@ -240,7 +219,7 @@ export default function VirtuSwapPage2() {
           }
         >
           <Caption>Design Principle</Caption>
-          <Body muted>
+          <Body>
             Most DeFi brands draw inspiration from science fiction — gradients, neon, abstract geometry. Every protocol looks like it was built for the metaverse.
           </Body>
           <p style={TYPE.p28Regular}>I looked to Rome.</p>
@@ -304,7 +283,7 @@ export default function VirtuSwapPage2() {
           <Body>
             The landing page translated the brand system into a digital product. Desktop and mobile responsive, shipped within the same two-month timeline as the rest of the visual system.
           </Body>
-          <Body muted>
+          <Body>
             Working directly with the founding team, I delivered a production-ready landing page while simultaneously producing two to three content assets per week.
           </Body>
         </CaptionMediaRow>

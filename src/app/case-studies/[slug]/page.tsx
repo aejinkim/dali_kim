@@ -66,15 +66,12 @@ function PageHeader({ title, subtitle, tags, meta }: {
   meta: { label: string; value: string }[];
 }) {
   return (
-    <header style={{
-      display: 'flex',
-      alignItems: 'flex-start',
-      justifyContent: 'space-between',
+    <header className="cs-page-header" style={{
       minHeight: 153,
       paddingTop: CS.space.headerTop,
       paddingBottom: CS.space.section,
     }}>
-      <div style={{ width: CS.size.headerIntro }}>
+      <div className="cs-page-header-intro">
         <p style={TYPE.h3_32SemiBold}>{title}</p>
         <p style={TYPE.h3_20Regular}>{subtitle}</p>
         <div style={{ display: 'flex', gap: 8 }}>
@@ -83,7 +80,7 @@ function PageHeader({ title, subtitle, tags, meta }: {
           ))}
         </div>
       </div>
-      <div style={{ width: CS.size.half, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}>
+      <div className="cs-page-header-meta">
         {meta.map(({ label, value }) => (
           <div key={label}>
             <p style={TYPE.pTitle_16Bold}>{label}</p>

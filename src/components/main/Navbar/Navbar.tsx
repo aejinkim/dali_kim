@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import Link from 'next/link';
 
 
 function Logo({ tone = 'dark' }: { tone?: 'dark' | 'light' }) {
@@ -29,7 +31,6 @@ type NavLink = { label: string; href: string; external?: boolean };
 const NAV_LEFT: NavLink[] = [
   { label: 'DALI KIM', href: '/' },
   { label: 'WORK', href: '/#projects' },
-  { label: 'CRAFT', href: '/case-studies' },
 ];
 const NAV_RIGHT: NavLink[] = [
   { label: 'ABOUT', href: '/about' },
@@ -37,6 +38,40 @@ const NAV_RIGHT: NavLink[] = [
   { label: 'X', href: 'https://x.com/dali__design', external: true },
 ];
 const ALL_LINKS = [...NAV_LEFT, ...NAV_RIGHT];
+
+function NavItem({
+  href,
+  external,
+  className,
+  style,
+  onClick,
+  children,
+}: NavLink & {
+  className?: string;
+  style?: CSSProperties;
+  onClick?: () => void;
+  children: ReactNode;
+}) {
+  if (href.startsWith('/')) {
+    return (
+      <Link href={href} className={className} style={style} onClick={onClick}>
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <a
+      href={href}
+      {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+      className={className}
+      style={style}
+      onClick={onClick}
+    >
+      {children}
+    </a>
+  );
+}
 
 export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alwaysVisible?: boolean; tone?: 'dark' | 'light' }) {
   const [scrolled, setScrolled] = useState(false);
@@ -100,32 +135,35 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
             style={{ fontFamily: 'var(--font-google-sans-flex), sans-serif', color: textColor, letterSpacing: 'var(--tracking-caption)', fontSize: 'var(--nav-font-size)' }}
           >
             <div className="flex items-center gap-10">
-              {NAV_LEFT.map(({ label, href }) => (
-                <a key={label} href={href} className="hover:opacity-50 transition-opacity duration-200">
+              {NAV_LEFT.map(({ label, href, external }) => (
+                <NavItem key={label} label={label} href={href} external={external} className="hover:opacity-50 transition-opacity duration-200">
                   {label === 'DALI KIM' ? <Logo tone={tone} /> : label}
-                </a>
+                </NavItem>
               ))}
             </div>
             <div className="flex items-center gap-6">
               {NAV_RIGHT.map(({ label, href, external }) => (
-                <a
+                <NavItem
                   key={label}
+                  label={label}
                   href={href}
-                  {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  external={external}
                   className="hover:opacity-50 transition-opacity duration-200"
                 >
                   {label}
-                </a>
+                </NavItem>
               ))}
             </div>
           </div>
         </nav>
 
         <nav className="flex md:hidden items-center" style={{ padding: '16px var(--page-gutter)', gap: '30px' }}>
-          {NAV_LEFT.map(({ label, href }) => (
-            <a
+          {NAV_LEFT.map(({ label, href, external }) => (
+            <NavItem
               key={label}
+              label={label}
               href={href}
+              external={external}
               className="hover:opacity-50 transition-opacity duration-200"
               style={{
                 fontFamily: 'var(--font-google-sans-flex), sans-serif',
@@ -136,7 +174,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
               }}
             >
                 {label === 'DALI KIM' ? <Logo tone={tone} /> : label}
-            </a>
+            </NavItem>
           ))}
         </nav>
 
@@ -146,16 +184,17 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
         >
           <div className="flex flex-col px-6 pb-6 gap-5">
             {ALL_LINKS.map(({ label, href, external }) => (
-              <a
+              <NavItem
                 key={label}
+                label={label}
                 href={href}
-                {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                external={external}
                 onClick={() => setMenuOpen(false)}
                 className="text-[15px] tracking-widest font-medium hover:opacity-50 transition-opacity border-b pb-4"
                 style={{ color: 'var(--color-ink)', borderColor: 'rgba(0,0,0,0.08)', fontFamily: 'var(--font-google-sans-flex), sans-serif' }}
               >
                 {label}
-              </a>
+              </NavItem>
             ))}
           </div>
         </div>
@@ -243,10 +282,11 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
           onClick={e => e.stopPropagation()}
         >
           {ALL_LINKS.map(({ label, href, external }) => (
-            <a
+            <NavItem
               key={label}
+              label={label}
               href={href}
-              {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              external={external}
               onClick={() => setMenuOpen(false)}
               className="hover:opacity-40 transition-opacity duration-200"
               style={{
@@ -259,7 +299,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
               }}
             >
               {label}
-            </a>
+            </NavItem>
           ))}
         </nav>
       </div>

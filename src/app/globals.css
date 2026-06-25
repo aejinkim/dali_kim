@@ -38,6 +38,10 @@
 
   /* ── Border radius ── */
   --radius-button: 24px;
+
+  /* ── Case study tokens ── */
+  --color-cs-line: rgba(0, 0, 0, 0.08);
+  --spacing-cs-stack: 44px;
 }
 
 :root {
@@ -82,14 +86,13 @@
   /* Footer CTA: 60px from 768px up to 1440px */
   --footer-cta-size: 60px;
 
-  /* Case study subpage container inset: 20px on mobile + 1024–1439 */
-  --cs-page-inset: 20px;
+  /* Case study subpage container inset: matches --page-gutter for consistency */
+  --cs-page-inset: var(--page-gutter);
 }
 
 /* ≥1440px: values stay flat until 1920, then grow smoothly to large-screen max */
 @media (min-width: 1440px) {
   :root {
-    --cs-page-inset: 40px;
     --page-gutter:    clamp(36px,  calc(36px  + (100vw - 1440px) * 0.00833),   48px);
     --hero-font-size: clamp(86px,  calc(86px  + (100vw - 1920px) * 0.08906),  143px);
     --toggle-pill-width:  clamp(120px, calc(120px + (100vw - 1920px) * 0.04688), 150px);
@@ -102,8 +105,8 @@
     --bio-container-width: min(clamp(915px, calc(-240px + 60.16vw), 1300px), 66vw);
     --bio-tag-font:  clamp(16px,  calc(16px  + (100vw - 1920px) * 0.00625),  20px);
     --bio-tag-dot:   clamp(12px,  calc(12px  + (100vw - 1920px) * 0.003125), 14px);
-    --project-subtitle-size: clamp(20px,   calc(20px  + (100vw - 1920px) * 0.01250),  28px);
-    --project-title-size:    clamp(40px,   calc(40px  + (100vw - 1920px) * 0.02500),  56px);
+    --project-subtitle-size: clamp(20px,   calc(20px  + (100vw - 1920px) * 0.00727),  24px);
+    --project-title-size:    clamp(40px,   calc(40px  + (100vw - 1920px) * 0.02182),  52px);
     --project-title-tracking: clamp(-2.88px, calc(-1.6px + (100vw - 1920px) * -0.002), -1.6px);
     --footer-cta-size: clamp(60px, calc(60px + (100vw - 1440px) * 0.1667), 160px);
   }
@@ -244,6 +247,100 @@ body {
     height: auto;
     aspect-ratio: 16 / 9;
   }
+}
+
+/* ── Case study shared layout classes ── */
+.cs-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.cs-page-header-intro {
+  width: clamp(538px, calc(112px + 29.5833vw), 680px);
+}
+.cs-page-header-meta {
+  width: 800px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.cs-split-section {
+  display: flex;
+  align-items: flex-start;
+}
+.cs-split-left { flex: 0 0 50%; }
+.cs-split-right { flex: 0 0 50%; }
+
+.cs-half-caption-block { display: flex; }
+.cs-half-spacer { flex: 0 0 50%; }
+.cs-half-content { flex: 0 0 50%; }
+
+.cs-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.cs-stats-grid > div + div {
+  padding-left: var(--spacing-cs-stack);
+  border-left: 1px solid var(--color-cs-line);
+}
+
+.cs-decision-grid {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.cs-quote-block { display: flex; }
+.cs-offset-spacer { flex: 0 0 500px; }
+
+/* ── Case study mobile breakpoints (≤1023px) ── */
+@media (max-width: 1023px) {
+  .cs-page-header {
+    flex-direction: column;
+    gap: 32px;
+    min-height: auto;
+  }
+  .cs-page-header-intro { width: 100%; }
+  .cs-page-header-meta {
+    width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+/* ── Case study mobile breakpoints (≤767px) ── */
+@media (max-width: 767px) {
+  .cs-page-header-meta {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cs-split-section {
+    flex-direction: column;
+    gap: 40px;
+  }
+  .cs-split-left, .cs-split-right {
+    flex: none;
+    width: 100%;
+  }
+
+  .cs-half-spacer { display: none; }
+  .cs-half-content { flex: none; width: 100%; }
+
+  .cs-stats-grid { grid-template-columns: 1fr; }
+  .cs-stats-grid > div + div {
+    padding-left: 0;
+    border-left: none;
+  }
+
+  .cs-decision-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .cs-decision-number { display: none; }
+
+  .cs-offset-spacer { display: none; }
+  .cs-quote-block { flex-direction: column; }
 }
 
 /* ── Case Study article typography ── */

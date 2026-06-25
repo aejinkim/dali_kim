@@ -22,15 +22,12 @@ const BRAND_NEEDS = [
 
 function PageHeader() {
   return (
-    <header style={{
-      display: 'flex',
-      alignItems: 'flex-start',
-      justifyContent: 'space-between',
+    <header className="cs-page-header" style={{
       minHeight: 153,
       paddingTop: CS.space.headerTop,
       paddingBottom: CS.space.section,
     }}>
-      <div style={{ width: CS.size.headerIntro }}>
+      <div className="cs-page-header-intro">
         <p style={TYPE.h3_32SemiBold}>Initia Ecosystem Branding</p>
         <p style={TYPE.h3_20Regular}>Designing a Living Ecosystem</p>
         <div style={{ display: 'flex', gap: 8 }}>
@@ -38,7 +35,7 @@ function PageHeader() {
           <Pill href="https://initia.xyz/">initia.xyz ›</Pill>
         </div>
       </div>
-      <div style={{ width: CS.size.half, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}>
+      <div className="cs-page-header-meta">
         {META.map(({ label, value }) => (
           <div key={label}>
             <p style={TYPE.pTitle_16Bold}>{label}</p>
@@ -98,7 +95,7 @@ export default function InitiaPage() {
             </div>
             <div>
               <SubTitle>Role</SubTitle>
-              <Body>As Head of Design, I led ecosystem branding, I led product design, ecosystem branding, design systems, and cross-functional collaboration across products, marketing, community initiatives, and ecosystem partnerships. Defined the philosophy, visual language, and ecosystem branding framework that enabled diverse chains, products, and communities to coexist within a shared multichain identity.</Body>
+              <Body>As Head of Design, I owned the brand from the ground up — defining the philosophy, building the visual language, and establishing the ecosystem branding framework that connected diverse chains, products, and communities. This extended beyond visual design into product interfaces, governance, marketing, community programs, and ecosystem partnerships.</Body>
             </div>
           </Stack>
         </SplitSection>
@@ -129,16 +126,14 @@ export default function InitiaPage() {
         <SplitSection title={<SectionTitle>The Philosophy</SectionTitle>}>
           <Stack gap={36}>
             <Body>
-              Storytelling is at the heart of every successful company.<br />
-              Technology alone is not enough. What resonates with people is who you are, what you believe, and how you see the world.<br />
-              <br />
-              When building Initia&apos;s ecosystem identity, Initia wanted more than a visual system. Initia wanted a narrative that could explain the relationship between independent chains, shared infrastructure, and a growing ecosystem.
+              Technology alone doesn&apos;t build loyalty. What resonates is who you are, what you believe, and how you see the world. When building Initia&apos;s ecosystem identity, we needed more than a visual system — we needed a narrative that could explain the relationship between independent chains, shared infrastructure, and a growing ecosystem.
             </Body>
-            <DisplayText>This idea became The Multichain Garden of Eden.</DisplayText>
+            <DisplayText>This became The Multichain Garden of Eden.</DisplayText>
             <Body>
-              Initia envisioned a living digital garden where each chain could cultivate its own identity while remaining connected through a shared foundation. As new chains joined, new colors emerged, new forms of digital life appeared, and the ecosystem evolved.<br />
-              <br />
-              More than a brand concept, The Multichain Garden of Eden became the foundation for Initia&apos;s ecosystem design. a living canvas in constant motion.
+              A garden where every organism is different — different colors, different shapes, different purposes — yet they coexist within the same environment. Initia provides the land, water, and infrastructure. Individual chains cultivate their own worlds. The ecosystem grows not through centralization, but through emergence.
+            </Body>
+            <Body>
+              More than a brand concept, the Garden became the operating principle for every design decision: color, motion, typography, mascot, governance, community. A living canvas in constant motion.
             </Body>
           </Stack>
         </SplitSection>
@@ -204,8 +199,9 @@ export default function InitiaPage() {
         </div>
 
         <SplitSection title={<SectionTitle>Outcome</SectionTitle>}>
-          <Stack>
+          <Stack gap={CS.space.paragraph}>
             <Body>The result was a scalable ecosystem identity that connected products, communities, and independent chains through a shared philosophy. Rather than enforcing consistency, the system enabled diversity within a coherent framework — proving that brand unity doesn&apos;t require uniformity.</Body>
+            <Body>The brand system scaled across every surface: the app, the landing page, governance interfaces, the VIP program, airdrop campaigns, community events, and ecosystem partner launches. It gave Initia a recognizable presence in a market full of indistinct blockchain projects — without ever imposing a single dominant color or aesthetic on the chains building inside it.</Body>
             <DisplayText>Initia designed a living ecosystem.</DisplayText>
           </Stack>
         </SplitSection>

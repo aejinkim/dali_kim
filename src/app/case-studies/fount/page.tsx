@@ -31,15 +31,12 @@ const DELIVERABLES = [
 
 function PageHeader() {
   return (
-    <header style={{
-      display: 'flex',
-      alignItems: 'flex-start',
-      justifyContent: 'space-between',
+    <header className="cs-page-header" style={{
       minHeight: 153,
       paddingTop: CS.space.headerTop,
       paddingBottom: CS.space.section,
     }}>
-      <div style={{ width: CS.size.headerIntro }}>
+      <div className="cs-page-header-intro">
         <p style={TYPE.h3_42SemiBold}>Fount Robo-Advisor</p>
         <p style={TYPE.h3_20Regular}>WealthTech Product Design</p>
         <div style={{ display: 'flex', gap: 8 }}>
@@ -47,7 +44,7 @@ function PageHeader() {
           <Pill href="https://fount.co/">fount.co ›</Pill>
         </div>
       </div>
-      <div style={{ width: CS.size.half, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}>
+      <div className="cs-page-header-meta">
         {META.map(({ label, value }) => (
           <div key={label}>
             <p style={TYPE.pTitle_16Bold}>{label}</p>
@@ -86,12 +83,10 @@ function ImpactSection() {
       <div style={{ display: 'flex', alignItems: 'flex-start' }}>
         <SectionTitle>Impact</SectionTitle>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}>
-        {stats.map((stat, index) => (
+      <div className="cs-stats-grid">
+        {stats.map((stat) => (
           <div key={stat.value} style={{
             minHeight: 99,
-            paddingLeft: index === 0 ? 0 : CS.space.stack,
-            borderLeft: index === 0 ? 'none' : `1px solid ${CS.color.line}`,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
@@ -103,7 +98,7 @@ function ImpactSection() {
                 ? <Image src="/assets/fount/clarity-arrow-line.svg" alt="" width={54} height={54} />
                 : null}
             </p>
-            <p style={{ ...TYPE.p16, whiteSpace: index === 2 ? 'normal' : 'nowrap' }}>{stat.label}</p>
+            <p style={{ ...TYPE.p16 }}>{stat.label}</p>
           </div>
         ))}
       </div>
