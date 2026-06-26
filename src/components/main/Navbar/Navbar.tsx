@@ -386,35 +386,14 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
           ))}
         </div>
 
-        {/* "Hi there, I'm Dali" */}
-        <p style={{
-          position: 'absolute',
-          bottom: 248,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          fontFamily: 'var(--font-google-sans-flex), sans-serif',
-          fontWeight: 300,
-          fontSize: '42px',
-          lineHeight: 1.3,
-          letterSpacing: '-0.42px',
-          color: 'var(--color-brand-bg)',
-          textAlign: 'center',
-          width: 299,
-          margin: 0,
-          pointerEvents: 'none',
-          zIndex: 1,
-        }}>
-          {`Hi there, I'm Dali`}
-        </p>
-
         {/* Character image */}
         <div style={{
           position: 'absolute',
           left: '50%',
           transform: 'translateX(-50%)',
           bottom: 0,
-          width: '60vw',
-          height: 'calc(60vw * 0.943)',
+          width: '80vw',
+          height: 'calc(80vw * 0.943)',
           overflow: 'hidden',
           pointerEvents: 'none',
           zIndex: 2,

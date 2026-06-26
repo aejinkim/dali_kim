@@ -178,69 +178,11 @@ export default function AboutPage() {
   const textY = (1 - textProgress) * 100;
   const touchProgress = Math.max(0, (textProgress - 0.6) / 0.4);
 
-  if (isMobile) {
-    return (
-      <>
-        <Navbar alwaysVisible />
-        <div style={{
-          background: 'var(--color-about-bg)',
-          minHeight: '100vh',
-          paddingTop: '85px',
-          paddingBottom: '60px',
-          paddingLeft: '20px',
-          paddingRight: '20px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '24px',
-          opacity: loaded ? 1 : 0,
-          transition: 'opacity 800ms ease',
-        }}>
-          <h1 style={{
-            fontFamily: 'var(--font-google-sans-flex), sans-serif',
-            fontSize: '24px',
-            fontWeight: 300,
-            lineHeight: 1.3,
-            letterSpacing: '-0.24px',
-            color: 'var(--color-brand-bg)',
-            textAlign: 'center',
-            margin: 0,
-          }}>
-            Hi there, I&apos;m Dali
-          </h1>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px', width: '100%' }}>
-            <div style={{ background: 'var(--color-about-card-bg)', border: '1px solid var(--color-about-card-border)', padding: '12px', width: '100%', maxWidth: '332px' }}>
-              {PARAGRAPHS.map((text, i) => (
-                <p key={i} style={{
-                  fontFamily: 'var(--font-google-sans-flex), sans-serif',
-                  fontWeight: 300, fontSize: '12px', lineHeight: 1.3,
-                  letterSpacing: '-0.01em', margin: 0,
-                  marginBottom: i < PARAGRAPHS.length - 1 ? '1em' : 0,
-                  color: 'var(--color-brand-bg)',
-                }}>{text}</p>
-              ))}
-            </div>
-            <a href="mailto:jiny0410@gmail.com" style={{
-              fontFamily: 'var(--font-google-sans-flex), sans-serif',
-              fontSize: '24px', fontWeight: 300, lineHeight: 1.4,
-              letterSpacing: '-0.24px', color: 'var(--color-brand-bg)',
-              textDecoration: 'none', textAlign: 'center',
-            }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-text-dim)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-brand-bg)')}
-            >Get in touch</a>
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  // Tablet + Desktop — sticky scroll animation
   return (
     <>
       <Navbar alwaysVisible />
 
-      <div ref={scrollDriverRef} style={{ height: `calc(300vh + ${boxOverflow}px)`, position: 'relative' }}>
+      <div ref={scrollDriverRef} style={{ height: `calc(300vh + ${boxOverflow}px)`, position: 'relative', backgroundColor: 'var(--color-canvas-bg)' }}>
         <div style={{
           position: 'sticky', top: 0,
           width: '100vw', height: '100vh',
@@ -252,7 +194,7 @@ export default function AboutPage() {
           <div style={{
             position: 'absolute',
             top: '50%', left: '50%',
-            transform: `translate(-50%, calc(-50% + 100px)) scale(${videoScale})`,
+            transform: `translate(-50%, calc(-50% + ${isMobile ? 60 : 100}px)) scale(${videoScale})`,
             transformOrigin: 'center center',
             zIndex: 1,
             willChange: 'transform',
@@ -261,21 +203,36 @@ export default function AboutPage() {
             filter: `blur(${videoBlur}px)`,
             mixBlendMode: 'difference',
           }}>
-            <video
-              src="/about2.mp4"
-              autoPlay muted loop playsInline
-              style={{ height: '100vh', width: 'auto', objectFit: 'contain', display: 'block' }}
-            />
+            {isMobile ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src="/assets/shared/mobile_character.png"
+                alt=""
+                style={{
+                  height: '90vh',
+                  width: 'auto',
+                  objectFit: 'contain',
+                  display: 'block',
+                  objectPosition: 'center top',
+                }}
+              />
+            ) : (
+              <video
+                src="/about2.mp4"
+                autoPlay muted loop playsInline
+                style={{ height: '100vh', width: 'auto', objectFit: 'contain', display: 'block' }}
+              />
+            )}
           </div>
 
           <h1 style={{
             position: 'absolute',
-            top: '82%',
+            top: isMobile ? '78%' : '82%',
             left: 0, right: 0,
             margin: 0,
             textAlign: 'center',
             fontFamily: 'var(--font-google-sans-flex), sans-serif',
-            fontSize: 'max(26px, 8.1vw)',
+            fontSize: isMobile ? 'max(20px, 6vw)' : 'max(26px, 8.1vw)',
             fontWeight: 300,
             lineHeight: 1,
             letterSpacing: '-0.02em',
@@ -301,12 +258,12 @@ export default function AboutPage() {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'flex-start',
-            paddingLeft: 'var(--page-gutter)',
-            paddingRight: 'var(--page-gutter)',
-            paddingTop: 'calc(18vh + 4.05vw + 32px)',
+            paddingLeft: isMobile ? '20px' : 'var(--page-gutter)',
+            paddingRight: isMobile ? '20px' : 'var(--page-gutter)',
+            paddingTop: isMobile ? 'calc(14vh + 32px)' : 'calc(18vh + 4.05vw + 32px)',
             paddingBottom: '100px',
           }}>
-            <div style={{ maxWidth: 'clamp(512px, 32.4vw, 800px)', position: 'relative' }}>
+            <div style={{ maxWidth: isMobile ? '100%' : 'clamp(512px, 32.4vw, 800px)', width: '100%', position: 'relative' }}>
               {([
                 { top: -4, left: -4 },
                 { top: -4, right: -4 },
@@ -326,7 +283,7 @@ export default function AboutPage() {
                   <p key={i} style={{
                     fontFamily: 'var(--font-google-sans-flex), sans-serif',
                     fontWeight: 300,
-                    fontSize: 'max(16px, min(24px, 0.97vw))',
+                    fontSize: isMobile ? '13px' : 'max(16px, min(24px, 0.97vw))',
                     lineHeight: 1.3,
                     letterSpacing: '-0.01em',
                     margin: 0,
@@ -341,7 +298,7 @@ export default function AboutPage() {
               href="mailto:jiny0410@gmail.com"
               style={{
                 fontFamily: 'var(--font-google-sans-flex), sans-serif',
-                fontSize: 'clamp(20px, 2.5vw, 52px)',
+                fontSize: isMobile ? '20px' : 'clamp(20px, 2.5vw, 52px)',
                 fontWeight: 300,
                 lineHeight: 1.4,
                 letterSpacing: '-0.01em',

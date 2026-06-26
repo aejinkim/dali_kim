@@ -45,7 +45,7 @@
 }
 
 :root {
-  --background: transparent;
+  --background: #000000;
   --foreground: var(--color-brand-line);
   --section-gap: 48px;
   --card-padding: 24px;
