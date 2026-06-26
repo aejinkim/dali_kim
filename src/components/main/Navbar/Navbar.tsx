@@ -3,27 +3,22 @@
 import { useState, useEffect } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 
 function Logo({ tone = 'dark' }: { tone?: 'dark' | 'light' }) {
-  const bg = tone === 'light' ? 'var(--color-ink)' : 'var(--color-brand-bg)';
-  const fg = tone === 'light' ? 'var(--color-brand-bg)' : 'var(--color-ink)';
   return (
-    <div
-      className="flex items-center justify-center"
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={tone === 'light' ? '/logo_bl.png' : '/logo_dalikim.svg'}
+      alt="DALI KIM"
       style={{
-        width: '78px',
-        height: '21px',
-        backgroundColor: bg,
-        borderRadius: '50%',
-        color: fg,
-        fontSize: '11px',
-        fontWeight: 800,
-        letterSpacing: '-0.02em',
+        width: 'auto',
+        height: 24,
+        display: 'block',
+        filter: tone === 'light' ? 'none' : 'invert(1)',
       }}
-    >
-      DALI KIM
-    </div>
+    />
   );
 }
 
@@ -38,6 +33,15 @@ const NAV_RIGHT: NavLink[] = [
   { label: 'X', href: 'https://x.com/dali__design', external: true },
 ];
 const ALL_LINKS = [...NAV_LEFT, ...NAV_RIGHT];
+
+const MOBILE_MENU_LINKS: NavLink[] = [
+  { label: 'Works', href: '/#projects' },
+  { label: 'About', href: '/about' },
+  { label: 'Email', href: 'mailto:jiny0410@gmail.com' },
+  { label: "X (Let's chat)", href: 'https://x.com/dali__design', external: true },
+];
+
+const MOBILE_CHARACTER_IMG = '/assets/shared/mobile_character.png';
 
 function NavItem({
   href,
@@ -78,6 +82,9 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
   const [dark, setDark] = useState(false);
   const [navOpacity, setNavOpacity] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [lightBg, setLightBg] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (alwaysVisible) return;
@@ -105,16 +112,32 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  useEffect(() => {
+    const onMode = (e: Event) => setLightBg((e as CustomEvent<string>).detail === 'b');
+    window.addEventListener('hero-mode', onMode);
+    return () => window.removeEventListener('hero-mode', onMode);
+  }, []);
+
+  useEffect(() => {
+    setLightBg(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    const check = () => setIsMobileView(window.innerWidth <= 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
   const lightTone = tone === 'light';
-  const textColor = lightTone ? 'var(--color-ink)' : 'var(--color-brand-bg)';
+  const effectiveLightBg = lightTone || lightBg;
+  const textColor = effectiveLightBg ? 'var(--color-ink)' : 'var(--color-brand-bg)';
   const effectiveScrolled = alwaysVisible ? true : scrolled;
   const effectiveDark = alwaysVisible ? true : dark;
   const bg = lightTone
     ? 'transparent'
-    : effectiveScrolled && !effectiveDark
-      ? 'rgba(10,10,10,0.85)'
-      : 'linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0) 100%)';
-  const blurVal = lightTone ? 'none' : effectiveScrolled && !effectiveDark ? 'blur(14px)' : 'blur(2px)';
+    : 'linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0) 100%)';
+  const blurVal = 'none';
 
   return (
     <>
@@ -137,7 +160,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
             <div className="flex items-center gap-10">
               {NAV_LEFT.map(({ label, href, external }) => (
                 <NavItem key={label} label={label} href={href} external={external} className="hover:opacity-50 transition-opacity duration-200">
-                  {label === 'DALI KIM' ? <Logo tone={tone} /> : label}
+                  {label === 'DALI KIM' ? <Logo tone={effectiveLightBg ? 'light' : tone} /> : label}
                 </NavItem>
               ))}
             </div>
@@ -150,64 +173,40 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
                   external={external}
                   className="hover:opacity-50 transition-opacity duration-200"
                 >
-                  {label}
+                  {label === 'X' ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src="/icons_x.svg"
+                      alt="X"
+                      style={{ width: 24, height: 24, display: 'block' }}
+                    />
+                  ) : label}
                 </NavItem>
               ))}
             </div>
           </div>
         </nav>
 
-        <nav className="flex md:hidden items-center" style={{ padding: '16px var(--page-gutter)', gap: '30px' }}>
-          {NAV_LEFT.map(({ label, href, external }) => (
-            <NavItem
-              key={label}
-              label={label}
-              href={href}
-              external={external}
-              className="hover:opacity-50 transition-opacity duration-200"
-              style={{
-                fontFamily: 'var(--font-google-sans-flex), sans-serif',
-                fontSize: '13px',
-                color: textColor,
-                letterSpacing: '-0.13px',
-                textDecoration: 'none',
-              }}
-            >
-                {label === 'DALI KIM' ? <Logo tone={tone} /> : label}
-            </NavItem>
-          ))}
+        <nav className="flex md:hidden items-center justify-between" style={{ padding: '16px 20px' }}>
+          <NavItem
+            label="DALI KIM"
+            href="/"
+            className="hover:opacity-50 transition-opacity duration-200"
+            style={{ textDecoration: 'none' }}
+          >
+            <Logo tone={effectiveLightBg ? 'light' : tone} />
+          </NavItem>
         </nav>
-
-        <div
-          className="md:hidden overflow-hidden transition-all duration-300 ease-in-out"
-          style={{ maxHeight: menuOpen ? '400px' : '0', background: 'var(--color-brand-bg)' }}
-        >
-          <div className="flex flex-col px-6 pb-6 gap-5">
-            {ALL_LINKS.map(({ label, href, external }) => (
-              <NavItem
-                key={label}
-                label={label}
-                href={href}
-                external={external}
-                onClick={() => setMenuOpen(false)}
-                className="text-[15px] tracking-widest font-medium hover:opacity-50 transition-opacity border-b pb-4"
-                style={{ color: 'var(--color-ink)', borderColor: 'rgba(0,0,0,0.08)', fontFamily: 'var(--font-google-sans-flex), sans-serif' }}
-              >
-                {label}
-              </NavItem>
-            ))}
-          </div>
-        </div>
       </header>
 
       <div
-        className="fixed z-50 hidden md:flex flex-col items-center"
+        className="fixed z-50 flex flex-col items-center"
         style={{
-          top: '33px',
-          right: 'var(--page-gutter)',
+          top: isMobileView ? '16px' : '33px',
+          right: isMobileView ? '20px' : 'var(--page-gutter)',
           gap: '10px',
-          opacity: 1 - navOpacity,
-          pointerEvents: dark ? 'auto' : 'none',
+          opacity: isMobileView ? 1 : (1 - navOpacity),
+          pointerEvents: isMobileView ? 'auto' : (dark ? 'auto' : 'none'),
           transition: 'opacity 200ms ease',
         }}
       >
@@ -215,8 +214,8 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
           onClick={() => setMenuOpen(o => !o)}
           aria-label="Open navigation"
           style={{
-            width: '52px',
-            height: '52px',
+            width: isMobileView ? '40px' : '52px',
+            height: isMobileView ? '40px' : '52px',
             borderRadius: '50%',
             backgroundColor: 'var(--color-nav-accent)',
             display: 'flex',
@@ -229,10 +228,10 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
           onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.08)')}
           onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
         >
-          <div style={{ position: 'relative', width: 18, height: 18 }}>
+          <div style={{ position: 'relative', width: isMobileView ? 14 : 18, height: isMobileView ? 14 : 18 }}>
             <div
               style={{
-                position: 'absolute', top: 8, left: 0, width: 18, height: 1.5, background: 'var(--color-brand-bg)',
+                position: 'absolute', top: isMobileView ? 6 : 8, left: 0, width: isMobileView ? 14 : 18, height: 1.5, background: 'var(--color-brand-bg)',
                 transform: menuOpen ? 'rotate(45deg)' : 'rotate(0deg)',
                 transformOrigin: 'center',
                 transition: 'transform 300ms ease',
@@ -240,7 +239,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
             />
             <div
               style={{
-                position: 'absolute', top: 0, left: 8, width: 1.5, height: 18, background: 'var(--color-brand-bg)',
+                position: 'absolute', top: 0, left: isMobileView ? 6 : 8, width: 1.5, height: isMobileView ? 14 : 18, background: 'var(--color-brand-bg)',
                 transform: menuOpen ? 'rotate(45deg)' : 'rotate(0deg)',
                 transformOrigin: 'center',
                 transition: 'transform 300ms ease',
@@ -250,6 +249,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
         </button>
 
         <span
+          className="hidden md:block"
           style={{
             writingMode: 'vertical-rl',
             textOrientation: 'mixed',
@@ -302,6 +302,138 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
             </NavItem>
           ))}
         </nav>
+      </div>
+
+      {/* Mobile full-screen overlay */}
+      <div
+        className="fixed inset-0 z-50 md:hidden overflow-hidden"
+        style={{
+          backgroundColor: 'var(--color-ink)',
+          opacity: menuOpen ? 1 : 0,
+          pointerEvents: menuOpen ? 'auto' : 'none',
+          transition: 'opacity 300ms ease',
+        }}
+      >
+        {/* Top navbar row */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '16px 20px',
+        }}>
+          <Logo tone="dark" />
+          <button
+            onClick={() => setMenuOpen(false)}
+            aria-label="Close navigation"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 24,
+              height: 24,
+            }}
+          >
+            <div style={{ position: 'relative', width: 18, height: 18 }}>
+              <div style={{
+                position: 'absolute', top: '50%', left: 0, width: '100%', height: 1.5,
+                background: 'var(--color-brand-bg)',
+                transform: 'translateY(-50%) rotate(45deg)',
+              }} />
+              <div style={{
+                position: 'absolute', top: '50%', left: 0, width: '100%', height: 1.5,
+                background: 'var(--color-brand-bg)',
+                transform: 'translateY(-50%) rotate(-45deg)',
+              }} />
+            </div>
+          </button>
+        </div>
+
+        {/* Nav links */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '0 20px',
+        }}>
+          {MOBILE_MENU_LINKS.map(({ label, href, external }, i) => (
+            <div key={label}>
+              <NavItem
+                label={label}
+                href={href}
+                external={external}
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  display: 'block',
+                  fontFamily: 'var(--font-google-sans-flex), sans-serif',
+                  fontSize: '16px',
+                  fontWeight: 400,
+                  lineHeight: 1.5,
+                  letterSpacing: '-0.16px',
+                  color: 'var(--color-brand-bg)',
+                  textDecoration: 'none',
+                  padding: '16px 0',
+                }}
+              >
+                {label}
+              </NavItem>
+              {i < MOBILE_MENU_LINKS.length - 1 && (
+                <div style={{ height: 1, background: 'rgba(255,255,255,0.12)' }} />
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* "Hi there, I'm Dali" */}
+        <p style={{
+          position: 'absolute',
+          bottom: 248,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          fontFamily: 'var(--font-google-sans-flex), sans-serif',
+          fontWeight: 300,
+          fontSize: '42px',
+          lineHeight: 1.3,
+          letterSpacing: '-0.42px',
+          color: 'var(--color-brand-bg)',
+          textAlign: 'center',
+          width: 299,
+          margin: 0,
+          pointerEvents: 'none',
+          zIndex: 1,
+        }}>
+          {`Hi there, I'm Dali`}
+        </p>
+
+        {/* Character image */}
+        <div style={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          bottom: 0,
+          width: 492,
+          height: 464,
+          overflow: 'hidden',
+          pointerEvents: 'none',
+          zIndex: 2,
+        }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={MOBILE_CHARACTER_IMG}
+            alt=""
+            style={{
+              position: 'absolute',
+              top: '-31.9%',
+              left: '-91.06%',
+              width: '282.11%',
+              height: '298.91%',
+              maxWidth: 'none',
+              display: 'block',
+            }}
+          />
+        </div>
       </div>
     </>
   );

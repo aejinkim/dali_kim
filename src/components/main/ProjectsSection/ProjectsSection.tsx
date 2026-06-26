@@ -180,9 +180,10 @@ export default function ProjectsSection({
   studies: CaseStudy[];
   metadata: Record<string, Meta>;
 }) {
-  const [vw, setVw] = useState(() => typeof window !== 'undefined' ? window.innerWidth : 1920);
+  const [vw, setVw] = useState(1920);
   useEffect(() => {
     const update = () => setVw(window.innerWidth);
+    update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
   }, []);
@@ -241,7 +242,7 @@ export default function ProjectsSection({
     display: 'flex',
     gap: 20,
     padding: '10px var(--page-gutter)',
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
     width: '100%',
   };
 

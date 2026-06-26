@@ -112,6 +112,12 @@
   }
 }
 
+@media (min-width: 1024px) and (max-width: 1499px) {
+  :root {
+    --bio-font-size: clamp(28.8px, calc(-2.21px + 3.029vw), 41.4px);
+  }
+}
+
 @media (max-width: 1024px) {
   :root {
     --nav-v-pad: 16px;
@@ -121,15 +127,15 @@
 
 @media (max-width: 768px) {
   :root {
-    --hero-font-size: 38px;
-    --toggle-pill-width: 53px;
-    --toggle-pill-height: 24px;
-    --toggle-btn-size: 21px;
-    --toggle-icon-size: 21px;
-    --toggle-square-size: 12px;
-    --bio-font-size: 16px;
+    --hero-font-size: 48px;
+    --toggle-pill-width: 92.647px;
+    --toggle-pill-height: 42px;
+    --toggle-btn-size: 36.441px;
+    --toggle-icon-size: 27px;
+    --toggle-square-size: 20.382px;
+    --bio-font-size: 26px;
     --bio-container-width: 100%;
-    --bio-tag-font: 12px;
+    --bio-tag-font: 14px;
     --bio-tag-dot: 8px;
     --project-subtitle-size: 14px;
     --project-title-size: 24px;

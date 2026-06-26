@@ -163,12 +163,12 @@ export default function HeroSection() {
   const [loaded, setLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
   const [mode, setMode] = useState<'a' | 'b'>('a');
-  const [vw, setVw] = useState(() => typeof window !== 'undefined' ? window.innerWidth : 1920);
 
   const sectionRef   = useRef<HTMLElement>(null);
   const canvasRef    = useRef<HTMLCanvasElement>(null);
   const rafRef       = useRef<number>(0);
   const modeRef      = useRef<'a' | 'b'>('a');
+  const bgColorRef   = useRef('#000000');
   const shouldResetRef = useRef(false);
   const sharedMouseRef = useRef({ x: -9999, y: -9999 });
   const trailContainerRef = useRef<HTMLDivElement>(null);
@@ -195,9 +195,7 @@ export default function HeroSection() {
         setProgress(p);
       });
     };
-    const handleResize = () => setVw(window.innerWidth);
     window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleResize);
     handleScroll();
     const rafSync = requestAnimationFrame(handleScroll);
     return () => {
@@ -205,15 +203,16 @@ export default function HeroSection() {
       cancelAnimationFrame(rafRef.current);
       cancelAnimationFrame(rafSync);
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
   const handleModeSwitch = (m: 'a' | 'b') => {
     if (m === modeRef.current) return;
     modeRef.current = m;
+    bgColorRef.current = m === 'b' ? '#ffffff' : '#000000';
     shouldResetRef.current = true;
     setMode(m);
+    window.dispatchEvent(new CustomEvent('hero-mode', { detail: m }));
   };
 
   useEffect(() => {
@@ -392,7 +391,7 @@ export default function HeroSection() {
         }
       }
 
-      ctx.fillStyle = '#000000';
+      ctx.fillStyle = bgColorRef.current;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       if (!isB) {
@@ -426,7 +425,7 @@ export default function HeroSection() {
         ctx.translate(n.x, n.y);
         ctx.rotate(n.rotation);
         ctx.globalAlpha = n.opacity;
-        ctx.globalCompositeOperation = 'screen';
+        ctx.globalCompositeOperation = isB ? 'multiply' : 'screen';
         if (n.colorIntensity > 0.06) {
           ctx.fillStyle = `hsla(${hoverHue},85%,65%,${(n.colorIntensity * 0.22).toFixed(3)})`;
           ctx.beginPath();
@@ -541,14 +540,12 @@ export default function HeroSection() {
 
   const translateY = progress * -100;
 
-  const isMobile = vw <= 768;
-
   return (
-    <section ref={sectionRef} className="relative" style={{ height: isMobile ? '100vh' : '150vh', zIndex: 10 }}>
+    <section ref={sectionRef} className="relative" style={{ height: '150vh', zIndex: 10 }}>
       <div className="sticky top-0 h-screen overflow-hidden">
         <div
-          className="absolute inset-0 bg-black"
-          style={{ transform: `translateY(${translateY}%)`, willChange: 'transform' }}
+          className="absolute inset-0"
+          style={{ transform: `translateY(${translateY}%)`, willChange: 'transform', backgroundColor: mode === 'b' ? '#ffffff' : '#000000' }}
         >
           <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
 
@@ -558,71 +555,69 @@ export default function HeroSection() {
             style={{ position: 'absolute', inset: 0, zIndex: 3, pointerEvents: 'none', overflow: 'hidden' }}
           />
 
-          {/* Mode toggle — Figma pill design */}
-          <div style={{
-            position: 'absolute', top: '96px', left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 5,
-          }}>
-            <div style={{
-              width: 'var(--toggle-pill-width)', height: 'var(--toggle-pill-height)',
-              background: '#3e3e3e',
-              borderRadius: 73,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '4px',
-            }}>
-              {/* Mode A — clover */}
-              <button
-                onClick={() => handleModeSwitch('a')}
-                style={{
-                  width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
-                  background: mode === 'a' ? '#0d0d0d' : 'transparent',
-                  border: 'none', cursor: 'pointer', padding: 0,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  transition: 'background 250ms ease',
-                  flexShrink: 0,
-                }}
-              >
-                <svg style={{ width: 'var(--toggle-icon-size)', height: 'var(--toggle-icon-size)' }} viewBox="0 0 193 194">
-                  <path
-                    fill={mode === 'a' ? '#F5E000' : '#555555'}
-                    style={{ transition: 'fill 250ms ease' }}
-                    d="M162.285 68.6201C179.159 68.6202 192.839 81.1788 192.839 96.6699C192.839 112.161 179.159 124.719 162.285 124.719C159.991 124.719 157.755 124.485 155.605 124.045C131.388 121.232 102.399 101.345 97.0439 97.5439C100.63 102.598 118.542 128.701 122.911 151.978C124.078 155.338 124.72 158.98 124.72 162.786C124.72 179.66 112.162 193.339 96.6709 193.34C81.1798 193.34 68.6212 179.66 68.6211 162.786C68.6211 160.491 68.8546 158.256 69.2949 156.105C72.1088 131.883 92.0039 102.885 95.7979 97.54C90.4517 101.335 61.4567 121.231 37.2344 124.045C35.0841 124.485 32.8485 124.719 30.5537 124.719C13.6796 124.719 0.000265296 112.161 0 96.6699C7.41128e-05 81.1788 13.6795 68.6202 30.5537 68.6201C34.3616 68.6201 38.0062 69.2623 41.3682 70.4307C65.7862 75.0161 93.3132 94.5007 96.3857 96.7168C96.4076 96.6868 96.4191 96.671 96.4199 96.6699C96.4216 96.6722 96.4319 96.688 96.4521 96.7158C99.5221 94.5015 127.051 75.0165 151.471 70.4307C154.833 69.2623 158.477 68.6202 162.285 68.6201ZM96.1689 0C111.66 0.000260499 124.219 13.6796 124.219 30.5537C124.219 32.8457 123.985 35.0787 123.546 37.2266C120.441 63.9849 96.4891 96.5759 96.4199 96.6699C96.3521 96.5777 74.7871 67.2286 69.9307 41.3682C68.7623 38.0062 68.1201 34.3616 68.1201 30.5537C68.1202 13.6796 80.678 0.000285852 96.1689 0Z"
-                  />
-                </svg>
-              </button>
-
-              {/* Mode B — square */}
-              <button
-                onClick={() => handleModeSwitch('b')}
-                style={{
-                  width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
-                  background: mode === 'b' ? '#0d0d0d' : 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxSizing: 'border-box',
-                  flexShrink: 0,
-                  transition: 'background 250ms ease',
-                }}
-              >
-                <div style={{
-                  width: 'var(--toggle-square-size)', height: 'var(--toggle-square-size)', flexShrink: 0,
-                  border: `4px solid ${mode === 'b' ? '#ffffff' : '#555555'}`,
-                  transition: 'border-color 250ms ease',
-                }} />
-              </button>
-            </div>
-          </div>
-
           <div
-            className="content-width h-full flex items-center justify-center px-6 sm:px-10"
-            style={{ position: 'relative', zIndex: 3 }}
+            className="content-width h-full flex flex-col items-center justify-center px-6 sm:px-10"
+            style={{ position: 'relative', zIndex: 5, gap: 'clamp(24px, 3vh, 40px)' }}
           >
+            {/* Mode toggle */}
+            <div style={{ flexShrink: 0 }}>
+              <div style={{
+                width: 'var(--toggle-pill-width)', height: 'var(--toggle-pill-height)',
+                background: '#3e3e3e',
+                borderRadius: '45.088px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '2.471px 4.941px',
+                boxSizing: 'border-box',
+              }}>
+                {/* Mode A — clover */}
+                <button
+                  onClick={() => handleModeSwitch('a')}
+                  style={{
+                    width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
+                    background: '#0d0d0d',
+                    border: 'none', cursor: 'pointer', padding: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    transition: 'background 250ms ease',
+                    flexShrink: 0,
+                  }}
+                >
+                  <svg style={{ width: 'var(--toggle-icon-size)', height: 'var(--toggle-icon-size)' }} viewBox="0 0 193 194">
+                    <path
+                      fill={mode === 'a' ? '#F5E000' : '#555555'}
+                      style={{ transition: 'fill 250ms ease' }}
+                      d="M162.285 68.6201C179.159 68.6202 192.839 81.1788 192.839 96.6699C192.839 112.161 179.159 124.719 162.285 124.719C159.991 124.719 157.755 124.485 155.605 124.045C131.388 121.232 102.399 101.345 97.0439 97.5439C100.63 102.598 118.542 128.701 122.911 151.978C124.078 155.338 124.72 158.98 124.72 162.786C124.72 179.66 112.162 193.339 96.6709 193.34C81.1798 193.34 68.6212 179.66 68.6211 162.786C68.6211 160.491 68.8546 158.256 69.2949 156.105C72.1088 131.883 92.0039 102.885 95.7979 97.54C90.4517 101.335 61.4567 121.231 37.2344 124.045C35.0841 124.485 32.8485 124.719 30.5537 124.719C13.6796 124.719 0.000265296 112.161 0 96.6699C7.41128e-05 81.1788 13.6795 68.6202 30.5537 68.6201C34.3616 68.6201 38.0062 69.2623 41.3682 70.4307C65.7862 75.0161 93.3132 94.5007 96.3857 96.7168C96.4076 96.6868 96.4191 96.671 96.4199 96.6699C96.4216 96.6722 96.4319 96.688 96.4521 96.7158C99.5221 94.5015 127.051 75.0165 151.471 70.4307C154.833 69.2623 158.477 68.6202 162.285 68.6201ZM96.1689 0C111.66 0.000260499 124.219 13.6796 124.219 30.5537C124.219 32.8457 123.985 35.0787 123.546 37.2266C120.441 63.9849 96.4891 96.5759 96.4199 96.6699C96.3521 96.5777 74.7871 67.2286 69.9307 41.3682C68.7623 38.0062 68.1201 34.3616 68.1201 30.5537C68.1202 13.6796 80.678 0.000285852 96.1689 0Z"
+                    />
+                  </svg>
+                </button>
+
+                {/* Mode B — square */}
+                <button
+                  onClick={() => handleModeSwitch('b')}
+                  style={{
+                    width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
+                    background: '#0d0d0d',
+                    border: '0.926px solid #000000',
+                    cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxSizing: 'border-box',
+                    flexShrink: 0,
+                    transition: 'background 250ms ease',
+                  }}
+                >
+                  <div style={{
+                    width: 'var(--toggle-square-size)', height: 'var(--toggle-square-size)', flexShrink: 0,
+                    border: `2.471px solid ${mode === 'b' ? '#ffffff' : '#555555'}`,
+                    transition: 'border-color 250ms ease',
+                  }} />
+                </button>
+              </div>
+            </div>
+
+            {/* Hero text */}
             <h1
-              className="text-center transition-all duration-1000 ease-out text-white"
+              className="text-center transition-all duration-1000 ease-out"
               style={{
                 fontFamily: 'var(--font-google-sans-flex), sans-serif',
                 fontSize: 'var(--hero-font-size)',
@@ -633,6 +628,8 @@ export default function HeroSection() {
                 transform: loaded ? 'translateY(0)' : 'translateY(48px)',
                 transitionDelay: '200ms',
                 fontWeight: 400,
+                color: mode === 'b' ? '#000000' : '#ffffff',
+                transition: 'color 300ms ease, opacity 1000ms ease, transform 1000ms ease',
               }}
             >
               <span>I design where</span>
@@ -646,7 +643,7 @@ export default function HeroSection() {
 
           <div
             className="absolute bottom-0 left-0 right-0 pointer-events-none"
-            style={{ height: '40%', background: 'linear-gradient(to bottom, transparent, #000000)', zIndex: 2 }}
+            style={{ height: '40%', background: `linear-gradient(to bottom, transparent, ${mode === 'b' ? '#ffffff' : '#000000'})`, zIndex: 2 }}
           />
         </div>
       </div>
