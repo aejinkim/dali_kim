@@ -170,19 +170,20 @@ export default function AboutPage() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const videoScale = Math.max(0, 1.2 * (1 - progress));
+  const videoScale = Math.max(0, (isMobile ? 2.5 : 1.2) * (1 - progress));
   const blurProgress = Math.max(0, (progress - 0.4) / 0.6);
   const videoBlur = blurProgress * 24;
 
   const textProgress = Math.max(0, (progress - 0.5) / 0.5);
   const textY = (1 - textProgress) * 100;
   const touchProgress = Math.max(0, (textProgress - 0.6) / 0.4);
+  const mobileEndPadding = isMobile ? 120 : 0;
 
   return (
     <>
       <Navbar alwaysVisible />
 
-      <div ref={scrollDriverRef} style={{ height: `calc(300vh + ${boxOverflow}px)`, position: 'relative', backgroundColor: 'var(--color-canvas-bg)' }}>
+      <div ref={scrollDriverRef} style={{ height: `calc(300vh + ${boxOverflow + mobileEndPadding}px)`, position: 'relative', backgroundColor: 'var(--color-canvas-bg)' }}>
         <div style={{
           position: 'sticky', top: 0,
           width: '100vw', height: '100vh',
@@ -194,7 +195,7 @@ export default function AboutPage() {
           <div style={{
             position: 'absolute',
             top: '50%', left: '50%',
-            transform: `translate(-50%, calc(-50% + ${isMobile ? 60 : 100}px)) scale(${videoScale})`,
+            transform: `translate(-50%, calc(-50% + ${isMobile ? 64 : 100}px)) scale(${videoScale})`,
             transformOrigin: 'center center',
             zIndex: 1,
             willChange: 'transform',
@@ -203,36 +204,26 @@ export default function AboutPage() {
             filter: `blur(${videoBlur}px)`,
             mixBlendMode: 'difference',
           }}>
-            {isMobile ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src="/assets/shared/mobile_character.png"
-                alt=""
-                style={{
-                  height: '90vh',
-                  width: 'auto',
-                  objectFit: 'contain',
-                  display: 'block',
-                  objectPosition: 'center top',
-                }}
-              />
-            ) : (
-              <video
-                src="/about2.mp4"
-                autoPlay muted loop playsInline
-                style={{ height: '100vh', width: 'auto', objectFit: 'contain', display: 'block' }}
-              />
-            )}
+            <video
+              src="/about2.mp4"
+              autoPlay muted loop playsInline
+              style={{
+                height: isMobile ? '116vh' : '100vh',
+                width: 'auto',
+                objectFit: 'contain',
+                display: 'block',
+              }}
+            />
           </div>
 
           <h1 style={{
             position: 'absolute',
-            top: isMobile ? '78%' : '82%',
+            top: isMobile ? '82%' : '82%',
             left: 0, right: 0,
             margin: 0,
             textAlign: 'center',
             fontFamily: 'var(--font-google-sans-flex), sans-serif',
-            fontSize: isMobile ? 'max(20px, 6vw)' : 'max(26px, 8.1vw)',
+            fontSize: isMobile ? 'clamp(34px, 9.2vw, 44px)' : 'max(26px, 8.1vw)',
             fontWeight: 300,
             lineHeight: 1,
             letterSpacing: '-0.02em',
@@ -241,7 +232,7 @@ export default function AboutPage() {
             whiteSpace: 'nowrap',
             zIndex: 0,
             opacity: loaded ? 1 : 0,
-            transform: `translateY(calc(-50% - ${progress * 64}vh - 20px - ${boxScrollY}px)) scale(${1.5 - progress * 0.5})`,
+            transform: `translateY(calc(-50% - ${progress * 64}vh - 20px - ${boxScrollY}px)) scale(${isMobile ? 1 - progress * 0.28 : 1.5 - progress * 0.5})`,
             transition: 'opacity 2000ms ease',
             willChange: 'transform, opacity',
           }}>
@@ -258,12 +249,12 @@ export default function AboutPage() {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'flex-start',
-            paddingLeft: isMobile ? '20px' : 'var(--page-gutter)',
-            paddingRight: isMobile ? '20px' : 'var(--page-gutter)',
-            paddingTop: isMobile ? 'calc(14vh + 32px)' : 'calc(18vh + 4.05vw + 32px)',
-            paddingBottom: '100px',
+            paddingLeft: 'var(--page-gutter)',
+            paddingRight: 'var(--page-gutter)',
+            paddingTop: isMobile ? 'calc(18vh + 32px)' : 'calc(18vh + 4.05vw + 32px)',
+            paddingBottom: isMobile ? 'calc(160px + env(safe-area-inset-bottom))' : '100px',
           }}>
-            <div style={{ maxWidth: isMobile ? '100%' : 'clamp(512px, 32.4vw, 800px)', width: '100%', position: 'relative' }}>
+            <div style={{ maxWidth: isMobile ? 'min(512px, calc(100vw - var(--page-gutter) * 2))' : 'clamp(512px, 32.4vw, 800px)', width: '100%', position: 'relative' }}>
               {([
                 { top: -4, left: -4 },
                 { top: -4, right: -4 },
@@ -283,7 +274,7 @@ export default function AboutPage() {
                   <p key={i} style={{
                     fontFamily: 'var(--font-google-sans-flex), sans-serif',
                     fontWeight: 300,
-                    fontSize: isMobile ? '13px' : 'max(16px, min(24px, 0.97vw))',
+                    fontSize: isMobile ? '16px' : 'max(16px, min(24px, 0.97vw))',
                     lineHeight: 1.3,
                     letterSpacing: '-0.01em',
                     margin: 0,
@@ -298,7 +289,7 @@ export default function AboutPage() {
               href="mailto:jiny0410@gmail.com"
               style={{
                 fontFamily: 'var(--font-google-sans-flex), sans-serif',
-                fontSize: isMobile ? '20px' : 'clamp(20px, 2.5vw, 52px)',
+                fontSize: isMobile ? '28px' : 'clamp(20px, 2.5vw, 52px)',
                 fontWeight: 300,
                 lineHeight: 1.4,
                 letterSpacing: '-0.01em',
@@ -309,7 +300,12 @@ export default function AboutPage() {
                 transition: 'opacity 200ms linear, color 200ms ease',
                 whiteSpace: 'nowrap',
                 flexShrink: 0,
-                marginTop: 'auto',
+                marginTop: isMobile ? '48px' : 'auto',
+                minHeight: isMobile ? '64px' : undefined,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: isMobile ? '96px' : undefined,
               }}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-text-dim)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-brand-bg)')}

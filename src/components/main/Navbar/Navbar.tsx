@@ -78,7 +78,6 @@ function NavItem({
 }
 
 export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alwaysVisible?: boolean; tone?: 'dark' | 'light' }) {
-  const [scrolled, setScrolled] = useState(false);
   const [dark, setDark] = useState(false);
   const [navOpacity, setNavOpacity] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -90,7 +89,6 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
     if (alwaysVisible) return;
     const onScroll = () => {
       const y = window.scrollY;
-      setScrolled(y > 24);
       const fadeStart = window.innerHeight * 0.2;
       const fadeEnd   = window.innerHeight * 0.5;
       const opacity = Math.max(0, Math.min(1, 1 - (y - fadeStart) / (fadeEnd - fadeStart)));
@@ -119,7 +117,8 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
   }, []);
 
   useEffect(() => {
-    setLightBg(false);
+    const id = requestAnimationFrame(() => setLightBg(false));
+    return () => cancelAnimationFrame(id);
   }, [pathname]);
 
   useEffect(() => {
@@ -132,8 +131,6 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
   const lightTone = tone === 'light';
   const effectiveLightBg = lightTone || lightBg;
   const textColor = effectiveLightBg ? 'var(--color-ink)' : 'var(--color-brand-bg)';
-  const effectiveScrolled = alwaysVisible ? true : scrolled;
-  const effectiveDark = alwaysVisible ? true : dark;
   const bg = lightTone
     ? 'transparent'
     : 'linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0) 100%)';
@@ -202,7 +199,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
       <div
         className="fixed z-50 flex flex-col items-center"
         style={{
-          top: isMobileView ? '16px' : '33px',
+          top: isMobileView ? '8px' : '33px',
           right: isMobileView ? '20px' : 'var(--page-gutter)',
           gap: '10px',
           opacity: isMobileView ? 1 : (1 - navOpacity),
