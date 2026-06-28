@@ -22,6 +22,7 @@ function Logo({ tone = 'dark' }: { tone?: 'dark' | 'light' }) {
   );
 }
 
+
 type NavLink = { label: string; href: string; external?: boolean };
 const NAV_LEFT: NavLink[] = [
   { label: 'DALI KIM', href: '/' },
@@ -128,36 +129,34 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  const lightTone = tone === 'light';
-  const effectiveLightBg = lightTone || lightBg;
-  const textColor = effectiveLightBg ? 'var(--color-ink)' : 'var(--color-brand-bg)';
-  const bg = lightTone
-    ? 'transparent'
-    : 'linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0) 100%)';
-  const blurVal = 'none';
+  const effectiveLightBg = tone === 'light' || lightBg;
 
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        className="fixed top-0 left-0 right-0 z-50"
         style={{
-          background: bg,
-          backdropFilter: blurVal,
-          WebkitBackdropFilter: blurVal,
+          background: 'transparent',
           opacity: alwaysVisible ? 1 : navOpacity,
           pointerEvents: !alwaysVisible && navOpacity < 0.05 ? 'none' : 'auto',
-          transition: 'background 300ms ease',
+          transition: 'opacity 300ms ease',
+          mixBlendMode: 'difference',
         }}
       >
         <nav className="hidden md:flex items-center w-full" style={{ padding: 'var(--nav-v-pad) var(--nav-gutter)', height: 'var(--nav-height)', gap: '10px' }}>
           <div
             className="flex items-center justify-between flex-1 whitespace-nowrap"
-            style={{ fontFamily: 'var(--font-google-sans-flex), sans-serif', color: textColor, letterSpacing: 'var(--tracking-caption)', fontSize: 'var(--nav-font-size)' }}
+            style={{
+              fontFamily: 'var(--font-google-sans-flex), sans-serif',
+              color: 'var(--color-surface-inverse)',
+              letterSpacing: 'var(--tracking-caption)',
+              fontSize: 'var(--nav-font-size)',
+            }}
           >
             <div className="flex items-center gap-10">
               {NAV_LEFT.map(({ label, href, external }) => (
                 <NavItem key={label} label={label} href={href} external={external} className="hover:opacity-50 transition-opacity duration-200">
-                  {label === 'DALI KIM' ? <Logo tone={effectiveLightBg ? 'light' : tone} /> : label}
+                  {label === 'DALI KIM' ? <Logo /> : label}
                 </NavItem>
               ))}
             </div>
@@ -175,7 +174,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
                     <img
                       src="/icons_x.svg"
                       alt="X"
-                      style={{ width: 24, height: 24, display: 'block' }}
+                      style={{ width: 24, height: 24, display: 'block', filter: 'invert(1)' }}
                     />
                   ) : label}
                 </NavItem>
@@ -184,7 +183,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
           </div>
         </nav>
 
-        <nav className="flex md:hidden items-center justify-between" style={{ padding: '16px 20px' }}>
+        <nav className="flex md:hidden items-center justify-between" style={{ padding: '16px var(--page-gutter)' }}>
           <NavItem
             label="DALI KIM"
             href="/"
@@ -245,22 +244,6 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
           </div>
         </button>
 
-        <span
-          className="hidden md:block"
-          style={{
-            writingMode: 'vertical-rl',
-            textOrientation: 'mixed',
-            transform: 'rotate(180deg)',
-            fontFamily: 'var(--font-google-sans-flex), sans-serif',
-            fontSize: '10px',
-            fontWeight: 500,
-            letterSpacing: '0.18em',
-            color: 'var(--color-brand-bg)',
-            textTransform: 'uppercase',
-          }}
-        >
-          INDEX
-        </span>
       </div>
 
       <div
@@ -316,7 +299,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '16px 20px',
+          padding: '16px var(--page-gutter)',
         }}>
           <Logo tone="dark" />
           <button
@@ -353,7 +336,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
         <div style={{
           display: 'flex',
           flexDirection: 'column',
-          padding: '0 20px',
+          padding: '0 var(--page-gutter)',
         }}>
           {MOBILE_MENU_LINKS.map(({ label, href, external }, i) => (
             <div key={label}>
