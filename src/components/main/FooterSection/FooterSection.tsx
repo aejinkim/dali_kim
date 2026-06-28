@@ -1,36 +1,38 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
-const FONT_FILL   = 'rgba(255,255,255,0.23)';
-const DOT_RADIUS  = 2.2;
-const DOT_SPACING = 9;
+const FONT_FILL          = 'rgba(255,255,255,0.23)';
+const DOT_RADIUS         = 1.3;
+const DOT_SPACING        = 5;
 const REPULSION_RADIUS   = 140;
 const REPULSION_STRENGTH = 60;
-const LERP = 0.08;
+const LERP               = 0.08;
 
 interface Dot {
-  hx: number; hy: number;   // home position
-  x:  number; y:  number;   // current position
+  hx: number; hy: number;
+  x:  number; y:  number;
   vx: number; vy: number;
 }
 
 function buildDots(w: number, h: number): Dot[] {
-  // Draw "DALI" onto an offscreen canvas, then sample pixel positions
   const off = document.createElement('canvas');
   off.width  = w;
   off.height = h;
   const ctx  = off.getContext('2d')!;
 
+  const googleSans = getComputedStyle(document.documentElement).getPropertyValue('--font-google-sans-flex').trim();
+  const fontFamily = googleSans || 'Arial, sans-serif';
+
   let fontSize = Math.floor(h * 0.85);
-  ctx.font = `900 ${fontSize}px Arial, sans-serif`;
+  ctx.font = `900 ${fontSize}px ${fontFamily}`;
   const measured = ctx.measureText('DALI').width;
   const maxW = w * 0.92;
   if (measured > maxW) {
     fontSize = Math.floor(fontSize * (maxW / measured));
   }
   ctx.fillStyle    = '#ffffff';
-  ctx.font         = `900 ${fontSize}px Arial, sans-serif`;
+  ctx.font         = `900 ${fontSize}px ${fontFamily}`;
   ctx.textAlign    = 'center';
   ctx.textBaseline = 'bottom';
   ctx.fillText('DALI', w / 2, h * 0.98);
@@ -40,7 +42,9 @@ function buildDots(w: number, h: number): Dot[] {
 
   for (let y = DOT_SPACING; y < h - DOT_SPACING; y += DOT_SPACING) {
     for (let x = DOT_SPACING; x < w - DOT_SPACING; x += DOT_SPACING) {
-      const alpha = img.data[((y * w + x) * 4) + 3];
+      const px = Math.round(x);
+      const py = Math.round(y);
+      const alpha = img.data[((py * w + px) * 4) + 3];
       if (alpha > 128) {
         dots.push({ hx: x, hy: y, x, y, vx: 0, vy: 0 });
       }
@@ -51,7 +55,6 @@ function buildDots(w: number, h: number): Dot[] {
 
 export default function FooterSection() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [hovered, setHovered] = useState(false);
   const dotsRef   = useRef<Dot[]>([]);
   const mouseRef  = useRef<{ x: number; y: number }>({ x: -9999, y: -9999 });
   const rafRef    = useRef<number>(0);
@@ -91,7 +94,6 @@ export default function FooterSection() {
 
       ctx.fillStyle = FONT_FILL;
       for (const d of dotsRef.current) {
-        // Repulsion from mouse
         const dx = d.x - mx;
         const dy = d.y - my;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -101,11 +103,9 @@ export default function FooterSection() {
           d.vy += (dy / dist) * force;
         }
 
-        // Spring back to home
         d.vx += (d.hx - d.x) * 0.12;
         d.vy += (d.hy - d.y) * 0.12;
 
-        // Damping
         d.vx *= 0.78;
         d.vy *= 0.78;
 
@@ -136,7 +136,6 @@ export default function FooterSection() {
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
       />
 
-      {/* Center text */}
       <div style={{
         position: 'absolute', inset: 0,
         display: 'flex', flexDirection: 'column',
@@ -164,23 +163,15 @@ export default function FooterSection() {
             color: 'var(--color-surface-inverse)',
             textDecoration: 'none',
             pointerEvents: 'auto',
-            boxSizing: 'border-box',
-            padding: 'clamp(12px, 1.5vw, 24px) clamp(32px, 4vw, 64px)',
-            borderRadius: '90px',
-            border: hovered ? '1px solid rgba(255,255,255,0.1)' : '1px solid transparent',
-            background: hovered ? 'rgba(0,0,0,0.2)' : 'transparent',
-            backdropFilter: hovered ? 'blur(12px)' : 'none',
-            WebkitBackdropFilter: hovered ? 'blur(12px)' : 'none',
-            transition: 'background 300ms ease, border-color 300ms ease, backdrop-filter 300ms ease',
+            transition: 'color 200ms ease',
           }}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
+          onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.4)')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-surface-inverse)')}
         >
           Get in touch
         </a>
       </div>
 
-      {/* Bottom-right links */}
       <div style={{
         position: 'absolute',
         bottom: 'var(--page-gutter)',
