@@ -93,7 +93,7 @@ function ProjectCard({
         style={{
           display: 'block',
           width: tall ? '100%' : '75%',
-          aspectRatio: meta.aspectRatio ?? '3 / 2',
+          aspectRatio: meta.aspectRatio ?? '16 / 9',
           position: 'relative',
           overflow: 'hidden',
           cursor: 'none',
@@ -206,7 +206,7 @@ export default function ProjectsSection({
               <div key={study.slug} style={{ display: 'flex', flexDirection: 'column', gap: 16, paddingBottom: 40 }}>
                 <Link
                   href={metadata[study.slug]?.href ?? `/case-studies/${study.slug}`}
-                  style={{ display: 'block', width: '100%', aspectRatio: meta.aspectRatio ?? '3 / 2', position: 'relative', overflow: 'hidden' }}
+                  style={{ display: 'block', width: '100%', aspectRatio: meta.aspectRatio ?? '16 / 9', position: 'relative', overflow: 'hidden' }}
                 >
                   <div style={{ position: 'absolute', inset: 0, backgroundColor: 'var(--color-thumbnail-placeholder)' }} />
                   {meta.thumbnail && (meta.thumbnail.endsWith('.mp4') ? (

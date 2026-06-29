@@ -228,11 +228,21 @@ export default function VirtuSwapPage2() {
           </Body>
         </CaptionMediaRow>
 
-        <HalfCaptionBlock caption="Orange Marble" pt={CS.space.section}>
-          I chose orange not for warmth, but for energy: the heat of markets in motion, the urgency of optimization, the ambition to outperform. Together with Roman design, orange gives VirtuSwap two things DeFi rarely achieves at once: momentum and gravitas.
-        </HalfCaptionBlock>
-
-        <FullBleedImage src="/assets/virtuswap/virtuswap_05.jpg" aspect="16 / 9" />
+        <CaptionMediaRow
+          mt={CS.space.section}
+          media={<FullBleedImage src="/assets/virtuswap/virtuswap_05.jpg" aspect="16 / 9" />}
+        >
+          <Caption>Orange Marble</Caption>
+          <Body style={{ marginTop: CS.space.captionText }}>
+            I chose orange not for warmth, but for energy: the heat of markets in motion, the urgency of optimization, the ambition to outperform.
+          </Body>
+          <Body>
+            I chose Roman over the sci-fi aesthetics most DeFi brands default to: gradients, neon, abstract geometry. VirtuSwap was founded by finance professors. The protocol has real academic authority. Roman design carries the same qualities: structured, enduring, built to last. It made that authority visible without having to explain it.
+          </Body>
+          <Body>
+            Together, orange and Roman give the brand two things DeFi rarely achieves at once: momentum and gravitas.
+          </Body>
+        </CaptionMediaRow>
 
         <div style={{ marginTop: CS.space.mediaGap, position: 'relative' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: CS.space.mediaGap }}>
@@ -248,12 +258,6 @@ export default function VirtuSwapPage2() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/assets/virtuswap/virtuswap_06-4.jpg" alt="" style={{ ...MEDIA_STYLE.fluid, flex: 954, minWidth: 0 }} />
             </div>
-          </div>
-          <div style={{ position: 'absolute', left: '40%', top: '50%', transform: 'translate(-50%, -50%)' }}>
-            <FadeInView direction="down">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/assets/virtuswap/virtuswap_06-5.png" alt="" style={{ display: 'block', width: '50%' }} />
-            </FadeInView>
           </div>
         </div>
 
