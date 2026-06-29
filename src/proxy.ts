@@ -27,7 +27,7 @@ const BLOCKED_USER_AGENTS = [
   "wget",
 ];
 
-export function proxy(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const userAgent = request.headers.get("user-agent") || "";
   const shouldBlock = BLOCKED_USER_AGENTS.some((agent) =>
     userAgent.toLowerCase().includes(agent.toLowerCase()),

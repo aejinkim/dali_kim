@@ -49,7 +49,7 @@ export default function BioSection() {
   const triggerRefs  = useRef<Map<CardKey, HTMLSpanElement>>(new Map());
   const [cardPos, setCardPos] = useState<Map<CardKey, { left: number; top: number; width: number }>>(new Map());
   const [progress, setProgress] = useState(0);
-  const [vw, setVw] = useState(() => typeof window !== 'undefined' ? window.innerWidth : 1920);
+  const [vw, setVw] = useState(1920);
 
   useLayoutEffect(() => {
     const s = sectionRef.current;
