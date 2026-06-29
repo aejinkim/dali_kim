@@ -18,7 +18,7 @@ const PROJECT_META: Record<string, { subtitle: string; thumbnail: string; date: 
   'satreci-ci-renewal':       { subtitle: 'Corporate Identity Redesign for a Satellite Technology Company', thumbnail: '', date: '2014', href: '/case-studies/satreci' },
 };
 
-const VISIBLE_SLUGS = ['initia-ecosystem', 'initia-app-v2', 'anchor', 'fount-robo-advisor', 'virtuswap', 'satreci-ci-renewal'];
+const VISIBLE_SLUGS = ['initia-ecosystem', 'initia-app-v2', 'anchor', 'fount-robo-advisor', 'virtuswap'];
 
 export default async function HomePage() {
   const allStudies = await getCaseStudies();
