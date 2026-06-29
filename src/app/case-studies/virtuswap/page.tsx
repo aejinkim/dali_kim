@@ -162,6 +162,8 @@ export default function VirtuSwapPage2() {
           </Stack>
         </SplitSection>
 
+        <FullBleedImage src="/assets/virtuswap/virtuswap_02.jpg" aspect="16 / 9" />
+
         <Divider />
 
         <SplitSection title={<SectionTitle>The Challenge</SectionTitle>} pt={CS.space.section}>
@@ -182,51 +184,40 @@ export default function VirtuSwapPage2() {
           </div>
         </SplitSection>
 
-        <FullBleedImage src="/assets/virtuswap/virtuswap_02.jpg" aspect="16 / 9" />
+        <Divider />
 
-        <CaptionMediaRow
-          height={CS.size.colorMediaHeight}
-          mt={CS.space.section}
-          media={
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src="/assets/virtuswap/virtuswap_03.jpg" alt="" style={MEDIA_STYLE.cover} />
-          }
-        >
-          <Caption>The Philosophy</Caption>
-          <Body>
-            The protocol&apos;s belief is simple: the market has accepted unnecessary friction for too long. Trading costs are a solved problem, or they should be. VirtuSwap exists to prove it.
-          </Body>
-          <Body>
-            This belief shaped every visual decision. A brand built on optimization has no room for decoration that doesn&apos;t earn its place.
-          </Body>
-        </CaptionMediaRow>
-
-        <div className="cs-quote-block" style={{ paddingTop: CS.space.section, paddingBottom: CS.space.section }}>
-          <div className="cs-offset-spacer" />
-          <div>
-            <DisplayText>Efficiency is not just a feature. It is the brand.</DisplayText>
-            <Body style={{ marginTop: CS.space.quoteGap }}>
+        <SplitSection title={<SectionTitle>The Philosophy</SectionTitle>} pt={CS.space.section} pb={CS.space.section}>
+          <Stack gap={CS.space.paragraph}>
+            <Body>
+              The protocol&apos;s belief is simple: the market has accepted unnecessary friction for too long. Trading costs are a solved problem, or they should be. VirtuSwap exists to prove it.
+            </Body>
+            <DisplayText style={{ fontSize: 40 }}>
+              Efficiency is not just a feature. It is the brand.
+            </DisplayText>
+            <Body>
               This shaped every decision I made. Not aesthetics first. Conviction first. A brand built on optimization has no room for decoration that doesn&apos;t earn its place.
             </Body>
-          </div>
-        </div>
+          </Stack>
+        </SplitSection>
 
-        <CaptionMediaRow
-          mt={CS.space.section}
-          media={
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src="/assets/virtuswap/virtuswap_04-3.jpg" alt="" style={MEDIA_STYLE.fluid} />
-          }
-        >
-          <Caption>Design Principle</Caption>
-          <Body>
-            Most DeFi brands draw inspiration from science fiction — gradients, neon, abstract geometry. Every protocol looks like it was built for the metaverse.
-          </Body>
-          <p style={TYPE.p28Regular}>I looked to Rome.</p>
-          <Body>
-            VirtuSwap was founded by finance professors. The protocol has real academic authority. Roman design carries the same qualities: structured, enduring, built to last. It made that authority visible without having to explain it.
-          </Body>
-        </CaptionMediaRow>
+        <FullBleedImage src="/assets/virtuswap/virtuswap_03.jpg" aspect="16 / 9" />
+
+
+        <SplitSection title={<SectionTitle>Design Principle</SectionTitle>} pt={CS.space.section} pb={0}>
+          <Stack gap={CS.space.paragraph}>
+            <Body>
+              Most DeFi brands draw inspiration from science fiction — gradients, neon, abstract geometry. Every protocol looks like it was built for the metaverse.
+            </Body>
+            <Body>
+              I looked to Rome. VirtuSwap was founded by finance professors. The protocol has real academic authority. Roman design carries the same qualities: structured, enduring, built to last. It made that authority visible without having to explain it.
+            </Body>
+          </Stack>
+        </SplitSection>
+
+        <div style={{ marginTop: CS.space.section }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/assets/virtuswap/virtuswap_04.jpg" alt="" style={MEDIA_STYLE.fluid} />
+        </div>
 
         <CaptionMediaRow
           mt={CS.space.section}
@@ -244,63 +235,14 @@ export default function VirtuSwapPage2() {
           </Body>
         </CaptionMediaRow>
 
-        <div style={{ marginTop: CS.space.mediaGap, position: 'relative' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: CS.space.mediaGap }}>
-            <div style={{ display: 'flex', gap: CS.space.mediaGap }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/assets/virtuswap/virtuswap_06-1.jpg" alt="" style={{ ...MEDIA_STYLE.fluid, flex: 634, minWidth: 0 }} />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/assets/virtuswap/virtuswap_06-2.jpg" alt="" style={{ ...MEDIA_STYLE.fluid, flex: 954, minWidth: 0 }} />
-            </div>
-            <div style={{ display: 'flex', gap: CS.space.mediaGap }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/assets/virtuswap/virtuswap_06-3.jpg" alt="" style={{ ...MEDIA_STYLE.fluid, flex: 634, minWidth: 0 }} />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/assets/virtuswap/virtuswap_06-4.jpg" alt="" style={{ ...MEDIA_STYLE.fluid, flex: 954, minWidth: 0 }} />
-            </div>
+        <div style={{ marginTop: CS.space.mediaGap, display: 'flex', flexDirection: 'column', gap: CS.space.mediaGap }}>
+          <FullBleedImage src="/assets/virtuswap/virtuswap_06.jpg" />
+          <div style={{ display: 'flex', gap: CS.space.mediaGap }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/virtuswap/virtuswap_08-1.jpg" alt="" style={{ ...MEDIA_STYLE.fluid, flex: 1, minWidth: 0 }} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/virtuswap/virtuswap_08-2.jpg" alt="" style={{ ...MEDIA_STYLE.fluid, flex: 1, minWidth: 0 }} />
           </div>
-        </div>
-
-        <div style={{ paddingTop: CS.space.section }}>
-          <Divider />
-        </div>
-
-        <SplitSection title={<SectionTitle>Visual System</SectionTitle>}>
-          <Stack gap={CS.space.paragraph}>
-            <Body>
-              The brand system was designed to produce consistently. From protocol identity to digital product, every deliverable shared the same visual language.
-            </Body>
-            <Body>
-              Weekly Medium article graphics, Twitter covers, airdrop assets, merchandise — built in under two months while maintaining coherence across all touchpoints.
-            </Body>
-          </Stack>
-        </SplitSection>
-
-        <CaptionMediaRow
-          mt={CS.space.section}
-          media={
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src="/assets/virtuswap/virtuswap_07.jpg" alt="" style={MEDIA_STYLE.fluid} />
-          }
-        >
-          <Caption>Brand Application</Caption>
-          <Body>
-            The landing page translated the brand system into a digital product. Desktop and mobile responsive, shipped within the same two-month timeline as the rest of the visual system.
-          </Body>
-          <Body>
-            Working directly with the founding team, I delivered a production-ready landing page while simultaneously producing two to three content assets per week.
-          </Body>
-        </CaptionMediaRow>
-
-        <HalfCaptionBlock caption="Merchandise" pt={CS.space.section}>
-          T-shirts, sweatshirts, polo shirts, and hats. The Roman aesthetic and orange marble translate to physical touchpoints the same way they do to screen — momentum and gravitas in every format.
-        </HalfCaptionBlock>
-
-        <div style={{ marginTop: CS.space.mediaGap, display: 'flex', gap: CS.space.mediaGap }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/assets/virtuswap/virtuswap_08-1.jpg" alt="" style={{ ...MEDIA_STYLE.fluid, flex: 1, minWidth: 0 }} />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/assets/virtuswap/virtuswap_08-2.jpg" alt="" style={{ ...MEDIA_STYLE.fluid, flex: 1, minWidth: 0 }} />
         </div>
 
         <div style={{ marginTop: CS.space.mediaGap }}>
