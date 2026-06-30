@@ -191,7 +191,7 @@ export default function VirtuSwapPage2() {
             <Body>
               The protocol&apos;s belief is simple: the market has accepted unnecessary friction for too long. Trading costs are a solved problem, or they should be. VirtuSwap exists to prove it.
             </Body>
-            <DisplayText style={{ fontSize: 40 }}>
+            <DisplayText>
               Efficiency is not just a feature. It is the brand.
             </DisplayText>
             <Body>

@@ -10,8 +10,8 @@ export function SplitSection({
 }: {
   title?: ReactNode;
   children: ReactNode;
-  pt?: number;
-  pb?: number;
+  pt?: number | string;
+  pb?: number | string;
 }) {
   return (
     <section className="cs-split-section" style={{ paddingTop: pt, paddingBottom: pb }}>
@@ -38,7 +38,7 @@ export function SubTitle({ children }: { children: ReactNode }) {
 }
 
 export function DisplayText({ children, style }: { children: ReactNode; style?: CSSProperties }) {
-  return <p style={{ ...TYPE.p56Regular, ...style }}>{children}</p>;
+  return <p style={{ ...TYPE.p56Regular, fontSize: 28, ...style }}>{children}</p>;
 }
 
 export function Caption({ children }: { children: ReactNode }) {
@@ -119,7 +119,7 @@ export function CaptionMediaRow({
   children: ReactNode;
   media: ReactNode;
   height?: number | string;
-  mt?: number;
+  mt?: number | string;
 }) {
   return (
     <section
@@ -134,7 +134,7 @@ export function CaptionMediaRow({
   );
 }
 
-export function HalfCaptionBlock({ caption, children, pt = 0 }: { caption: string; children: ReactNode; pt?: number }) {
+export function HalfCaptionBlock({ caption, children, pt = 0 }: { caption: string; children: ReactNode; pt?: number | string }) {
   return (
     <section className="cs-half-caption-block" style={{ paddingTop: pt, paddingBottom: CS.space.captionBottom }}>
       <div className="cs-half-spacer" />
@@ -146,7 +146,7 @@ export function HalfCaptionBlock({ caption, children, pt = 0 }: { caption: strin
   );
 }
 
-export function WideCaptionBlock({ caption, children, pt = CS.space.section }: { caption: string; children: ReactNode; pt?: number }) {
+export function WideCaptionBlock({ caption, children, pt = CS.space.section }: { caption: string; children: ReactNode; pt?: number | string }) {
   return (
     <section style={{ paddingTop: pt, paddingBottom: CS.space.captionBottom }}>
       <div style={{ width: '100%' }}>

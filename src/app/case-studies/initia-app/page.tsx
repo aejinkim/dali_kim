@@ -350,7 +350,7 @@ export default function InitiaAppV2Page() {
             <Body>
               V1 proved that a DeFi product could lower the barrier to entry without sacrificing functionality. V2 responded to what users became after they arrived, addressing each friction point directly: a financial control center, VIP visualized end-to-end, and liquidity management built for depth.
             </Body>
-            <DisplayText style={{ fontSize: 40 }}>
+            <DisplayText>
               V1 reduced the decision surface. V2 expanded what users could do with it.
             </DisplayText>
           </Stack>

@@ -27,7 +27,7 @@ export const CS = {
     tagHeight: 31,
   },
   space: {
-    section: 100,
+    section: 'var(--cs-section-padding)',
     xl: 80,
     stack: 44,
     paragraph: 20,
@@ -60,13 +60,13 @@ export function text(
 }
 
 export const TYPE = {
-  h2_52: text('clamp(40px, calc(4px + 2.5vw), 52px)', 500, 1.3, '-0.01em'),
-  h3_32: text('clamp(28px, calc(16px + 0.8333vw), 32px)', 500, 1.3, '-0.01em', { margin: '0 0 8px' }),
+  h2_52: text('var(--cs-section-title-size)', 500, 1.3, '-0.01em'),
+  h3_32: text('var(--cs-subtitle-size)', 500, 1.3, '-0.01em', { margin: '0 0 8px' }),
   h3_32SemiBold: text(32, 600, 1.3, '-0.32px'),
   h3_42SemiBold: text(42, 600, 1.3, '-0.42px'),
   h3_20Regular: text(20, 400, 1.3, '-0.2px', { margin: '0 0 24px' }),
   pTitle_16Bold: text(16, 700, 1.3, '-0.16px', { margin: '0 0 12px' }),
-  p16: text(16, 400, 1.5, '-0.16px'),
+  p16: text(16, 400, 'var(--cs-body-line-height)', '-0.16px'),
   p16SemiBold: text(16, 600, 1.5, '-0.16px'),
   p56Regular: text('clamp(42px, 2.9167vw, 56px)', 400, 1.2, '-0.01em'),
   p28Regular: text(28, 400, 1.2, '-0.28px'),
