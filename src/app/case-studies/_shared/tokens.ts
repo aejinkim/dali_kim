@@ -60,11 +60,11 @@ export function text(
 }
 
 export const TYPE = {
-  h2_52: text('var(--cs-section-title-size)', 500, 1.3, '-0.01em'),
+  h2_52: text('var(--cs-section-title-size)', 400, 1.3, '-0.01em'),
   h3_32: text('var(--cs-subtitle-size)', 500, 1.3, '-0.01em', { margin: '0 0 8px' }),
-  h3_32SemiBold: text(32, 600, 1.3, '-0.32px'),
+  h3_32SemiBold: text('var(--cs-page-title-size)', 500, 1.3, '-0.32px', { margin: '0 0 var(--cs-page-title-gap)' }),
   h3_42SemiBold: text(42, 600, 1.3, '-0.42px'),
-  h3_20Regular: text(20, 400, 1.3, '-0.2px', { margin: '0 0 24px' }),
+  h3_20Regular: text('var(--cs-page-subtitle-size)', 400, 1.3, '-0.2px', { margin: '0 0 24px' }),
   pTitle_16Bold: text(16, 700, 1.3, '-0.16px', { margin: '0 0 12px' }),
   p16: text(16, 400, 'var(--cs-body-line-height)', '-0.16px'),
   p16SemiBold: text(16, 600, 1.5, '-0.16px'),

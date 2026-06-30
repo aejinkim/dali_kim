@@ -100,7 +100,7 @@ var(--font-google-sans-flex)
 | `--project-title-size` | 24px | 24px | 40px | 56px |
 | `--project-subtitle-size` | 14px | 14px | 20px | 28px |
 | `--footer-cta-size` | 36px | 60px | 60px | ~160px |
-| `--page-gutter` | 20px | 20px | 36px | 48px |
+| `--page-gutter` | 12px | 20px | 36px | 48px |
 
 ### 컴포넌트별 타이포 스펙
 
@@ -125,6 +125,12 @@ var(--font-google-sans-flex)
 
 **Footer CTA**
 - 크기: `var(--footer-cta-size)`
+
+**케이스스터디 페이지 (타이틀/서브타이틀)**
+- Title: `var(--cs-page-title-size)` — 32px(기본) → 42px(≥1440px)
+- Subtitle: `var(--cs-page-subtitle-size)` — 20px(기본) → 16px(1024–1439px, ≤768px)
+- Title→Subtitle 간격: `var(--cs-page-title-gap)` — 12px(전 해상도 고정)
+- 리스트 아이템 간격: `var(--cs-list-item-gap)` — 16px(기본) → 12px(≤768px)
 
 ---
 

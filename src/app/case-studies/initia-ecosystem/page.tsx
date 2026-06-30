@@ -113,7 +113,7 @@ export default function InitiaPage() {
               {BRAND_NEEDS.map((item) => (
                 <div key={item}>
                   <Divider />
-                  <p style={{ ...TYPE.p16, margin: '16px 0' }}>{item}</p>
+                  <p style={{ ...TYPE.p16, margin: 'var(--cs-list-item-gap) 0' }}>{item}</p>
                 </div>
               ))}
               <Divider />
