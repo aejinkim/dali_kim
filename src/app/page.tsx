@@ -8,7 +8,7 @@ import FooterSection from '@/components/main/FooterSection';
 export const revalidate = 60;
 
 const PROJECT_META: Record<string, { subtitle: string; thumbnail: string; date: string; href?: string; objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'; aspectRatio?: string }> = {
-  'initia-ecosystem':         { subtitle: 'Designing a Living Ecosystem — Brand Identity & Visual Language', thumbnail: '/assets/initia/initia_glass169_2.mp4',  date: '2026', href: '/case-studies/initia-ecosystem' },
+  'initia-ecosystem':         { subtitle: 'Established the Initia brand from defining the philosophy, visual language, and ecosystem branding framework ', thumbnail: '/assets/initia/initia_glass169_2.mp4',  date: '2026', href: '/case-studies/initia-ecosystem' },
   'initia-app':               { subtitle: 'Initia App 1.0 — Designing Without Data',                        thumbnail: '/assets/initia/initia_01.png', date: '2024', href: '/case-studies/initia-app-02' },
   'initia-app-v2':            { subtitle: 'Evolving a Flagship Product for a Growing Ecosystem',             thumbnail: '/assets/initia_app/initia_app_thumbnail.jpg', date: '2026', href: '/case-studies/initia-app' },
   'anchor':                   { subtitle: 'DeFi Savings Protocol UX to $16B+ TVL',    thumbnail: '/assets/anchor/Anchor protocol_thumbnail.jpg', date: '2023', href: '/case-studies/anchor', aspectRatio: '16 / 9' },

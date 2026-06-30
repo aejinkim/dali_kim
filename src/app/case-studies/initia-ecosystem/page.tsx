@@ -29,7 +29,7 @@ function PageHeader() {
     }}>
       <div className="cs-page-header-intro">
         <p style={TYPE.h3_32SemiBold}>Initia Ecosystem Branding</p>
-        <p style={TYPE.h3_20Regular}>Designing a Living Ecosystem</p>
+        <p style={TYPE.h3_20Regular}>Established the Initia brand from defining the philosophy, visual language, and ecosystem branding framework </p>
         <div style={{ display: 'flex', gap: 8 }}>
           <Pill>2023–2026</Pill>
           <Pill href="https://initia.xyz/">initia.xyz ›</Pill>
