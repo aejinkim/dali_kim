@@ -81,7 +81,7 @@ function ProjectCard({
         flexDirection: 'column',
         justifyContent: 'flex-end',
         alignItems: flip ? 'flex-end' : 'flex-start',
-        gap: 20,
+        gap: 'var(--project-card-image-gap)',
         minWidth: 0,
         opacity: visible ? 1 : 0,
         transform: visible ? 'none' : 'translateY(32px)',
@@ -138,13 +138,13 @@ function ProjectCard({
         width: tall ? '100%' : '75%',
         display: 'flex',
         flexDirection: 'column',
-        gap: 12,
+        gap: 'var(--project-card-text-gap)',
         alignItems: 'flex-start',
       }}>
         <p
           style={{
             fontFamily: 'var(--font-google-sans-flex), sans-serif',
-            fontWeight: 500,
+            fontWeight: 400,
             fontSize: 'var(--project-title-size)',
             lineHeight: 1.3,
             letterSpacing: 'calc(var(--project-title-size) * -0.01)',
@@ -163,7 +163,7 @@ function ProjectCard({
             letterSpacing: 'calc(var(--project-subtitle-size) * -0.01)',
             color: 'var(--color-ink)',
             margin: 0,
-            maxWidth: 724,
+            maxWidth: 'var(--project-subtitle-maxwidth)',
           }}
         >
           {meta.subtitle}
@@ -219,7 +219,7 @@ export default function ProjectsSection({
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <p style={{
                     fontFamily: 'var(--font-google-sans-flex), sans-serif',
-                    fontWeight: 500, fontSize: 'var(--project-title-size)',
+                    fontWeight: 400, fontSize: 'var(--project-title-size)',
                     lineHeight: 1.3, letterSpacing: 'calc(var(--project-title-size) * -0.01)',
                     color: 'var(--color-ink)', margin: 0,
                   }}>{shortTitle}</p>
@@ -240,7 +240,7 @@ export default function ProjectsSection({
 
   const rowStyle: React.CSSProperties = {
     display: 'flex',
-    gap: 20,
+    gap: 'var(--project-row-gap)',
     padding: '10px var(--page-gutter)',
     alignItems: 'flex-start',
     width: '100%',
@@ -250,7 +250,7 @@ export default function ProjectsSection({
     <section id="projects" style={{ backgroundColor: 'var(--color-brand-bg)' }}>
       <div style={{ width: '100%', height: 1, backgroundColor: 'var(--color-brand-line)' }} />
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 100, marginTop: 63, paddingBottom: 200 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--project-row-vgap)', marginTop: 63, paddingBottom: 200 }}>
         {studies.length >= 2 && (
           <div style={rowStyle}>
             <ProjectCard study={s(0)} meta={m(0)} tall={true} />

@@ -51,7 +51,7 @@
   --card-padding: 24px;
   --element-gap: 24px;
   /* Fluid gutter: 20px@768 → 36px@1440 */
-  --page-gutter: clamp(20px, calc(1.71px + 2.381vw), 36px);
+  --page-gutter: 20px;
 
   /* Fluid hero: 62px@1024 → 86px@1440 */
   --hero-font-size: clamp(62px, calc(2.93px + 5.769vw), 86px);
@@ -79,6 +79,11 @@
   --project-subtitle-size: clamp(14px,   calc(-0.77px + 1.442vw),  20px);
   --project-title-size:    clamp(24px,   calc(-15.38px + 3.846vw), 40px);
   --project-title-tracking: clamp(-1.6px, calc(0.617px - 0.154vw), -0.96px);
+  --project-row-gap: 20px;
+  --project-row-vgap: 100px;
+  --project-subtitle-maxwidth: 724px;
+  --project-card-text-gap: 12px;
+  --project-card-image-gap: 20px;
 
   /* Footer CTA: 60px from 768px up to 1440px */
   --footer-cta-size: 60px;
@@ -122,10 +127,39 @@
   }
 }
 
+@media (max-width: 1439px) {
+  :root {
+    --project-subtitle-maxwidth: 524px;
+    --project-row-gap: 8px;
+    --project-card-text-gap: 8px;
+    --project-title-size: 30px;
+    --project-subtitle-size: 16px;
+    --project-card-image-gap: 16px;
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1439px) {
+  :root {
+    --project-row-vgap: 80px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  :root {
+    --project-row-vgap: 62px;
+  }
+}
+
 @media (max-width: 1024px) {
   :root {
     --nav-v-pad: 16px;
     --nav-height: auto;
+    --project-row-gap: 8px;
+    --project-subtitle-maxwidth: 424px;
+    --project-card-text-gap: 8px;
+    --project-card-image-gap: 16px;
+    --project-title-size: clamp(24px, calc(-15.38px + 3.846vw), 40px);
+    --project-subtitle-size: clamp(14px, calc(-0.77px + 1.442vw), 20px);
   }
 }
 
