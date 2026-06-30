@@ -38,7 +38,7 @@ export function SubTitle({ children }: { children: ReactNode }) {
 }
 
 export function DisplayText({ children, style }: { children: ReactNode; style?: CSSProperties }) {
-  return <p style={{ ...TYPE.p56Regular, fontSize: 28, ...style }}>{children}</p>;
+  return <p style={{ ...TYPE.p56Regular, fontSize: 'var(--cs-display-text-size)', ...style }}>{children}</p>;
 }
 
 export function Caption({ children }: { children: ReactNode }) {

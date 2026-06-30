@@ -91,6 +91,7 @@
   --cs-subtitle-size: clamp(28px, calc(16px + 0.8333vw), 32px);
   --cs-body-line-height: 1.5;
   --cs-section-padding: 100px;
+  --cs-display-text-size: clamp(42px, 2.9167vw, 56px);
 }
 
 /* ≥1440px: values stay flat until 1920, then grow smoothly to large-screen max */
@@ -148,6 +149,7 @@
     --cs-subtitle-size: 24px;
     --cs-body-line-height: 1.4;
     --cs-section-padding: 60px;
+    --cs-display-text-size: 28px;
   }
 }
 
