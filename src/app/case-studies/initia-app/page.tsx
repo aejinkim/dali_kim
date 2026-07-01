@@ -49,7 +49,7 @@ function ListBlock({ items, numbered = true }: { items: readonly string[]; numbe
       {items.map((item, i) => (
         <div key={i}>
           <Divider />
-          <p style={{ ...TYPE.p16, margin: '16px 0', display: 'flex', gap: 16 }}>
+          <p style={{ ...TYPE.p16, margin: 'var(--cs-list-item-gap) 0', display: 'flex', gap: 16 }}>
             {numbered && (
               <span style={{ color: CS.color.dim, fontVariantNumeric: 'tabular-nums', minWidth: 24 }}>
                 {String(i + 1).padStart(2, '0')}

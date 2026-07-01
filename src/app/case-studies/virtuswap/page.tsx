@@ -69,7 +69,7 @@ function DeliverableList() {
       {DELIVERABLES.map((item, i) => (
         <div key={i}>
           <Divider />
-          <p style={{ ...TYPE.p16, margin: '16px 0', display: 'flex', gap: 16 }}>
+          <p style={{ ...TYPE.p16, margin: 'var(--cs-list-item-gap) 0', display: 'flex', gap: 16 }}>
             <span style={{ color: CS.color.dim, fontVariantNumeric: 'tabular-nums', minWidth: 24 }}>
               {String(i + 1).padStart(2, '0')}
             </span>
@@ -176,7 +176,7 @@ export default function VirtuSwapPage2() {
               {BRAND_CHALLENGES.map((item) => (
                 <div key={item}>
                   <Divider />
-                  <p style={{ ...TYPE.p16, margin: '16px 0' }}>{item}</p>
+                  <p style={{ ...TYPE.p16, margin: 'var(--cs-list-item-gap) 0' }}>{item}</p>
                 </div>
               ))}
               <Divider />
@@ -283,7 +283,7 @@ export default function VirtuSwapPage2() {
               ].map((item) => (
                 <div key={item}>
                   <Divider />
-                  <p style={{ ...TYPE.p16, margin: '16px 0' }}>{item}</p>
+                  <p style={{ ...TYPE.p16, margin: 'var(--cs-list-item-gap) 0' }}>{item}</p>
                 </div>
               ))}
               <Divider />
@@ -297,7 +297,7 @@ export default function VirtuSwapPage2() {
               ].map((item) => (
                 <div key={item}>
                   <Divider />
-                  <p style={{ ...TYPE.p16, margin: '16px 0' }}>{item}</p>
+                  <p style={{ ...TYPE.p16, margin: 'var(--cs-list-item-gap) 0' }}>{item}</p>
                 </div>
               ))}
               <Divider />

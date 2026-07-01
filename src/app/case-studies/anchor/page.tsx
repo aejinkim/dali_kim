@@ -73,7 +73,7 @@ function DeliverableList() {
       {DELIVERABLES.map((item, i) => (
         <div key={i}>
           <Divider />
-          <p style={{ ...TYPE.p16, margin: '16px 0', display: 'flex', gap: 16 }}>
+          <p style={{ ...TYPE.p16, margin: 'var(--cs-list-item-gap) 0', display: 'flex', gap: 16 }}>
             <span style={{ color: CS.color.dim, fontVariantNumeric: 'tabular-nums', minWidth: 24 }}>
               {String(i + 1).padStart(2, '0')}
             </span>
@@ -185,7 +185,7 @@ export default function AnchorPage() {
               {COMPLEXITY_ITEMS.map((item, i) => (
                 <div key={i}>
                   <Divider />
-                  <p style={{ ...TYPE.p16, margin: '16px 0' }}>{item}</p>
+                  <p style={{ ...TYPE.p16, margin: 'var(--cs-list-item-gap) 0' }}>{item}</p>
                 </div>
               ))}
               <Divider />
