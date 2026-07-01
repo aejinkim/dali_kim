@@ -183,7 +183,7 @@
     --project-card-text-gap: 4px;
     --project-card-image-gap: 12px;
     --cs-page-title-size: 24px;
-    --cs-page-subtitle-size: 13px;
+    --cs-page-subtitle-size: 14px;
     --cs-page-title-gap: 8px;
     --cs-header-top: 96px;
   }
@@ -210,7 +210,7 @@
     --footer-cta-size: 36px;
     --cs-list-item-gap: 12px;
     --cs-page-title-size: 24px;
-    --cs-page-subtitle-size: 13px;
+    --cs-page-subtitle-size: 14px;
     --cs-page-title-gap: 8px;
     --cs-header-top: 96px;
     --cs-section-title-size: 32px;
@@ -391,9 +391,9 @@ body {
     width: 100%;
     grid-template-columns: 1fr;
     gap: 0;
-    --cs-meta-label-size: 12px;
+    --cs-meta-label-size: 14px;
     --cs-meta-label-gap: 4px;
-    --cs-body-text-size: 12px;
+    --cs-body-text-size: 14px;
   }
   .cs-page-header-meta > div {
     padding: 12px 0;

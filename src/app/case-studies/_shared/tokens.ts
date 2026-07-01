@@ -64,7 +64,7 @@ export const TYPE = {
   h3_32: text('var(--cs-subtitle-size)', 500, 1.3, '-0.01em', { margin: '0 0 8px' }),
   h3_32SemiBold: text('var(--cs-page-title-size)', 400, 'var(--cs-page-title-line-height, 1.3)', '-0.32px', { margin: '0 0 var(--cs-page-title-gap)' }),
   h3_42SemiBold: text(42, 600, 1.3, '-0.42px'),
-  h3_20Regular: text('var(--cs-page-subtitle-size)', 300, 'var(--cs-page-subtitle-line-height, 1.3)', '-0.2px', { margin: '0 0 24px', color: 'var(--color-text-muted)' }),
+  h3_20Regular: text('var(--cs-page-subtitle-size)', 300, 'var(--cs-page-subtitle-line-height, 1.3)', '-0.2px', { margin: '0 0 24px' }),
   pTitle_16Bold: text('var(--cs-meta-label-size, 16px)', 700, 1.3, '-0.16px', { margin: '0 0 var(--cs-meta-label-gap, 12px)' }),
   p16: text('var(--cs-body-text-size, 16px)', 400, 'var(--cs-body-line-height)', '-0.16px'),
   p16SemiBold: text('var(--cs-emphasis-text-size, 16px)', 600, 1.5, '-0.16px'),
