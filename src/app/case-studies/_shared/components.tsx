@@ -7,14 +7,16 @@ export function SplitSection({
   children,
   pt = CS.space.section,
   pb = CS.space.section,
+  noStack = false,
 }: {
   title?: ReactNode;
   children: ReactNode;
   pt?: number | string;
   pb?: number | string;
+  noStack?: boolean;
 }) {
   return (
-    <section className="cs-split-section" style={{ paddingTop: pt, paddingBottom: pb }}>
+    <section className={`cs-split-section${noStack ? ' cs-split-no-stack' : ''}`} style={{ paddingTop: pt, paddingBottom: pb }}>
       <div className="cs-split-left">{title}</div>
       <div className="cs-split-right">{children}</div>
     </section>

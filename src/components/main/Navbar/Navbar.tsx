@@ -123,7 +123,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
   }, [pathname]);
 
   useEffect(() => {
-    const check = () => setIsMobileView(window.innerWidth <= 768);
+    const check = () => setIsMobileView(window.innerWidth <= 799);
     check();
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);

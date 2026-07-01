@@ -132,7 +132,7 @@ export default function AboutPage() {
 
   useEffect(() => {
     const check = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 799);
     };
     check();
     window.addEventListener('resize', check);

@@ -37,7 +37,7 @@ function PageHeader() {
       paddingBottom: CS.space.section,
     }}>
       <div className="cs-page-header-intro">
-        <p style={TYPE.h3_42SemiBold}>Fount Robo-Advisor</p>
+        <p style={TYPE.h3_32SemiBold}>Fount Robo-Advisor</p>
         <p style={TYPE.h3_20Regular}>WealthTech Product Design</p>
         <div style={{ display: 'flex', gap: 8 }}>
           <Pill>2020–2021</Pill>

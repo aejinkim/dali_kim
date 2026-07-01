@@ -71,7 +71,7 @@ function Footer() {
 
 export default function InitiaPage() {
   return (
-    <main style={{ backgroundColor: CS.color.white, color: CS.color.ink }}>
+    <main className="cs-initia-ecosystem" style={{ backgroundColor: CS.color.white, color: CS.color.ink }}>
       <Navbar alwaysVisible tone="light" />
       <div
         className="content-width"
@@ -109,11 +109,11 @@ export default function InitiaPage() {
               <Body>How do you create a coherent identity for an ecosystem made up of multiple chains, products, communities, and experiences?</Body>
             </div>
             <div style={{ marginTop: CS.space.stack }}>
-              <p style={{ ...TYPE.p16SemiBold, margin: '0 0 16px' }}>The brand needed to:</p>
+              <p style={{ ...TYPE.p16SemiBold, fontSize: 'var(--cs-list-label-size, var(--cs-emphasis-text-size, 16px))', margin: '0 0 16px' }}>The brand needed to:</p>
               {BRAND_NEEDS.map((item) => (
                 <div key={item}>
                   <Divider />
-                  <p style={{ ...TYPE.p16, margin: 'var(--cs-list-item-gap) 0' }}>{item}</p>
+                  <p style={{ ...TYPE.p16, fontSize: 'var(--cs-list-text-size, var(--cs-body-text-size, 16px))', margin: 'var(--cs-list-item-gap) 0' }}>{item}</p>
                 </div>
               ))}
               <Divider />

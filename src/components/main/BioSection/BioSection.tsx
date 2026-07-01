@@ -105,7 +105,7 @@ export default function BioSection() {
   }, [vw]);
 
   const xScale = Math.max(0, Math.min(1, (vw - 1024) / 896));
-  const isMobile = vw <= 768;
+  const isMobile = vw <= 799;
   const revealProgress = Math.max(0, Math.min(1, (progress - SLIDE_END) / (REVEAL_END - SLIDE_END)));
 
   if (isMobile) {

@@ -193,7 +193,7 @@ export default function ProjectsSection({
   const s = (i: number) => studies[i];
   const m = (i: number) => metadata[studies[i]?.slug] ?? fallback;
 
-  const isMobile = vw <= 768;
+  const isMobile = vw <= 799;
 
   if (isMobile) {
     return (
