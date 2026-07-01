@@ -131,8 +131,8 @@
 
 @media (min-width: 1920px) {
   :root {
-    --project-subtitle-size:  20px;
-    --project-title-size:     40px;
+    --project-subtitle-size:  18px;
+    --project-title-size:     36px;
     --project-card-text-gap:  12px;
     --project-row-gap:        20px;
     --project-section-top:    100px;
