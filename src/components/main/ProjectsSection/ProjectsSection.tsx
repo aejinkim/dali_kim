@@ -90,6 +90,7 @@ function ProjectCard({
     >
       <Link
         href={meta.href ?? `/case-studies/${study.slug}`}
+        className="project-thumbnail"
         style={{
           display: 'block',
           width: tall ? '100%' : '75%',
@@ -157,11 +158,11 @@ function ProjectCard({
         <p
           style={{
             fontFamily: 'var(--font-google-sans-flex), sans-serif',
-            fontWeight: 400,
+            fontWeight: 300,
             fontSize: 'var(--project-subtitle-size)',
             lineHeight: 1.3,
             letterSpacing: 'calc(var(--project-subtitle-size) * -0.01)',
-            color: 'var(--color-ink)',
+            color: 'var(--color-text-muted)',
             margin: 0,
             maxWidth: 'var(--project-subtitle-maxwidth)',
           }}
@@ -216,7 +217,7 @@ export default function ProjectsSection({
                     <img src={meta.thumbnail} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: meta.objectFit ?? 'cover' }} />
                   ))}
                 </Link>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                   <p style={{
                     fontFamily: 'var(--font-google-sans-flex), sans-serif',
                     fontWeight: 400, fontSize: 'var(--project-title-size)',
@@ -225,9 +226,9 @@ export default function ProjectsSection({
                   }}>{shortTitle}</p>
                   <p style={{
                     fontFamily: 'var(--font-google-sans-flex), sans-serif',
-                    fontWeight: 400, fontSize: 'var(--project-subtitle-size)',
+                    fontWeight: 300, fontSize: 'var(--project-subtitle-size)',
                     lineHeight: 1.3, letterSpacing: 'calc(var(--project-subtitle-size) * -0.01)',
-                    color: 'var(--color-ink)', margin: 0,
+                    color: 'var(--color-text-muted)', margin: 0,
                   }}>{meta.subtitle}</p>
                 </div>
               </div>
@@ -250,7 +251,7 @@ export default function ProjectsSection({
     <section id="projects" style={{ backgroundColor: 'var(--color-brand-bg)' }}>
       <div style={{ width: '100%', height: 1, backgroundColor: 'var(--color-brand-line)' }} />
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--project-row-vgap)', marginTop: 63, paddingBottom: 200 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--project-row-vgap)', marginTop: 'var(--project-section-top)', paddingBottom: 200 }}>
         {studies.length >= 2 && (
           <div style={rowStyle}>
             <ProjectCard study={s(0)} meta={m(0)} tall={true} />

@@ -120,7 +120,7 @@ export default function BioSection() {
       <section ref={sectionRef} id="about" className="bg-white" style={{ position: 'relative', height: '350vh', marginTop: '-150vh', zIndex: 1 }}>
         <div className="sticky top-0 h-screen overflow-hidden" style={{ paddingTop: 149 }}>
 
-          <div ref={containerRef} style={{ position: 'relative', width: '100%', boxSizing: 'border-box', padding: '0 20px' }}>
+          <div ref={containerRef} style={{ position: 'relative', width: '100%', boxSizing: 'border-box', padding: '0 var(--page-gutter)' }}>
 
             {/* Cards: scroll-triggered like desktop */}
             {CARD_TRIGGERS.map(trigger => {

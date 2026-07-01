@@ -199,7 +199,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
         className="fixed z-50 flex flex-col items-center"
         style={{
           top: isMobileView ? '8px' : '33px',
-          right: isMobileView ? '20px' : 'var(--page-gutter)',
+          right: 'var(--page-gutter)',
           gap: '10px',
           opacity: isMobileView ? 1 : (1 - navOpacity),
           pointerEvents: isMobileView ? 'auto' : (dark ? 'auto' : 'none'),
