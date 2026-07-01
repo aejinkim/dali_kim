@@ -154,7 +154,7 @@ export default function FooterSection() {
           Let&apos;s Connect
         </span>
         <a
-          href="mailto:jiny0410@gmail.com"
+          href="mailto:hello@dalikim.com"
           style={{
             fontFamily: 'var(--font-google-sans-flex), sans-serif',
             fontSize: 'var(--footer-cta-size)',

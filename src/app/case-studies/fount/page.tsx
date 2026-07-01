@@ -136,7 +136,7 @@ function Footer() {
       marginTop: CS.space.xl,
     }}>
       <Link href="/" style={TYPE.footer}>← Dali Kim</Link>
-      <a href="mailto:jiny0410@gmail.com" style={{
+      <a href="mailto:hello@dalikim.com" style={{
         ...TYPE.footer,
         color: CS.color.ink,
         padding: '10px 24px',

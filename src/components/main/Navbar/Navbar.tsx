@@ -30,7 +30,7 @@ const NAV_LEFT: NavLink[] = [
 ];
 const NAV_RIGHT: NavLink[] = [
   { label: 'ABOUT', href: '/about' },
-  { label: 'EMAIL', href: 'mailto:jiny0410@gmail.com' },
+  { label: 'EMAIL', href: 'mailto:hello@dalikim.com' },
   { label: 'X', href: 'https://x.com/dali__design', external: true },
 ];
 const ALL_LINKS = [...NAV_LEFT, ...NAV_RIGHT];
@@ -38,7 +38,7 @@ const ALL_LINKS = [...NAV_LEFT, ...NAV_RIGHT];
 const MOBILE_MENU_LINKS: NavLink[] = [
   { label: 'Works', href: '/#projects' },
   { label: 'About', href: '/about' },
-  { label: 'Email', href: 'mailto:jiny0410@gmail.com' },
+  { label: 'Email', href: 'mailto:hello@dalikim.com' },
   { label: "X (Let's chat)", href: 'https://x.com/dali__design', external: true },
 ];
 

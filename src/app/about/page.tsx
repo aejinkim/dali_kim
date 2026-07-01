@@ -114,10 +114,10 @@ function SpaceCanvas() {
 
 const PARAGRAPHS = [
   "I'm a design leader specializing in complex systems, financial infrastructure, and emerging technologies.",
-  "Over the past 15 years, I've led product design, design systems, branding, and cross-functional teams across startups and technology companies, helping transform complex technologies into products people can understand, trust, and use.",
+  "Over the past 10 years, I've led product design, design systems, branding, and cross-functional teams across startups and technology companies. My work has always been driven by the same goal: turning technical complexity into products people can understand, trust, and enjoy using.",
   "This site originally started as a portfolio, but curiosity had other plans. Today, it's where I explore ideas, build experiments, and share what I'm learning along the way.",
-  "The deeper I explored AI, the more excited I became about the future of creativity. Today, I spend much of my time experimenting as an AI-native creative designer, exploring new ways of building products, workflows, and experiences with emerging technologies.",
-  "I have an entrepreneurial mindset and a strong curiosity for learning. I'm constantly drawn to new challenges, new tools, and new ways of thinking. The most rewarding part of design, for me, is solving difficult problems and finding the intersection where user needs, business goals, and technology come together.",
+  "The deeper I explored AI, the more excited I became about the future of creativity. I now work as an AI-native creative designer, building with Claude Code and Codex to move from Figma to production without a handoff. I'm fascinated by how emerging technologies can expand not only what we create, but how we create it.",
+  "What motivates me most is working where there are no clear answers yet. I enjoy making sense of ambiguity, learning new tools, and bringing together user needs, business goals, and technology to create products that feel simple, even when the systems behind them are anything but.",
   "If anything here resonates with you, I'd love to connect.",
 ];
 
@@ -254,7 +254,7 @@ export default function AboutPage() {
             paddingTop: isMobile ? 'calc(18vh + 32px)' : 'calc(18vh + 4.05vw + 32px)',
             paddingBottom: isMobile ? 'calc(160px + env(safe-area-inset-bottom))' : '100px',
           }}>
-            <div style={{ maxWidth: isMobile ? 'min(512px, calc(100vw - var(--page-gutter) * 2))' : 'clamp(512px, 32.4vw, 800px)', width: '100%', position: 'relative' }}>
+            <div style={{ maxWidth: isMobile ? 'min(540px, calc(100vw - var(--page-gutter) * 2))' : 'clamp(540px, 32.4vw, 820px)', width: '100%', position: 'relative' }}>
               {([
                 { top: -4, left: -4 },
                 { top: -4, right: -4 },
@@ -286,7 +286,7 @@ export default function AboutPage() {
             </div>
 
             <a
-              href="mailto:jiny0410@gmail.com"
+              href="mailto:hello@dalikim.com"
               style={{
                 fontFamily: 'var(--font-google-sans-flex), sans-serif',
                 fontSize: isMobile ? '28px' : 'clamp(20px, 2.5vw, 52px)',
@@ -306,6 +306,8 @@ export default function AboutPage() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: isMobile ? '96px' : undefined,
+                paddingTop: isMobile ? undefined : '20px',
+                paddingBottom: isMobile ? undefined : '20px',
               }}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-text-dim)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-brand-bg)')}
