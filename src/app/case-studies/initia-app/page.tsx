@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/main/Navbar';
 import { CS, TYPE } from '../_shared/tokens';
@@ -7,7 +8,7 @@ import {
 } from '../_shared/components';
 
 const META = [
-  { label: 'Role', value: 'Head of Design\nProduct Strategy\nUX Architecture\nSystem Design\nEcosystem Experience Design\nDesign Review' },
+  { label: 'Role', value: 'Head of Design\nProduct Strategy\nUX Architecture\nSystem Design\nDesign Review' },
   { label: 'Scope', value: 'App\nGovernance\nVIP\nWidget\nPortfolio\nGhost Wallet\niUSD' },
   { label: 'Impact', value: '190K+ testnet wallets\n$40M+ TVL in first month\n0→1 brand + full product suite' },
 ] as const;
@@ -66,35 +67,47 @@ function ListBlock({ items, numbered = true }: { items: readonly string[]; numbe
 
 function StatGrid() {
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(3, 1fr)',
-      alignItems: 'stretch',
-      marginTop: CS.space.stack,
-    }}>
-      {IMPACT_STATS.map((stat, i) => (
-        <div key={i} style={{
-          padding: '32px 24px',
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
-        }}>
-          {i > 0 && (
-            <div style={{
-              position: 'absolute',
-              left: 0,
-              top: '10%',
-              width: 1,
-              height: '80%',
-              backgroundColor: CS.color.line,
-            }} />
-          )}
-          <p style={{ ...TYPE.p16SemiBold, fontSize: 42, fontWeight: 400, marginBottom: 4 }}>{stat.number}</p>
-          <p style={{ ...TYPE.p16SemiBold, marginBottom: 12 }}>{stat.label}</p>
-          <p style={{ ...TYPE.p16 }}>{stat.detail}</p>
-        </div>
-      ))}
-    </div>
+    <>
+      {/* Desktop (>1024px): 3-column grid */}
+      <div className="cs-impact-grid" style={{ marginTop: 200 }}>
+        {IMPACT_STATS.map((stat, i) => (
+          <div key={i} style={{
+            padding: '32px 24px',
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+          }}>
+            {i > 0 && (
+              <div style={{
+                position: 'absolute',
+                left: 0,
+                top: '10%',
+                width: 1,
+                height: '80%',
+                backgroundColor: CS.color.line,
+              }} />
+            )}
+            <p style={{ ...TYPE.p16SemiBold, fontSize: 'var(--cs-stat-number-size)', fontWeight: 300, marginBottom: 4 }}>{stat.number}</p>
+            <p style={{ ...TYPE.p16SemiBold, marginBottom: 12 }}>{stat.label}</p>
+            <p style={{ ...TYPE.p16 }}>{stat.detail}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Mobile/tablet (≤1024px): vertical stack matching Figma 885:39294 */}
+      <div className="cs-impact-stack" style={{ paddingTop: 80 }}>
+        {IMPACT_STATS.map((stat, i) => (
+          <Fragment key={i}>
+            {i > 0 && <Divider />}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <p style={{ ...TYPE.p56Regular, fontSize: 'var(--cs-stat-number-size)' }}>{stat.number}</p>
+              <p style={{ ...TYPE.p16SemiBold }}>{stat.label}</p>
+              <p style={{ ...TYPE.p16 }}>{stat.detail}</p>
+            </div>
+          </Fragment>
+        ))}
+      </div>
+    </>
   );
 }
 
@@ -356,9 +369,7 @@ export default function InitiaAppV2Page() {
           </Stack>
         </SplitSection>
 
-        <div style={{ marginTop: 200 }}>
-          <StatGrid />
-        </div>
+        <StatGrid />
 
         <div style={{ marginTop: CS.space.stack }}>
           <FullBleedImage src="/assets/initia_app/initia_app_13.jpg" />

@@ -45,7 +45,7 @@ function ScaleStats() {
   ];
 
   return (
-    <section style={{ display: 'flex', flexDirection: 'column', gap: CS.space.section, paddingTop: CS.space.section, paddingBottom: 100 }}>
+    <section style={{ display: 'flex', flexDirection: 'column', gap: 'var(--cs-scale-gap, 80px)', paddingTop: CS.space.section, paddingBottom: 100 }}>
       <div style={{ display: 'flex', alignItems: 'flex-start' }}>
         <SectionTitle>The Scale</SectionTitle>
       </div>
@@ -55,7 +55,7 @@ function ScaleStats() {
             minHeight: 99,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
+            justifyContent: 'flex-start',
             gap: 8,
           }}>
             <p style={{ ...TYPE.p56Regular, whiteSpace: 'nowrap' }}>{stat.value}</p>
@@ -69,7 +69,7 @@ function ScaleStats() {
 
 function DeliverableList() {
   return (
-    <div style={{ marginTop: CS.space.stack }}>
+    <div>
       {DELIVERABLES.map((item, i) => (
         <div key={i}>
           <Divider />

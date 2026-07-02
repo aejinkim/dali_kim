@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from '@/components/main/Navbar';
@@ -79,27 +80,41 @@ function ImpactSection() {
   ] as const;
 
   return (
-    <section style={{ display: 'flex', flexDirection: 'column', gap: CS.space.section, paddingTop: CS.space.section }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-        <SectionTitle>Impact</SectionTitle>
-      </div>
-      <div className="cs-stats-grid">
-        {stats.map((stat) => (
+    <section style={{ paddingTop: CS.space.section }}>
+      <SectionTitle>Impact</SectionTitle>
+
+      {/* Desktop (>1024px): 3-column grid with vertical separators */}
+      <div className="cs-impact-grid" style={{ marginTop: 40 }}>
+        {stats.map((stat, i) => (
           <div key={stat.value} style={{
-            minHeight: 99,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
             gap: 8,
+            paddingLeft: i > 0 ? 'var(--spacing-cs-stack)' : undefined,
+            borderLeft: i > 0 ? `1px solid ${CS.color.line}` : undefined,
           }}>
-            <p style={{ ...TYPE.p56Regular, display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap' }}>
+            <p style={{ ...TYPE.p56Regular, display: 'flex', alignItems: 'flex-start', gap: 8, whiteSpace: 'nowrap' }}>
               {stat.value}
-              {stat.arrow
-                ? <Image src="/assets/fount/clarity-arrow-line.svg" alt="" width={54} height={54} />
-                : null}
+              {stat.arrow ? <Image src="/assets/fount/clarity-arrow-line.svg" alt="" width={50} height={50} /> : null}
             </p>
-            <p style={{ ...TYPE.p16 }}>{stat.label}</p>
+            <p style={TYPE.p16}>{stat.label}</p>
           </div>
+        ))}
+      </div>
+
+      {/* Mobile/tablet (≤1024px): vertical stack matching Figma 884:35320 */}
+      <div className="cs-impact-stack" style={{ paddingTop: 80 }}>
+        {stats.map((stat, i) => (
+          <Fragment key={stat.value}>
+            {i > 0 && <Divider />}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <p style={{ ...TYPE.p56Regular, display: 'flex', alignItems: 'flex-start', gap: 8, whiteSpace: 'nowrap' }}>
+                {stat.value}
+                {stat.arrow ? <Image src="/assets/fount/clarity-arrow-line.svg" alt="" width={50} height={50} /> : null}
+              </p>
+              <p style={TYPE.p16}>{stat.label}</p>
+            </div>
+          </Fragment>
         ))}
       </div>
     </section>

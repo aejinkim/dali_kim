@@ -151,7 +151,7 @@ export function HalfCaptionBlock({ caption, children, pt = 0 }: { caption: strin
 export function WideCaptionBlock({ caption, children, pt = CS.space.section }: { caption: string; children: ReactNode; pt?: number | string }) {
   return (
     <section style={{ paddingTop: pt, paddingBottom: CS.space.captionBottom }}>
-      <div style={{ width: '100%' }}>
+      <div style={{ width: 'var(--cs-wide-caption-width, 50%)' }}>
         <Caption>{caption}</Caption>
         <Body style={{ marginTop: CS.space.captionText }}>{children}</Body>
       </div>

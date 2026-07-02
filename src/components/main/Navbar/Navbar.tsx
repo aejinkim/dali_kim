@@ -162,20 +162,10 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
             </div>
             <div className="flex items-center gap-6">
               {NAV_RIGHT.map(({ label, href, external }) => (
-                <NavItem
-                  key={label}
-                  label={label}
-                  href={href}
-                  external={external}
-                  className="hover:opacity-50 transition-opacity duration-200"
-                >
+                <NavItem key={label} label={label} href={href} external={external} className="hover:opacity-50 transition-opacity duration-200">
                   {label === 'X' ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src="/icons_x.svg"
-                      alt="X"
-                      style={{ width: 24, height: 24, display: 'block', filter: 'invert(1)' }}
-                    />
+                    <img src="/icons_x.svg" alt="X" style={{ width: 24, height: 24, display: 'block', filter: 'invert(1)' }} />
                   ) : label}
                 </NavItem>
               ))}

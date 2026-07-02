@@ -171,12 +171,14 @@ export default function InitiaPage() {
           <Body>independent chains contribute to a larger ecosystem through interaction and interoperability. This philosophy shaped a brand system designed to grow, adapt, and evolve alongside the ecosystem itself.</Body>
         </CaptionMediaRow>
 
-        <SplitSection title={<div />} pt={CS.space.section} pb={CS.space.section}>
+        <div className="cs-no-title-col">
+        <SplitSection title={<div />} pt="var(--cs-quantum-pad, 60px)" pb="var(--cs-quantum-pad, 60px)">
           <div>
             <DisplayText>Quantum Entanglement, Not Centralization</DisplayText>
             <Body style={{ marginTop: CS.space.quoteGap }}>Our Garden is where chaos and order dance together. Where structure doesn&apos;t limit creativity but enables it. And where a unified vision emerges—not by control, but by coordination.</Body>
           </div>
         </SplitSection>
+        </div>
 
         <FullBleedImage src="/assets/initia/initia_08.png" aspect="3200 / 1436" />
 
