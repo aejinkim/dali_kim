@@ -26,9 +26,9 @@ function Logo({ tone = 'dark' }: { tone?: 'dark' | 'light' }) {
 type NavLink = { label: string; href: string; external?: boolean };
 const NAV_LEFT: NavLink[] = [
   { label: 'DALI KIM', href: '/' },
-  { label: 'WORK', href: '/#projects' },
 ];
 const NAV_RIGHT: NavLink[] = [
+  { label: 'WORK', href: '/#projects' },
   { label: 'ABOUT', href: '/about' },
   { label: 'EMAIL', href: 'mailto:hello@dalikim.com' },
   { label: 'X', href: 'https://x.com/dali__design', external: true },
