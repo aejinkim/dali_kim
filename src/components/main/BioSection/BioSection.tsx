@@ -50,6 +50,13 @@ export default function BioSection() {
   const [cardPos, setCardPos] = useState<Map<CardKey, { left: number; top: number; width: number }>>(new Map());
   const [progress, setProgress] = useState(0);
   const [vw, setVw] = useState(1920);
+  const setTriggerRef = (key: CardKey) => (el: HTMLSpanElement | null) => {
+    if (el) {
+      triggerRefs.current.set(key, el);
+    } else {
+      triggerRefs.current.delete(key);
+    }
+  };
 
   useLayoutEffect(() => {
     const s = sectionRef.current;
@@ -188,7 +195,7 @@ export default function BioSection() {
                           transition: 'opacity 80ms linear',
                           fontWeight: BOLD_WORDS.has(idx) ? 600 : 300,
                         }}
-                        ref={triggerKey ? (el) => { if (el) triggerRefs.current.set(triggerKey, el); } : undefined}
+                        ref={triggerKey ? setTriggerRef(triggerKey) : undefined}
                       >
                         {word}
                       </span>
@@ -361,7 +368,7 @@ export default function BioSection() {
                       <span
                         className="inline-block mr-[0.22em]"
                         style={{ opacity, transition: 'opacity 16ms linear', fontWeight: BOLD_WORDS.has(idx) ? 700 : 300 }}
-                        ref={triggerKey ? (el) => { if (el) triggerRefs.current.set(triggerKey, el); } : undefined}
+                        ref={triggerKey ? setTriggerRef(triggerKey) : undefined}
                       >
                         {word}
                       </span>

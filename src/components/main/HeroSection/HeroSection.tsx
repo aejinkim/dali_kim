@@ -574,6 +574,8 @@ export default function HeroSection() {
                 {/* Mode A — clover */}
                 <button
                   onClick={() => handleModeSwitch('a')}
+                  aria-label="Switch to clover interaction mode"
+                  type="button"
                   style={{
                     width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
                     background: '#0d0d0d',
@@ -595,6 +597,8 @@ export default function HeroSection() {
                 {/* Mode B — square */}
                 <button
                   onClick={() => handleModeSwitch('b')}
+                  aria-label="Switch to square interaction mode"
+                  type="button"
                   style={{
                     width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
                     background: '#0d0d0d',

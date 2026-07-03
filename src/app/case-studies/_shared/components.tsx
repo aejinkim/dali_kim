@@ -91,10 +91,12 @@ export function FullBleedImage({ src, aspect }: { src: string; aspect?: string }
   if (aspect) {
     return (
       <div style={{ width: '100%', aspectRatio: aspect, overflow: 'hidden' }}>
-        {isVideo
+        {isVideo ? (
+          <video src={src} autoPlay muted loop playsInline style={MEDIA_STYLE.cover} />
+        ) : (
           // eslint-disable-next-line @next/next/no-img-element
-          ? <video src={src} autoPlay muted loop playsInline style={MEDIA_STYLE.cover} />
-          : <img src={src} alt="" style={MEDIA_STYLE.cover} />}
+          <img src={src} alt="" style={MEDIA_STYLE.cover} />
+        )}
       </div>
     );
   }

@@ -17,14 +17,6 @@ const BLOCKED_USER_AGENTS = [
   "ImagesiftBot",
   "cohere-ai",
   "Meta-ExternalAgent",
-  "HeadlessChrome",
-  "PhantomJS",
-  "Playwright",
-  "Puppeteer",
-  "python-requests",
-  "Scrapy",
-  "curl",
-  "wget",
 ];
 
 export default function proxy(request: NextRequest) {

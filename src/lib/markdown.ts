@@ -13,20 +13,24 @@ export interface CaseStudyData {
 
 const CONTENT_DIR = path.join(process.cwd(), 'src/content/case-studies');
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 // Simple regex-based Markdown-to-HTML parser (zero dependencies, React 19 / Next 16 compatible)
 export function parseMarkdownToHtml(markdown: string): string {
   let html = markdown;
 
   // 1. Remove Windows carriage returns
   html = html.replace(/\r\n/g, '\n');
+  html = escapeHtml(html);
 
   // 2. Code blocks (```lang ... ```)
   html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
-    const escapedCode = code
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-    return `<pre style="background:rgba(0,0,0,0.04);padding:20px;border-radius:8px;margin:24px 0;overflow-x:auto;border:1px solid rgba(0,0,0,0.08)"><code style="font-family:monospace;font-size:13px;color:#0a0a0a;line-height:1.6">${escapedCode}</code></pre>`;
+    return `<pre style="background:rgba(0,0,0,0.04);padding:20px;border-radius:8px;margin:24px 0;overflow-x:auto;border:1px solid rgba(0,0,0,0.08)"><code style="font-family:monospace;font-size:13px;color:#0a0a0a;line-height:1.6">${code}</code></pre>`;
   });
 
   // 3. Inline code (`code`)

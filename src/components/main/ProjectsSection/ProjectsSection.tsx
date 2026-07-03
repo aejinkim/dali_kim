@@ -90,6 +90,7 @@ function ProjectCard({
     >
       <Link
         href={meta.href ?? `/case-studies/${study.slug}`}
+        aria-label={`View ${shortTitle} case study`}
         className="project-thumbnail"
         style={{
           display: 'block',
@@ -207,6 +208,7 @@ export default function ProjectsSection({
               <div key={study.slug} style={{ display: 'flex', flexDirection: 'column', gap: 16, paddingBottom: 40 }}>
                 <Link
                   href={metadata[study.slug]?.href ?? `/case-studies/${study.slug}`}
+                  aria-label={`View ${shortTitle} case study`}
                   style={{ display: 'block', width: '100%', aspectRatio: meta.aspectRatio ?? '16 / 9', position: 'relative', overflow: 'hidden' }}
                 >
                   <div style={{ position: 'absolute', inset: 0, backgroundColor: 'var(--color-thumbnail-placeholder)' }} />

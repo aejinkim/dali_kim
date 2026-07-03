@@ -10,6 +10,7 @@ const googleSansFlex = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://dali-kim.vercel.app"),
   title: "Dali Kim | Head of Design & Product Designer Portfolio",
   description: "Interactive portfolio of Dali Kim, a Product Designer with 15+ years of experience leading design across mission-critical satellite ground control systems and multi-billion dollar DeFi protocols.",
   keywords: ["Dali Kim", "Head of Design", "Product Designer", "Web3 UX", "DeFi Design", "Initia", "Anchor Protocol", "Satellite Ground Control Systems"],
