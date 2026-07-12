@@ -2,13 +2,14 @@
 
 import { useEffect, useRef } from 'react';
 
-type CursorMode = 'default' | 'hover' | 'circle';
+type CursorMode = 'default' | 'hover' | 'circle' | 'hand';
 
 function resolveMode(target: EventTarget | null): CursorMode {
   if (!(target instanceof Element)) return 'default';
   if (target.closest('[data-cursor="coming-soon"]')) return 'default';
   if (target.closest('[data-cursor="default"]')) return 'default';
   if (target.closest('[data-cursor="circle"]')) return 'circle';
+  if (target.closest('[data-cursor="hand"]')) return 'hand';
   if (target.closest('[data-cursor="project"]')) return 'hover';
   if (target.closest('a, button, [role="button"]')) return 'hover';
   return 'default';
