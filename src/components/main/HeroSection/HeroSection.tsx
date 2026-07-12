@@ -3,17 +3,11 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 const CONNECT_DIST = 108;
-const PIXEL_SIGNAL_AMBIENT_INTERVAL_MS = 220;
-const PIXEL_SIGNAL_CURSOR_INTERVAL_MS = 90;
 const PHASE_DELAY_MS = 2500;
 const PHASE_TRANSITION_MS = 1500;
 const INITIAL_SPAWN_HOLD_MS = 1800;
 const CLUSTER_FORCE_MAX = 0;
 const BASE_DAMPING = 0.955;
-const IDLE_ORBIT_FORCE = 0.018;
-const IDLE_DRIFT_FORCE = 0.068;
-const CLUSTER_BREATH_FORCE = 0.062;
-const CLUSTER_LINK_FORCE = 0.018;
 const NODE_SEPARATION_DIST = 76;
 const NODE_SEPARATION_FORCE = 0.018;
 const PULSE_DURATION_MS = 1200;
@@ -30,14 +24,6 @@ const CLICK_BURST_A = 34;
 const MAX_NODES_B = 450;
 const AUTO_SPAWN_B = 16;
 const MOUSE_SPAWN_B = 30;
-const CLICK_BURST_B = 54;
-
-const MAX_NODES_C = 320;
-const AUTO_SPAWN_C = 32;
-const MOUSE_SPAWN_C = 44;
-const CLICK_BURST_C = 42;
-const PIXEL_SIGNAL_BG = '#0F0DFF';
-const PIXEL_SIGNAL_INK = '#FFFFFF';
 
 const HERO_YELLOW = '#F8ED00';
 const HERO_PURPLE = '#BA5EF7';
@@ -61,10 +47,7 @@ const SHAPES_B = ['pixel', 'dot', 'hollow', 'tinyL', 'tinyDots'] as const;
 type ShapeB = typeof SHAPES_B[number];
 const CLUSTER_COLOR_B = ['#1a6aff', '#ddaa00', '#cc2200', '#1a8800', '#9900cc', '#aaaaaa'];
 
-const SHAPES_C = ['pixelCross', 'pixelTarget', 'pixelBrackets', 'pixelDiamond', 'pixelCorners', 'pixelPlus'] as const;
-type ShapeC = typeof SHAPES_C[number];
-
-type ShapeType = ShapeA | ShapeB | ShapeC;
+type ShapeType = ShapeA | ShapeB;
 
 interface SimNode {
   id: number;
@@ -103,32 +86,6 @@ const CLUSTERS = [
   { id: 5, cx: 0.50, cy: 0.90 },
 ];
 
-function clusterTarget(clusterId: number, now: number, width: number, height: number) {
-  const cluster = CLUSTERS[clusterId % CLUSTERS.length];
-  const t = now * 0.00024;
-  const baseX = cluster.cx * width;
-  const baseY = cluster.cy * height;
-  let x = baseX;
-  let y = baseY;
-
-  for (const other of CLUSTERS) {
-    if (other.id === cluster.id) continue;
-    const ox = other.cx * width;
-    const oy = other.cy * height;
-    const dx = ox - baseX;
-    const dy = oy - baseY;
-    const dist = Math.hypot(dx, dy) || 1;
-    const phase = Math.sin(t * (1.6 + other.id * 0.13) + cluster.id * 1.37 + other.id * 0.91);
-    x += (dx / dist) * width * CLUSTER_LINK_FORCE * phase;
-    y += (dy / dist) * height * CLUSTER_LINK_FORCE * phase;
-  }
-
-  x += Math.sin(t * 3.1 + cluster.id * 1.9) * width * CLUSTER_BREATH_FORCE;
-  y += Math.cos(t * 2.7 + cluster.id * 1.4) * height * CLUSTER_BREATH_FORCE;
-
-  return { x, y };
-}
-
 const TRAIL_TYPES = ['sparkle', 'star', 'clover', 'xcross', 'circle', 'burst'] as const;
 type TrailType = typeof TRAIL_TYPES[number];
 
@@ -142,16 +99,6 @@ function trailSVG_B(type: TrailTypeB, color: string, size: number): string {
   if (type === 'hollow') return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="display:block"><rect x="6" y="6" width="88" height="88" fill="none" stroke="${color}" stroke-width="12"/></svg>`;
   if (type === 'tinyL') return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="display:block"><polyline points="10,10 10,90 90,90" fill="none" stroke="${color}" stroke-width="14" stroke-linecap="square"/></svg>`;
   return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="display:block"><circle cx="25" cy="25" r="13" fill="${color}"/><circle cx="75" cy="25" r="13" fill="${color}"/><circle cx="25" cy="75" r="13" fill="${color}"/><circle cx="75" cy="75" r="13" fill="${color}"/><circle cx="50" cy="50" r="13" fill="${color}"/></svg>`;
-}
-
-function trailSVG_pixelSignal(color: string, size: number): string {
-  const unit = Math.max(1, Math.round(size / 18));
-  const gap = unit * 2;
-  const bar = unit * 4;
-  const cx = size / 2;
-  const a = Math.round(cx - unit / 2);
-  const b = Math.round(cx - bar / 2);
-  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="display:block;image-rendering:pixelated"><rect x="${a}" y="${gap}" width="${unit}" height="${bar}" fill="${color}"/><rect x="${a}" y="${size - gap - bar}" width="${unit}" height="${bar}" fill="${color}"/><rect x="${gap}" y="${a}" width="${bar}" height="${unit}" fill="${color}"/><rect x="${size - gap - bar}" y="${a}" width="${bar}" height="${unit}" fill="${color}"/><rect x="${b}" y="${b}" width="${bar}" height="${bar}" fill="none" stroke="${color}" stroke-width="${unit}"/></svg>`;
 }
 
 function trailSVG(type: TrailType, color: string, size: number): string {
@@ -288,90 +235,27 @@ function drawTinyDots(ctx: CanvasRenderingContext2D, size: number) {
     ctx.fill();
   }
 }
-function pixelUnit(size: number) {
-  return Math.max(1, Math.round(size / 7));
-}
-function drawPixelRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
-  ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
-}
-function drawPixelCross(ctx: CanvasRenderingContext2D, size: number) {
-  const u = pixelUnit(size);
-  drawPixelRect(ctx, -u, -size, u * 2, size * 2);
-  drawPixelRect(ctx, -size, -u, size * 2, u * 2);
-  drawPixelRect(ctx, -u * 3, -u * 3, u * 6, u * 6);
-}
-function drawPixelTarget(ctx: CanvasRenderingContext2D, size: number) {
-  const u = pixelUnit(size);
-  const s = size;
-  drawPixelRect(ctx, -s, -s, u * 4, u);
-  drawPixelRect(ctx, -s, -s, u, u * 4);
-  drawPixelRect(ctx, s - u * 4, -s, u * 4, u);
-  drawPixelRect(ctx, s - u, -s, u, u * 4);
-  drawPixelRect(ctx, -s, s - u, u * 4, u);
-  drawPixelRect(ctx, -s, s - u * 4, u, u * 4);
-  drawPixelRect(ctx, s - u * 4, s - u, u * 4, u);
-  drawPixelRect(ctx, s - u, s - u * 4, u, u * 4);
-}
-function drawPixelBrackets(ctx: CanvasRenderingContext2D, size: number) {
-  const u = pixelUnit(size);
-  drawPixelRect(ctx, -size, -size * 0.55, u, size * 1.1);
-  drawPixelRect(ctx, -size, -size * 0.55, u * 4, u);
-  drawPixelRect(ctx, -size, size * 0.55 - u, u * 4, u);
-  drawPixelRect(ctx, size - u, -size * 0.55, u, size * 1.1);
-  drawPixelRect(ctx, size - u * 4, -size * 0.55, u * 4, u);
-  drawPixelRect(ctx, size - u * 4, size * 0.55 - u, u * 4, u);
-}
-function drawPixelDiamond(ctx: CanvasRenderingContext2D, size: number) {
-  const u = pixelUnit(size);
-  for (let y = -4; y <= 4; y++) {
-    const width = (5 - Math.abs(y)) * 2 - 1;
-    drawPixelRect(ctx, -width * u / 2, y * u, width * u, u);
-  }
-}
-function drawPixelCorners(ctx: CanvasRenderingContext2D, size: number) {
-  const u = pixelUnit(size);
-  const o = size * 0.62;
-  for (const sx of [-1, 1]) {
-    for (const sy of [-1, 1]) {
-      drawPixelRect(ctx, sx * o - (sx < 0 ? 0 : u * 4), sy * o, u * 4, u);
-      drawPixelRect(ctx, sx * o, sy * o - (sy < 0 ? 0 : u * 4), u, u * 4);
-    }
-  }
-}
-function drawPixelPlus(ctx: CanvasRenderingContext2D, size: number) {
-  const u = pixelUnit(size);
-  drawPixelRect(ctx, -u, -size * 0.72, u * 2, size * 1.44);
-  drawPixelRect(ctx, -size * 0.72, -u, size * 1.44, u * 2);
-}
 
 const DRAW_FN: Record<ShapeType, (ctx: CanvasRenderingContext2D, size: number) => void> = {
   sparkle: drawSparkle, star: drawStar, xcross: drawXCross,
   circle: drawCircle, clover: drawClover, burst: drawBurst,
   pixel: drawPixel, dot: drawDot, hollow: drawHollow,
   tinyL: drawTinyL, tinyDots: drawTinyDots,
-  pixelCross: drawPixelCross, pixelTarget: drawPixelTarget,
-  pixelBrackets: drawPixelBrackets, pixelDiamond: drawPixelDiamond,
-  pixelCorners: drawPixelCorners, pixelPlus: drawPixelPlus,
 };
 
 export default function HeroSection() {
   const [loaded, setLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [mode, setMode] = useState<'a' | 'b' | 'c'>('a');
-  const [hoverMode, setHoverMode] = useState<'a' | 'b' | 'c' | null>(null);
-
-  const modeBgColor = mode === 'c' ? PIXEL_SIGNAL_BG : mode === 'b' ? '#ffffff' : '#000000';
-  const modeTextColor = mode === 'b' ? '#000000' : '#ffffff';
+  const [mode, setMode] = useState<'a' | 'b'>('a');
 
   const sectionRef   = useRef<HTMLElement>(null);
   const canvasRef    = useRef<HTMLCanvasElement>(null);
   const rafRef       = useRef<number>(0);
-  const modeRef      = useRef<'a' | 'b' | 'c'>('a');
+  const modeRef      = useRef<'a' | 'b'>('a');
   const bgColorRef   = useRef('#000000');
   const shouldResetRef = useRef(false);
   const sharedMouseRef = useRef({ x: -9999, y: -9999 });
   const trailContainerRef = useRef<HTMLDivElement>(null);
-  const heroActiveRef = useRef(true);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -406,33 +290,10 @@ export default function HeroSection() {
     };
   }, []);
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    let inView = true;
-    const syncActive = () => {
-      heroActiveRef.current = inView && !document.hidden;
-    };
-    const observer = new IntersectionObserver(([entry]) => {
-      inView = entry.isIntersecting;
-      syncActive();
-    }, { threshold: 0 });
-
-    observer.observe(section);
-    document.addEventListener('visibilitychange', syncActive);
-    syncActive();
-
-    return () => {
-      observer.disconnect();
-      document.removeEventListener('visibilitychange', syncActive);
-    };
-  }, []);
-
-  const handleModeSwitch = (m: 'a' | 'b' | 'c') => {
+  const handleModeSwitch = (m: 'a' | 'b') => {
     if (m === modeRef.current) return;
     modeRef.current = m;
-    bgColorRef.current = m === 'c' ? PIXEL_SIGNAL_BG : m === 'b' ? '#ffffff' : '#000000';
+    bgColorRef.current = m === 'b' ? '#ffffff' : '#000000';
     shouldResetRef.current = true;
     setMode(m);
     window.dispatchEvent(new CustomEvent('hero-mode', { detail: m }));
@@ -502,24 +363,28 @@ export default function HeroSection() {
       accent?: SpawnAccent
     ) => {
       const isB = modeRef.current === 'b';
-      const isC = modeRef.current === 'c';
-      const maxNodes = isC ? MAX_NODES_C : isB ? MAX_NODES_B : MAX_NODES_A;
+      const maxNodes = isB ? MAX_NODES_B : MAX_NODES_A;
       if (nodes.length >= maxNodes) {
-        if (!accent?.force) return;
-        let oldestIndex = 0;
-        for (let i = 1; i < nodes.length; i++) {
-          if (nodes[i].birthTime < nodes[oldestIndex].birthTime) oldestIndex = i;
+        if (isB) {
+          const removed = nodes.shift()!;
+          for (let i = edges.length - 1; i >= 0; i--) {
+            if (edges[i].a === removed || edges[i].b === removed) {
+              edgeSet.delete(getKey(edges[i].a, edges[i].b));
+              edges.splice(i, 1);
+            }
+          }
+        } else {
+          if (!accent?.force) return;
+          let oldestIndex = 0;
+          for (let i = 1; i < nodes.length; i++) {
+            if (nodes[i].birthTime < nodes[oldestIndex].birthTime) oldestIndex = i;
+          }
+          removeNodeAt(oldestIndex);
         }
-        removeNodeAt(oldestIndex);
       }
       const clusterId = accent?.clusterId ?? Math.floor(Math.random() * CLUSTERS.length);
       let shape: ShapeType, color: string, size: number;
-      if (isC) {
-        shape = SHAPES_C[Math.floor(Math.random() * SHAPES_C.length)];
-        color = PIXEL_SIGNAL_INK;
-        const sr = Math.random();
-        size = sr < 0.74 ? 4 + Math.random() * 5 : sr < 0.97 ? 8 + Math.random() * 8 : 18 + Math.random() * 10;
-      } else if (isB) {
+      if (isB) {
         shape = SHAPES_B[Math.floor(Math.random() * SHAPES_B.length)];
         color = CLUSTER_COLOR_B[clusterId];
         const sr = Math.random();
@@ -540,15 +405,15 @@ export default function HeroSection() {
       color = accent?.color ?? color;
       size = accent?.size ?? size;
       if (!isB && shape === 'sparkle' && !accent?.size) size *= 1.35;
-      const lifetime = accent?.lifetime ?? (isC ? 11000 + Math.random() * 7000 : isB ? 9000 + Math.random() * 8000 : 8000 + Math.random() * 7000);
+      const lifetime = accent?.lifetime ?? (isB ? Number.POSITIVE_INFINITY : 8000 + Math.random() * 7000);
       nodes.push({
         id: nodeId++, x, y,
-        vx: accent?.vx ?? (Math.random() - 0.5) * (isC ? 1.1 : isB ? 1.5 : 2.2),
-        vy: accent?.vy ?? (Math.random() - 0.5) * (isC ? 1.1 : isB ? 1.5 : 2.2),
+        vx: accent?.vx ?? (Math.random() - 0.5) * (isB ? 1.5 : 2.2),
+        vy: accent?.vy ?? (Math.random() - 0.5) * (isB ? 1.5 : 2.2),
         clusterId, opacity: 0, birthTime: performance.now(), lifetime,
         shape, size, color,
         rotation: Math.random() * Math.PI * 2,
-        rotSpeed: accent?.rotSpeed ?? (Math.random() - 0.5) * (isC ? 0.004 : isB ? 0.006 : 0.012),
+        rotSpeed: accent?.rotSpeed ?? (Math.random() - 0.5) * (isB ? 0.006 : 0.012),
         colorIntensity: 0,
         edgeUx: accent?.edgeUx,
         edgeUy: accent?.edgeUy,
@@ -557,58 +422,26 @@ export default function HeroSection() {
     };
 
     const burstAt = (x: number, y: number) => {
-      const isB = modeRef.current === 'b';
-      const isC = modeRef.current === 'c';
-      const count = isC ? CLICK_BURST_C : isB ? CLICK_BURST_B : CLICK_BURST_A;
-      for (let i = 0; i < count; i++) {
-        const spread = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.45;
-        const speed = isC ? 2 + Math.random() * 3.6 : isB ? 2.5 + Math.random() * 4.5 : 2.2 + Math.random() * 5.2;
+      if (modeRef.current === 'b') return;
+      for (let i = 0; i < CLICK_BURST_A; i++) {
+        const spread = (i / CLICK_BURST_A) * Math.PI * 2 + (Math.random() - 0.5) * 0.45;
+        const speed = 2.2 + Math.random() * 5.2;
         const distance = Math.random() * 18;
         const px = x + Math.cos(spread) * distance;
         const py = y + Math.sin(spread) * distance;
-        const clusterId = Math.floor(Math.random() * CLUSTERS.length);
-
-        if (isC) {
-          const shape = SHAPES_C[Math.floor(Math.random() * SHAPES_C.length)];
-          spawn(px, py, {
-            shape,
-            color: PIXEL_SIGNAL_INK,
-            clusterId,
-            size: 5 + Math.random() * 16,
-            vx: Math.cos(spread) * speed,
-            vy: Math.sin(spread) * speed,
-            rotSpeed: (Math.random() - 0.5) * 0.045,
-            lifetime: 2600 + Math.random() * 1600,
-            force: true,
-          });
-        } else if (isB) {
-          const shape = SHAPES_B[Math.floor(Math.random() * SHAPES_B.length)];
-          spawn(px, py, {
-            shape,
-            color: CLUSTER_COLOR_B[clusterId],
-            clusterId,
-            size: 2 + Math.random() * 7,
-            vx: Math.cos(spread) * speed,
-            vy: Math.sin(spread) * speed,
-            rotSpeed: (Math.random() - 0.5) * 0.08,
-            lifetime: 2600 + Math.random() * 1400,
-            force: true,
-          });
-        } else {
-          const shape = SHAPES_A[Math.floor(Math.random() * SHAPES_A.length)];
-          const rareAccent = Math.random() > 0.985;
-          spawn(px, py, {
-            shape,
-            color: COLOR_A[shape],
-            clusterId,
-            size: rareAccent ? 28 + Math.random() * 32 : 2 + Math.random() * 11,
-            vx: Math.cos(spread) * speed,
-            vy: Math.sin(spread) * speed,
-            rotSpeed: (Math.random() - 0.5) * 0.1,
-            lifetime: 2400 + Math.random() * 1400,
-            force: true,
-          });
-        }
+        const shape = SHAPES_A[Math.floor(Math.random() * SHAPES_A.length)];
+        const rareAccent = Math.random() > 0.985;
+        spawn(px, py, {
+          shape,
+          color: COLOR_A[shape],
+          clusterId: Math.floor(Math.random() * CLUSTERS.length),
+          size: rareAccent ? 28 + Math.random() * 32 : 2 + Math.random() * 11,
+          vx: Math.cos(spread) * speed,
+          vy: Math.sin(spread) * speed,
+          rotSpeed: (Math.random() - 0.5) * 0.1,
+          lifetime: 2400 + Math.random() * 1400,
+          force: true,
+        });
       }
     };
 
@@ -624,138 +457,16 @@ export default function HeroSection() {
     window.addEventListener('pointerdown', onPointerDown);
 
     const seedInitial = () => {
-      const isB = modeRef.current === 'b';
-      const isC = modeRef.current === 'c';
+      if (modeRef.current === 'b') {
+        for (let i = 0; i < 80; i++) {
+          spawn(Math.random() * canvas.width, Math.random() * canvas.height);
+        }
+        return;
+      }
+
       const visibleHeight = Math.min(canvas.height, window.innerHeight || canvas.height);
       const cx = canvas.width * 0.5;
       const cy = visibleHeight * 0.53;
-      if (isC) {
-        const count = 132;
-        const fillerCount = 64;
-        const startRadius = Math.min(canvas.width, visibleHeight) * 0.025;
-        const fillRadius = Math.min(canvas.width, visibleHeight) * 0.56;
-
-        for (let i = 0; i < count; i++) {
-          const shape = SHAPES_C[i % SHAPES_C.length];
-          const angle = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.36;
-          const radius = Math.random() * startRadius;
-          const ux = Math.cos(angle);
-          const uy = Math.sin(angle);
-          const speed = 5.6 + Math.random() * 3.2;
-          const sizeRoll = Math.random();
-          const size = sizeRoll < 0.78
-            ? 5 + Math.random() * 5
-            : sizeRoll < 0.98
-              ? 10 + Math.random() * 9
-              : 24 + Math.random() * 12;
-
-          spawn(cx + ux * radius, cy + uy * radius, {
-            shape,
-            color: PIXEL_SIGNAL_INK,
-            clusterId: i % CLUSTERS.length,
-            size,
-            vx: ux * speed,
-            vy: uy * speed,
-            edgeUx: ux,
-            edgeUy: uy,
-            rotSpeed: (Math.random() - 0.5) * 0.035,
-            lifetime: 10500 + Math.random() * 7500,
-            force: true,
-          });
-        }
-
-        for (let i = 0; i < fillerCount; i++) {
-          const shape = SHAPES_C[(i + 3) % SHAPES_C.length];
-          const angle = (i / fillerCount) * Math.PI * 2 + (Math.random() - 0.5) * 0.45;
-          const radius = fillRadius * (0.22 + Math.random() * 0.78);
-          const ux = Math.cos(angle);
-          const uy = Math.sin(angle);
-          const speed = 2.2 + Math.random() * 2.4;
-
-          spawn(cx + ux * radius, cy + uy * radius, {
-            shape,
-            color: PIXEL_SIGNAL_INK,
-            clusterId: (i + 3) % CLUSTERS.length,
-            size: 4 + Math.random() * 12,
-            vx: ux * speed,
-            vy: uy * speed,
-            edgeUx: ux,
-            edgeUy: uy,
-            rotSpeed: (Math.random() - 0.5) * 0.026,
-            lifetime: 10000 + Math.random() * 8000,
-            force: true,
-          });
-        }
-        return;
-      }
-      if (isB) {
-        const count = 180;
-        const fillerCount = 90;
-        const startRadius = Math.min(canvas.width, visibleHeight) * 0.02;
-        const fillRadius = Math.min(canvas.width, visibleHeight) * 0.58;
-
-        for (let i = 0; i < count; i++) {
-          const shape = SHAPES_B[i % SHAPES_B.length];
-          const clusterId = i % CLUSTERS.length;
-          const angle = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.3;
-          const radius = Math.random() * startRadius;
-          const ux = Math.cos(angle);
-          const uy = Math.sin(angle);
-          const speed = 6.4 + Math.random() * 4.6 + (i % 11 === 0 ? 1.8 : 0);
-          const sizeRoll = Math.random();
-          const size = sizeRoll < 0.72
-            ? 2 + Math.random() * 4
-            : sizeRoll < 0.985
-              ? 6 + Math.random() * 8
-              : 18 + Math.random() * 18;
-
-          spawn(cx + ux * radius, cy + uy * radius, {
-            shape,
-            color: CLUSTER_COLOR_B[clusterId],
-            clusterId,
-            size,
-            vx: ux * speed,
-            vy: uy * speed,
-            edgeUx: ux,
-            edgeUy: uy,
-            rotSpeed: (Math.random() - 0.5) * 0.06,
-            lifetime: 9000 + Math.random() * 8000,
-            force: true,
-          });
-        }
-
-        for (let i = 0; i < fillerCount; i++) {
-          const shape = SHAPES_B[(i + 2) % SHAPES_B.length];
-          const clusterId = (i + 2) % CLUSTERS.length;
-          const angle = (i / fillerCount) * Math.PI * 2 + (Math.random() - 0.5) * 0.42;
-          const radius = fillRadius * (0.18 + Math.random() * 0.82);
-          const ux = Math.cos(angle);
-          const uy = Math.sin(angle);
-          const speed = 2.8 + Math.random() * 3.4;
-          const sizeRoll = Math.random();
-          const size = sizeRoll < 0.78
-            ? 1.5 + Math.random() * 3.5
-            : sizeRoll < 0.99
-              ? 5 + Math.random() * 7
-              : 15 + Math.random() * 16;
-
-          spawn(cx + ux * radius, cy + uy * radius, {
-            shape,
-            color: CLUSTER_COLOR_B[clusterId],
-            clusterId,
-            size,
-            vx: ux * speed,
-            vy: uy * speed,
-            edgeUx: ux,
-            edgeUy: uy,
-            rotSpeed: (Math.random() - 0.5) * 0.045,
-            lifetime: 8500 + Math.random() * 8000,
-            force: true,
-          });
-        }
-        return;
-      }
-
       const count = 112;
       const fillerCount = 58;
       const startRadius = Math.min(canvas.width, visibleHeight) * 0.018;
@@ -767,8 +478,6 @@ export default function HeroSection() {
         const radius = Math.random() * startRadius;
         const ux = Math.cos(angle);
         const uy = Math.sin(angle);
-        const x = cx + ux * radius;
-        const y = cy + uy * radius;
         const speed = 7.4 + Math.random() * 3.4 + (i % 9 === 0 ? 1.4 : 0);
         const sizeRoll = Math.random();
         const size = sizeRoll < 0.68
@@ -777,7 +486,7 @@ export default function HeroSection() {
             ? 9 + Math.random() * 13
             : 48 + Math.random() * 36;
 
-        spawn(x, y, {
+        spawn(cx + ux * radius, cy + uy * radius, {
           shape,
           color: COLOR_A[shape],
           clusterId: i % CLUSTERS.length,
@@ -798,8 +507,6 @@ export default function HeroSection() {
         const radius = fillRadius * (0.18 + Math.random() * 0.82);
         const ux = Math.cos(angle);
         const uy = Math.sin(angle);
-        const x = cx + ux * radius;
-        const y = cy + uy * radius;
         const speed = 3.4 + Math.random() * 3.1;
         const sizeRoll = Math.random();
         const size = sizeRoll < 0.76
@@ -808,7 +515,7 @@ export default function HeroSection() {
             ? 7 + Math.random() * 11
             : 40 + Math.random() * 28;
 
-        spawn(x, y, {
+        spawn(cx + ux * radius, cy + uy * radius, {
           shape,
           color: COLOR_A[shape],
           clusterId: (i + 2) % CLUSTERS.length,
@@ -830,8 +537,6 @@ export default function HeroSection() {
 
     const animate = (now: number) => {
       simRaf = requestAnimationFrame(animate);
-
-      if (!heroActiveRef.current) return;
       frame += 1;
 
       if (shouldResetRef.current) {
@@ -844,16 +549,14 @@ export default function HeroSection() {
       }
 
       const isB = modeRef.current === 'b';
-      const isC = modeRef.current === 'c';
-      const isA = !isB && !isC;
       const elapsed = now - startTime;
       const phaseT = Math.min(Math.max((elapsed - PHASE_DELAY_MS) / PHASE_TRANSITION_MS, 0), 1);
       const eased = phaseT * phaseT;
       const cf = CLUSTER_FORCE_MAX * eased;
       const damp = BASE_DAMPING + (0.982 - BASE_DAMPING) * eased * 0.5;
-      const autoInterval = isC ? AUTO_SPAWN_C : isB ? AUTO_SPAWN_B : AUTO_SPAWN_A;
-      const mouseInterval = isC ? MOUSE_SPAWN_C : isB ? MOUSE_SPAWN_B : MOUSE_SPAWN_A;
-      const maxNodes = isC ? MAX_NODES_C : isB ? MAX_NODES_B : MAX_NODES_A;
+      const autoInterval = isB ? AUTO_SPAWN_B : AUTO_SPAWN_A;
+      const mouseInterval = isB ? MOUSE_SPAWN_B : MOUSE_SPAWN_A;
+      const maxNodes = isB ? MAX_NODES_B : MAX_NODES_A;
 
       if (elapsed > INITIAL_SPAWN_HOLD_MS && now - lastAutoSpawn > autoInterval && nodes.length < maxNodes) {
         spawn(Math.random() * canvas.width, Math.random() * canvas.height);
@@ -864,11 +567,13 @@ export default function HeroSection() {
         lastMouseSpawn = now;
       }
 
-      for (let i = nodes.length - 1; i >= 0; i--) {
-        if (now - nodes[i].birthTime >= nodes[i].lifetime) removeNodeAt(i);
+      if (!isB && frame % 2 === 0) {
+        for (let i = nodes.length - 1; i >= 0; i--) {
+          if (now - nodes[i].birthTime >= nodes[i].lifetime) removeNodeAt(i);
+        }
       }
 
-      if (!isB && frame % 2 === 0) {
+      if (!isB) {
         for (let i = 0; i < nodes.length; i++) {
           for (let j = i + 1; j < nodes.length; j++) {
             const a = nodes[i];
@@ -891,36 +596,27 @@ export default function HeroSection() {
       }
 
       for (const n of nodes) {
-        n.vx += (Math.random() - 0.5) * (isC ? 0.035 : isB ? 0.1 : 0.055);
-        n.vy += (Math.random() - 0.5) * (isC ? 0.035 : isB ? 0.1 : 0.055);
-        if (!n.edgeBounced && n.edgeUx !== undefined && n.edgeUy !== undefined) {
-          const edgePush = isC ? 0.1 : isB ? 0.12 : 0.18;
-          n.vx += n.edgeUx * edgePush;
-          n.vy += n.edgeUy * edgePush;
+        n.vx += (Math.random() - 0.5) * (isB ? 0.1 : 0.055);
+        n.vy += (Math.random() - 0.5) * (isB ? 0.1 : 0.055);
+        if (!isB && !n.edgeBounced && n.edgeUx !== undefined && n.edgeUy !== undefined) {
+          n.vx += n.edgeUx * 0.18;
+          n.vy += n.edgeUy * 0.18;
         }
         if (cf > 0) {
-          const target = clusterTarget(n.clusterId, now, canvas.width, canvas.height);
-          const targetX = target.x;
-          const targetY = target.y;
-          const dx = targetX - n.x;
-          const dy = targetY - n.y;
-          n.vx += dx * cf;
-          n.vy += dy * cf;
-          const orbit = IDLE_ORBIT_FORCE * eased;
-          const drift = IDLE_DRIFT_FORCE * eased;
-          n.vx += (-dy / canvas.height) * orbit + Math.sin(now * 0.0011 + n.id * 1.73) * drift;
-          n.vy += (dx / canvas.width) * orbit + Math.cos(now * 0.0013 + n.id * 1.91) * drift;
+          const c = CLUSTERS[n.clusterId % CLUSTERS.length];
+          n.vx += (c.cx * canvas.width - n.x) * cf;
+          n.vy += (c.cy * canvas.height - n.y) * cf;
         }
         n.vx *= damp; n.vy *= damp;
         n.x += n.vx; n.y += n.vy;
         n.rotation += n.rotSpeed;
-        const m = Math.max(2, n.size * 0.18);
+        const m = isB ? n.size : Math.max(2, n.size * 0.18);
         let hitEdge = false;
         if (n.x < m) { n.x = m; n.vx = Math.abs(n.vx); hitEdge = true; }
         else if (n.x > canvas.width - m) { n.x = canvas.width - m; n.vx = -Math.abs(n.vx); hitEdge = true; }
         if (n.y < m) { n.y = m; n.vy = Math.abs(n.vy); hitEdge = true; }
         else if (n.y > canvas.height - m) { n.y = canvas.height - m; n.vy = -Math.abs(n.vy); hitEdge = true; }
-        if (hitEdge && n.edgeUx !== undefined && n.edgeUy !== undefined) {
+        if (!isB && hitEdge && n.edgeUx !== undefined && n.edgeUy !== undefined) {
           const speed = Math.hypot(n.vx, n.vy);
           const angle = Math.atan2(n.vy, n.vx) + (Math.random() - 0.5) * 0.95;
           const bounceSpeed = speed * (0.72 + Math.random() * 0.28);
@@ -928,14 +624,18 @@ export default function HeroSection() {
           n.vy = Math.sin(angle) * bounceSpeed;
           n.edgeBounced = true;
         }
-        const nodeAge = now - n.birthTime;
-        const fadeIn = Math.min(1, nodeAge / 300);
-        const fadeOutStart = n.lifetime * 0.68;
-        const fadeOutDuration = n.lifetime - fadeOutStart;
-        const fadeOut = nodeAge > fadeOutStart
-          ? Math.max(0, 1 - (nodeAge - fadeOutStart) / fadeOutDuration)
-          : 1;
-        n.opacity = fadeIn * fadeOut;
+        if (isB) {
+          n.opacity = Math.min(1, (now - n.birthTime) / 300);
+        } else {
+          const nodeAge = now - n.birthTime;
+          const fadeIn = Math.min(1, nodeAge / 300);
+          const fadeOutStart = n.lifetime * 0.68;
+          const fadeOutDuration = n.lifetime - fadeOutStart;
+          const fadeOut = nodeAge > fadeOutStart
+            ? Math.max(0, 1 - (nodeAge - fadeOutStart) / fadeOutDuration)
+            : 1;
+          n.opacity = fadeIn * fadeOut;
+        }
 
         const cdx = n.x - mouseX, cdy = n.y - mouseY;
         const cdist = Math.sqrt(cdx * cdx + cdy * cdy);
@@ -943,7 +643,7 @@ export default function HeroSection() {
         n.colorIntensity += (targetCI - n.colorIntensity) * COLOR_LERP;
       }
 
-      if (isA && frame % EDGE_REBUILD_INTERVAL === 0) {
+      if (!isB && frame % EDGE_REBUILD_INTERVAL === 0) {
         for (let i = edges.length - 1; i >= 0; i--) {
           const { a, b } = edges[i];
           const dx = a.x - b.x, dy = a.y - b.y;
@@ -959,7 +659,7 @@ export default function HeroSection() {
           }
         }
       }
-      if (isA) {
+      if (!isB) {
         for (const edge of edges) {
           for (let i = edge.pulses.length - 1; i >= 0; i--) {
             if (now - edge.pulses[i].startTime >= PULSE_DURATION_MS) edge.pulses.splice(i, 1);
@@ -970,14 +670,10 @@ export default function HeroSection() {
         }
       }
 
-      if (isC) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      } else {
-        ctx.fillStyle = bgColorRef.current;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
+      ctx.fillStyle = bgColorRef.current;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      if (isA) {
+      if (!isB) {
         for (const { a, b, pulses } of edges) {
           const dx = a.x - b.x, dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
@@ -1008,8 +704,8 @@ export default function HeroSection() {
         ctx.translate(n.x, n.y);
         ctx.rotate(n.rotation);
         ctx.globalAlpha = n.opacity;
-        ctx.globalCompositeOperation = isC ? 'source-over' : isB ? 'multiply' : 'lighter';
-        if (!isC && n.colorIntensity > 0.06) {
+        ctx.globalCompositeOperation = isB ? 'multiply' : 'lighter';
+        if (!isB && n.colorIntensity > 0.06) {
           ctx.fillStyle = colorToRgba(n.color, n.colorIntensity * 0.24);
           ctx.beginPath();
           ctx.arc(0, 0, n.size * (2 + n.colorIntensity) * 1.2, 0, Math.PI * 2);
@@ -1062,39 +758,14 @@ export default function HeroSection() {
         p = { el, x: 0, y: 0, vx: 0, vy: 0, born: 0, lifetime: 0, size: 0, rot: 0, rotSpeed: 0 };
         pool.push(p);
       }
-      const currentMode = modeRef.current;
-
-      if (currentMode === 'c') {
-        const size = 12 + Math.random() * 18;
-        const color = PIXEL_SIGNAL_INK;
-        p.x = mx + (Math.random() - 0.5) * 20;
-        p.y = my + (Math.random() - 0.5) * 20;
-        p.vx = (Math.random() - 0.5) * 0.5;
-        p.vy = (Math.random() - 0.5) * 0.7;
-        p.born = now;
-        p.lifetime = 1600 + Math.random() * 1200;
-        p.size = size;
-        p.rot = Math.random() * Math.PI * 2;
-        p.rotSpeed = (Math.random() - 0.5) * 0.035;
-        p.el.style.width = size + 'px';
-        p.el.style.height = size + 'px';
-        p.el.innerHTML = trailSVG_pixelSignal(color, size);
-        return;
-      }
-
-      const isB = currentMode === 'b';
+      const isB = modeRef.current === 'b';
       const type = isB
         ? TRAIL_TYPES_B[Math.floor(Math.random() * TRAIL_TYPES_B.length)]
         : TRAIL_TYPES[Math.floor(Math.random() * TRAIL_TYPES.length)];
       const color = isB
         ? TRAIL_COLORS_B[Math.floor(Math.random() * TRAIL_COLORS_B.length)]
         : COLOR_A[type as ShapeA];
-      const sizeRoll = Math.random();
-      let size = sizeRoll < 0.7
-        ? 6 + Math.random() * 16
-        : sizeRoll < 0.99
-          ? 20 + Math.random() * 28
-          : 48 + Math.random() * 18;
+      let size = 22 + Math.random() * 38;
       if (!isB && type === 'sparkle') size *= 1.3;
       const angle = Math.random() * Math.PI * 2;
       const speed = 0.4 + Math.random() * 1.2;
@@ -1114,27 +785,11 @@ export default function HeroSection() {
         : trailSVG(type as TrailType, color, size);
     };
 
-    let lastAmbientPixelSignal = 0;
-
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop);
-      if (!heroActiveRef.current) return;
       const { x: mx, y: my } = sharedMouseRef.current;
       const active = mx > -1;
-      const isC = modeRef.current === 'c';
-
-      if (isC) {
-        if (now - lastAmbientPixelSignal > PIXEL_SIGNAL_AMBIENT_INTERVAL_MS) {
-          const x = Math.random() * container.clientWidth;
-          const y = Math.random() * container.clientHeight;
-          spawn(x, y, now);
-          lastAmbientPixelSignal = now;
-        }
-        if (active && now - lastSpawn > PIXEL_SIGNAL_CURSOR_INTERVAL_MS) {
-          spawn(mx, my, now);
-          lastSpawn = now;
-        }
-      } else if (active && now - lastSpawn > 90) {
+      if (active && now - lastSpawn > 90) {
         spawn(mx, my, now);
         lastSpawn = now;
       }
@@ -1144,15 +799,10 @@ export default function HeroSection() {
           if (p.el.style.opacity !== '0') p.el.style.opacity = '0';
           continue;
         }
-        if (isC) {
-          p.x += p.vx + Math.sin(now / 700 + p.rot) * 0.3;
-          p.y += p.vy;
-        } else {
-          p.vx *= 0.978;
-          p.vy *= 0.978;
-          p.x += p.vx;
-          p.y += p.vy;
-        }
+        p.vx *= 0.978;
+        p.vy *= 0.978;
+        p.x += p.vx;
+        p.y += p.vy;
         p.rot += p.rotSpeed;
         const t = age / p.lifetime;
         const fadeIn = Math.min(1, age / 180);
@@ -1176,32 +826,9 @@ export default function HeroSection() {
       <div className="sticky top-0 h-screen overflow-hidden">
         <div
           className="absolute inset-0"
-          style={{ transform: `translateY(${translateY}%)`, willChange: 'transform', backgroundColor: modeBgColor }}
+          style={{ transform: `translateY(${translateY}%)`, willChange: 'transform', backgroundColor: mode === 'b' ? '#ffffff' : '#000000' }}
         >
-          {mode === 'c' && (
-            <div
-              aria-hidden="true"
-              style={{
-                position: 'absolute',
-                inset: 0,
-                zIndex: 0,
-                backgroundColor: PIXEL_SIGNAL_BG,
-                backgroundImage: `
-                  radial-gradient(circle at 19% 32%, rgba(255,255,255,0.28) 0 12%, transparent 12.5%),
-                  radial-gradient(circle at 76% 26%, rgba(255,255,255,0.2) 0 9%, transparent 9.5%),
-                  radial-gradient(circle at 62% 78%, rgba(255,255,255,0.18) 0 15%, transparent 15.5%),
-                  linear-gradient(90deg, rgba(255,255,255,0.35) 1px, transparent 1px),
-                  linear-gradient(rgba(255,255,255,0.35) 1px, transparent 1px),
-                  radial-gradient(circle, rgba(255,255,255,0.9) 0 1.5px, transparent 2px)
-                `,
-                backgroundSize: '100% 100%, 100% 100%, 100% 100%, 12px 12px, 12px 12px, 8px 8px',
-                backgroundPosition: 'center, center, center, 0 0, 0 0, 0 0',
-                mixBlendMode: 'normal',
-                imageRendering: 'pixelated',
-              }}
-            />
-          )}
-          <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block', zIndex: 1 }} />
+          <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
 
           {/* Trail shapes layer */}
           <div
@@ -1228,15 +855,13 @@ export default function HeroSection() {
                 {/* Mode A — clover */}
                 <button
                   onClick={() => handleModeSwitch('a')}
-                  onMouseEnter={() => setHoverMode('a')}
-                  onMouseLeave={() => setHoverMode(null)}
                   aria-label="Switch to clover interaction mode"
                   data-cursor="default"
                   type="button"
                   style={{
                     width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
                     background: '#0d0d0d',
-                    border: 'none', padding: 0,
+                    border: 'none', cursor: 'pointer', padding: 0,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     transition: 'background 250ms ease',
                     flexShrink: 0,
@@ -1244,7 +869,7 @@ export default function HeroSection() {
                 >
                   <svg style={{ width: 'var(--toggle-icon-size)', height: 'var(--toggle-icon-size)' }} viewBox="0 0 193 194">
                     <path
-                      fill={mode === 'a' || hoverMode === 'a' ? HERO_YELLOW : '#555555'}
+                      fill={mode === 'a' ? '#F5E000' : '#555555'}
                       style={{ transition: 'fill 250ms ease' }}
                       d="M162.285 68.6201C179.159 68.6202 192.839 81.1788 192.839 96.6699C192.839 112.161 179.159 124.719 162.285 124.719C159.991 124.719 157.755 124.485 155.605 124.045C131.388 121.232 102.399 101.345 97.0439 97.5439C100.63 102.598 118.542 128.701 122.911 151.978C124.078 155.338 124.72 158.98 124.72 162.786C124.72 179.66 112.162 193.339 96.6709 193.34C81.1798 193.34 68.6212 179.66 68.6211 162.786C68.6211 160.491 68.8546 158.256 69.2949 156.105C72.1088 131.883 92.0039 102.885 95.7979 97.54C90.4517 101.335 61.4567 121.231 37.2344 124.045C35.0841 124.485 32.8485 124.719 30.5537 124.719C13.6796 124.719 0.000265296 112.161 0 96.6699C7.41128e-05 81.1788 13.6795 68.6202 30.5537 68.6201C34.3616 68.6201 38.0062 69.2623 41.3682 70.4307C65.7862 75.0161 93.3132 94.5007 96.3857 96.7168C96.4076 96.6868 96.4191 96.671 96.4199 96.6699C96.4216 96.6722 96.4319 96.688 96.4521 96.7158C99.5221 94.5015 127.051 75.0165 151.471 70.4307C154.833 69.2623 158.477 68.6202 162.285 68.6201ZM96.1689 0C111.66 0.000260499 124.219 13.6796 124.219 30.5537C124.219 32.8457 123.985 35.0787 123.546 37.2266C120.441 63.9849 96.4891 96.5759 96.4199 96.6699C96.3521 96.5777 74.7871 67.2286 69.9307 41.3682C68.7623 38.0062 68.1201 34.3616 68.1201 30.5537C68.1202 13.6796 80.678 0.000285852 96.1689 0Z"
                     />
@@ -1254,8 +879,6 @@ export default function HeroSection() {
                 {/* Mode B — square */}
                 <button
                   onClick={() => handleModeSwitch('b')}
-                  onMouseEnter={() => setHoverMode('b')}
-                  onMouseLeave={() => setHoverMode(null)}
                   aria-label="Switch to square interaction mode"
                   data-cursor="default"
                   type="button"
@@ -1263,6 +886,7 @@ export default function HeroSection() {
                     width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
                     background: '#0d0d0d',
                     border: '0.926px solid #000000',
+                    cursor: 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     boxSizing: 'border-box',
                     flexShrink: 0,
@@ -1271,37 +895,9 @@ export default function HeroSection() {
                 >
                   <div style={{
                     width: 'var(--toggle-square-size)', height: 'var(--toggle-square-size)', flexShrink: 0,
-                    border: `2.471px solid ${mode === 'b' || hoverMode === 'b' ? '#ffffff' : '#555555'}`,
+                    border: `2.471px solid ${mode === 'b' ? '#ffffff' : '#555555'}`,
                     transition: 'border-color 250ms ease',
                   }} />
-                </button>
-
-                {/* Mode C — pixel signal */}
-                <button
-                  onClick={() => handleModeSwitch('c')}
-                  onMouseEnter={() => setHoverMode('c')}
-                  onMouseLeave={() => setHoverMode(null)}
-                  aria-label="Switch to pixel signal mode"
-                  data-cursor="default"
-                  type="button"
-                  style={{
-                    width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
-                    background: '#0d0d0d',
-                    border: 'none', padding: 0,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    transition: 'background 250ms ease',
-                    flexShrink: 0,
-                  }}
-                >
-                  <svg style={{ width: 'var(--toggle-icon-size)', height: 'var(--toggle-icon-size)' }} viewBox="0 0 24 24">
-                    <g fill={mode === 'c' || hoverMode === 'c' ? PIXEL_SIGNAL_INK : '#555555'} style={{ transition: 'fill 250ms ease' }}>
-                      <rect x="11" y="2" width="2" height="7" />
-                      <rect x="11" y="15" width="2" height="7" />
-                      <rect x="2" y="11" width="7" height="2" />
-                      <rect x="15" y="11" width="7" height="2" />
-                      <rect x="10" y="10" width="4" height="4" />
-                    </g>
-                  </svg>
                 </button>
               </div>
             </div>
@@ -1319,7 +915,7 @@ export default function HeroSection() {
                 transform: loaded ? 'translateY(0)' : 'translateY(48px)',
                 transitionDelay: '200ms',
                 fontWeight: 400,
-                color: modeTextColor,
+                color: mode === 'b' ? '#000000' : '#ffffff',
                 transition: 'color 300ms ease, opacity 1000ms ease, transform 1000ms ease',
               }}
             >
@@ -1334,7 +930,7 @@ export default function HeroSection() {
 
           <div
             className="absolute bottom-0 left-0 right-0 pointer-events-none"
-            style={{ height: '40%', background: `linear-gradient(to bottom, transparent, ${modeBgColor})`, zIndex: 2 }}
+            style={{ height: '40%', background: `linear-gradient(to bottom, transparent, ${mode === 'b' ? '#ffffff' : '#000000'})`, zIndex: 2 }}
           />
         </div>
       </div>
