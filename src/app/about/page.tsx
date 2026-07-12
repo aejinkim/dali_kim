@@ -205,7 +205,9 @@ export default function AboutPage() {
             mixBlendMode: 'difference',
           }}>
             <video
-              src="/about2.mp4"
+              src="/about2.optimized.mp4"
+              poster="/about2.poster.jpg"
+              preload="metadata"
               autoPlay muted loop playsInline
               style={{
                 height: isMobile ? '116vh' : '100vh',
