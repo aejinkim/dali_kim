@@ -90,6 +90,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
       const y = window.scrollY;
       const fadeStart = window.innerHeight * 0.2;
       const fadeEnd   = window.innerHeight * 0.5;
+      if (fadeEnd === fadeStart) return;
       const opacity = Math.max(0, Math.min(1, 1 - (y - fadeStart) / (fadeEnd - fadeStart)));
       setNavOpacity(opacity);
       setDark(y > window.innerHeight * 0.5);
