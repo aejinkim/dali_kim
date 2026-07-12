@@ -63,7 +63,7 @@
   --hero-font-size: clamp(62px, calc(2.93px + 5.769vw), 86px);
 
   /* Fluid toggle: 1024 → 1440 */
-  --toggle-pill-width:  clamp(88px,  calc(9.23px + 7.692vw), 120px);
+  --toggle-pill-width:  clamp(133px, calc(9.93px + 12.019vw), 183px);
   --toggle-pill-height: clamp(40px,  calc(5.54px + 3.365vw),  54px);
   --toggle-btn-size:    clamp(33px,  calc(-1.46px + 3.365vw), 47px);
   --toggle-icon-size:   clamp(21px,  calc(-1.15px + 2.163vw), 30px);
@@ -122,7 +122,7 @@
   :root {
     --page-gutter:    clamp(36px,  calc(36px  + (100vw - 1440px) * 0.00833),   48px);
     --hero-font-size: clamp(86px,  calc(86px  + (100vw - 1920px) * 0.08906),  143px);
-    --toggle-pill-width:  clamp(120px, calc(120px + (100vw - 1920px) * 0.04688), 150px);
+    --toggle-pill-width:  clamp(183px, calc(183px + (100vw - 1920px) * 0.075), 231px);
     --toggle-pill-height: clamp(54px,  calc(54px  + (100vw - 1920px) * 0.02188),  68px);
     --toggle-btn-size:    clamp(47px,  calc(47px  + (100vw - 1920px) * 0.01875),  59px);
     --toggle-icon-size:   clamp(30px,  calc(30px  + (100vw - 1920px) * 0.01250),  38px);
@@ -633,6 +633,7 @@ body {
   transition: transform 0.09s ease-out;
 }
 
+.custom-cursor-ring,
 .custom-cursor-arrow {
   opacity: 1;
   transition: opacity 200ms ease;
@@ -642,6 +643,8 @@ body {
   opacity: 0;
   transition: opacity 200ms ease;
 }
+.custom-cursor-blend-layer[data-mode="hover"] .custom-cursor-ring,
+.custom-cursor-blend-layer[data-mode="circle"] .custom-cursor-ring,
 .custom-cursor-blend-layer[data-mode="hover"] .custom-cursor-arrow,
 .custom-cursor-blend-layer[data-mode="circle"] .custom-cursor-arrow {
   opacity: 0;

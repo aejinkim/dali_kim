@@ -19,18 +19,6 @@ interface Meta {
   objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
 }
 
-function useCursor() {
-  const [cursor, setCursor] = useState<{ x: number; y: number; show: boolean }>({ x: 0, y: 0, show: false });
-  return {
-    cursor,
-    onMouseMove: (e: React.MouseEvent<HTMLAnchorElement>) => {
-      const r = e.currentTarget.getBoundingClientRect();
-      setCursor({ x: e.clientX - r.left, y: e.clientY - r.top, show: true });
-    },
-    onMouseLeave: () => setCursor(c => ({ ...c, show: false })),
-  };
-}
-
 function ProjectCard({
   study,
   meta,
@@ -44,7 +32,7 @@ function ProjectCard({
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
-  const { cursor, onMouseMove, onMouseLeave } = useCursor();
+  const comingSoon = !meta.href;
 
   useEffect(() => {
     const el = cardRef.current;
@@ -92,17 +80,15 @@ function ProjectCard({
         href={meta.href ?? `/case-studies/${study.slug}`}
         aria-label={`View ${shortTitle} case study`}
         className="project-thumbnail"
+        data-cursor={comingSoon ? 'coming-soon' : 'project'}
         style={{
           display: 'block',
           width: tall ? '100%' : '75%',
           aspectRatio: meta.aspectRatio ?? '16 / 9',
           position: 'relative',
           overflow: 'hidden',
-          cursor: 'none',
           flexShrink: 0,
         }}
-        onMouseMove={onMouseMove}
-        onMouseLeave={onMouseLeave}
       >
         <div style={{ position: 'absolute', inset: 0, backgroundColor: 'var(--color-thumbnail-placeholder)' }} />
         {meta.thumbnail && (meta.thumbnail.endsWith('.mp4') ? (
@@ -111,29 +97,6 @@ function ProjectCard({
           // eslint-disable-next-line @next/next/no-img-element
           <img src={meta.thumbnail} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: meta.objectFit ?? 'cover' }} />
         ))}
-        <div
-          style={{
-            position: 'absolute',
-            left: cursor.x,
-            top: cursor.y,
-            transform: 'translate(-50%, -50%)',
-            width: 80,
-            height: 80,
-            borderRadius: '50%',
-            backgroundColor: 'var(--color-brand-bg)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            opacity: cursor.show ? 1 : 0,
-            transition: 'opacity 200ms ease',
-            pointerEvents: 'none',
-            zIndex: 10,
-          }}
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M7 17L17 7M17 7H7M17 7V17" stroke="var(--color-ink)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
       </Link>
 
       <div style={{
