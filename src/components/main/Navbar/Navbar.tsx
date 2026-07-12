@@ -208,6 +208,7 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
         <button
           onClick={() => setMenuOpen(o => !o)}
           aria-label="Open navigation"
+          data-cursor="hand"
           style={{
             width: isMobileView ? '40px' : '52px',
             height: isMobileView ? '40px' : '52px',
@@ -276,11 +277,11 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
               href={href}
               external={external}
               onClick={() => setMenuOpen(false)}
-              className="flex-1 flex items-center hover:opacity-40 transition-opacity duration-200"
+              className="nav-overlay-link flex-1 flex items-center"
               style={{
                 fontFamily: 'var(--font-google-sans-flex), sans-serif',
                 fontSize: 'clamp(48px, 7vw, 104px)',
-                fontWeight: 300,
+                fontWeight: 500,
                 letterSpacing: '-0.02em',
                 color: 'var(--color-brand-bg)',
                 textDecoration: 'none',
