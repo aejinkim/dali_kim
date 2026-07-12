@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import PixelSignalField from './PixelSignalField';
 
 const CONNECT_DIST = 108;
 const PHASE_DELAY_MS = 2500;
@@ -246,12 +247,12 @@ const DRAW_FN: Record<ShapeType, (ctx: CanvasRenderingContext2D, size: number) =
 export default function HeroSection() {
   const [loaded, setLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [mode, setMode] = useState<'a' | 'b'>('a');
+  const [mode, setMode] = useState<'a' | 'b' | 'c'>('a');
 
   const sectionRef   = useRef<HTMLElement>(null);
   const canvasRef    = useRef<HTMLCanvasElement>(null);
   const rafRef       = useRef<number>(0);
-  const modeRef      = useRef<'a' | 'b'>('a');
+  const modeRef      = useRef<'a' | 'b' | 'c'>('a');
   const bgColorRef   = useRef('#000000');
   const shouldResetRef = useRef(false);
   const sharedMouseRef = useRef({ x: -9999, y: -9999 });
@@ -290,10 +291,13 @@ export default function HeroSection() {
     };
   }, []);
 
-  const handleModeSwitch = (m: 'a' | 'b') => {
+  const handleModeSwitch = (m: 'a' | 'b' | 'c') => {
     if (m === modeRef.current) return;
     modeRef.current = m;
-    bgColorRef.current = m === 'b' ? '#ffffff' : '#000000';
+    // The 'c' value here is never actually read by the canvas draw loop
+    // (animate() returns early for mode c, see below) — kept in sync only
+    // so the ternary stays exhaustive and typed correctly.
+    bgColorRef.current = m === 'c' ? '#F3EFE3' : m === 'b' ? '#ffffff' : '#000000';
     shouldResetRef.current = true;
     setMode(m);
     window.dispatchEvent(new CustomEvent('hero-mode', { detail: m }));
@@ -538,6 +542,7 @@ export default function HeroSection() {
     const animate = (now: number) => {
       simRaf = requestAnimationFrame(animate);
       frame += 1;
+      if (modeRef.current === 'c') return;
 
       if (shouldResetRef.current) {
         shouldResetRef.current = false;
@@ -788,7 +793,7 @@ export default function HeroSection() {
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop);
       const { x: mx, y: my } = sharedMouseRef.current;
-      const active = mx > -1;
+      const active = mx > -1 && modeRef.current !== 'c';
       if (active && now - lastSpawn > 90) {
         spawn(mx, my, now);
         lastSpawn = now;
@@ -826,9 +831,11 @@ export default function HeroSection() {
       <div className="sticky top-0 h-screen overflow-hidden">
         <div
           className="absolute inset-0"
-          style={{ transform: `translateY(${translateY}%)`, willChange: 'transform', backgroundColor: mode === 'b' ? '#ffffff' : '#000000' }}
+          style={{ transform: `translateY(${translateY}%)`, willChange: 'transform', backgroundColor: mode === 'c' ? 'var(--color-bonsai-bg)' : mode === 'b' ? '#ffffff' : '#000000' }}
         >
-          <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
+          <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: mode === 'c' ? 'none' : 'block' }} />
+
+          {mode === 'c' && <PixelSignalField />}
 
           {/* Trail shapes layer */}
           <div
@@ -899,6 +906,32 @@ export default function HeroSection() {
                     transition: 'border-color 250ms ease',
                   }} />
                 </button>
+
+                {/* Mode C — pixel signal */}
+                <button
+                  onClick={() => handleModeSwitch('c')}
+                  aria-label="Switch to pixel signal mode"
+                  data-cursor="default"
+                  type="button"
+                  style={{
+                    width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
+                    background: '#0d0d0d',
+                    border: 'none', padding: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    transition: 'background 250ms ease',
+                    flexShrink: 0,
+                  }}
+                >
+                  <svg style={{ width: 'var(--toggle-icon-size)', height: 'var(--toggle-icon-size)' }} viewBox="0 0 24 24">
+                    <g fill={mode === 'c' ? 'var(--color-bonsai-ink)' : '#555555'} style={{ transition: 'fill 250ms ease' }}>
+                      <rect x="11" y="2" width="2" height="7" />
+                      <rect x="11" y="15" width="2" height="7" />
+                      <rect x="2" y="11" width="7" height="2" />
+                      <rect x="15" y="11" width="7" height="2" />
+                      <rect x="10" y="10" width="4" height="4" />
+                    </g>
+                  </svg>
+                </button>
               </div>
             </div>
 
@@ -915,7 +948,7 @@ export default function HeroSection() {
                 transform: loaded ? 'translateY(0)' : 'translateY(48px)',
                 transitionDelay: '200ms',
                 fontWeight: 400,
-                color: mode === 'b' ? '#000000' : '#ffffff',
+                color: mode === 'c' ? 'var(--color-hero-text-bonsai)' : mode === 'b' ? '#000000' : '#ffffff',
                 transition: 'color 300ms ease, opacity 1000ms ease, transform 1000ms ease',
               }}
             >
@@ -930,7 +963,7 @@ export default function HeroSection() {
 
           <div
             className="absolute bottom-0 left-0 right-0 pointer-events-none"
-            style={{ height: '40%', background: `linear-gradient(to bottom, transparent, ${mode === 'b' ? '#ffffff' : '#000000'})`, zIndex: 2 }}
+            style={{ height: '40%', background: `linear-gradient(to bottom, transparent, ${mode === 'c' ? 'var(--color-bonsai-bg)' : mode === 'b' ? '#ffffff' : '#000000'})`, zIndex: 2 }}
           />
         </div>
       </div>
