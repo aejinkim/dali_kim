@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
+import CustomCursor from "@/components/CustomCursor";
 import "./globals.css";
 
 const googleSansFlex = localFont({
@@ -39,7 +40,7 @@ export default function RootLayout({
       lang="en"
       className={`${googleSansFlex.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}<Analytics /></body>
+      <body className="min-h-full flex flex-col">{children}<Analytics /><CustomCursor /></body>
     </html>
   );
 }
