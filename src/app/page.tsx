@@ -14,7 +14,7 @@ const PROJECT_META: Record<string, { subtitle: string; thumbnail: string; date: 
   'anchor':                   { subtitle: 'DeFi Savings Protocol UX to $16B+ TVL',    thumbnail: '/assets/anchor/Anchor protocol_thumbnail.jpg', date: '2023', href: '/case-studies/anchor', aspectRatio: '16 / 9' },
   'fount-robo-advisor':       { subtitle: "Designing trust for South Korea's leading robo-advisor — from zero to 1.5 trillion KRW in AUM",   thumbnail: '/assets/fount/fount_01.jpg', date: '2021', href: '/case-studies/fount' },
   'satrec-satellite-control': { subtitle: 'GEO-KOMPSAT Mission Ground Control UX',    thumbnail: '',                  date: '2018' },
-  'virtuswap':                { subtitle: 'DeFi Exchange Visual Identity',             thumbnail: '/assets/virtuswap/virtuswap_thum.jpg', date: '2022' },
+  'virtuswap':                { subtitle: 'DeFi Exchange Visual Identity',             thumbnail: '/assets/virtuswap/virtuswap_thum.jpg', date: '2022', href: '/case-studies/virtuswap' },
   'satreci-ci-renewal':       { subtitle: 'Corporate Identity Redesign for a Satellite Technology Company', thumbnail: '', date: '2014', href: '/case-studies/satreci' },
 };
 
