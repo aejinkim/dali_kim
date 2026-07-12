@@ -34,6 +34,11 @@
   --color-project-card-blue: #1B4EFD;
   --color-project-card-dark: #0d0d0d;
 
+  /* ── Hero Mode C: pixel signal field ── */
+  --color-bonsai-bg: #F3EFE3;
+  --color-bonsai-ink: #2b2620;
+  --color-hero-text-bonsai: #2b2620;
+
   /* ── Custom cursor (Figma: node 924:37816) ── */
   --color-cursor-fg: #ffffff;
   --color-cursor-hand-stroke: #000000;
