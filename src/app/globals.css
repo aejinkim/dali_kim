@@ -34,6 +34,11 @@
   --color-project-card-blue: #1B4EFD;
   --color-project-card-dark: #0d0d0d;
 
+  /* ── Custom cursor (Figma: node 924:37816) ── */
+  --color-cursor-fg: #ffffff;
+  --color-cursor-hand-stroke: #000000;
+  --cursor-size: 42px;
+
   /* ── Type scale — only tokens actually used in code ── */
   --tracking-caption: 0.01px;
 
@@ -69,6 +74,7 @@
   --nav-v-pad: 0px;
   --nav-height: 67px;
   --nav-font-size: clamp(13px, calc(8.07px + 0.481vw), 15px);
+  --nav-hover-circle-size: 3.6em;
 
   /* Fluid bio: 32px@1024 → 46px@1440 */
   --bio-font-size: clamp(32px, calc(-2.46px + 3.365vw), 46px);
@@ -610,3 +616,41 @@ body {
 .project-thumbnail:hover video {
   transform: scale(1.05);
 }
+
+/* ── Custom cursor (Figma: node 924:37816) ── */
+@media (hover: hover) and (pointer: fine) {
+  /* Links show the native pointer/hand cursor regardless of inherited
+     `cursor`, so it must be set directly on every element, not just the
+     ancestor — otherwise it shows alongside our own hand icon. */
+  html.custom-cursor-active,
+  html.custom-cursor-active * {
+    cursor: none;
+  }
+}
+
+.custom-cursor-blend-layer,
+.custom-cursor-icon-layer {
+  transition: transform 0.09s ease-out;
+}
+
+.custom-cursor-arrow {
+  opacity: 1;
+  transition: opacity 200ms ease;
+}
+.custom-cursor-circle,
+.custom-cursor-hand {
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.custom-cursor-blend-layer[data-mode="hover"] .custom-cursor-arrow,
+.custom-cursor-blend-layer[data-mode="circle"] .custom-cursor-arrow {
+  opacity: 0;
+}
+.custom-cursor-blend-layer[data-mode="hover"] .custom-cursor-circle,
+.custom-cursor-blend-layer[data-mode="circle"] .custom-cursor-circle,
+.custom-cursor-icon-layer[data-mode="hover"] .custom-cursor-hand {
+  opacity: 1;
+}
+
+/* Nav text inverts against the page via mix-blend-mode:difference on the
+   fixed <header> itself (see Navbar.tsx) — no per-theme color logic needed. */

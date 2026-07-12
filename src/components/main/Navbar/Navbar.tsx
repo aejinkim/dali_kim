@@ -33,8 +33,6 @@ const NAV_RIGHT: NavLink[] = [
   { label: 'EMAIL', href: 'mailto:hello@dalikim.com' },
   { label: 'X', href: 'https://x.com/dali__design', external: true },
 ];
-const ALL_LINKS = [...NAV_LEFT, ...NAV_RIGHT];
-
 const MOBILE_MENU_LINKS: NavLink[] = [
   { label: 'Works', href: '/#projects' },
   { label: 'About', href: '/about' },
@@ -137,10 +135,14 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
         className="fixed top-0 left-0 right-0 z-50"
         style={{
           background: 'transparent',
+          // Blend must sit on the fixed element itself so it inverts against the
+          // real page behind the header (studioodea.com.au technique). On a
+          // descendant it would be trapped inside the header's own stacking
+          // context and never reach the page.
+          mixBlendMode: 'difference',
           opacity: alwaysVisible ? 1 : navOpacity,
           pointerEvents: !alwaysVisible && navOpacity < 0.05 ? 'none' : 'auto',
           transition: 'opacity 300ms ease',
-          mixBlendMode: 'difference',
         }}
       >
         <nav className="hidden md:flex items-center w-full" style={{ padding: 'var(--nav-v-pad) var(--nav-gutter)', height: 'var(--nav-height)', gap: '10px' }}>
@@ -148,7 +150,6 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
             className="flex items-center justify-between flex-1 whitespace-nowrap"
             style={{
               fontFamily: 'var(--font-google-sans-flex), sans-serif',
-              color: 'var(--color-surface-inverse)',
               letterSpacing: 'var(--tracking-caption)',
               fontSize: 'var(--nav-font-size)',
             }}
@@ -156,16 +157,23 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
             <div className="flex items-center gap-10">
               {NAV_LEFT.map(({ label, href, external }) => (
                 <NavItem key={label} label={label} href={href} external={external} className="hover:opacity-50 transition-opacity duration-200">
-                  {label === 'DALI KIM' ? <Logo /> : label}
+                  {label === 'DALI KIM' ? <Logo tone="dark" /> : label}
                 </NavItem>
               ))}
             </div>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-6" data-cursor="circle">
               {NAV_RIGHT.map(({ label, href, external }) => (
-                <NavItem key={label} label={label} href={href} external={external} className="hover:opacity-50 transition-opacity duration-200">
+                <NavItem
+                  key={label}
+                  label={label}
+                  href={href}
+                  external={external}
+                  className="hover:opacity-50 transition-opacity duration-200"
+                  style={{ color: 'var(--color-surface-inverse)' }}
+                >
                   {label === 'X' ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src="/icons_x.svg" alt="X" style={{ width: 24, height: 24, display: 'block', filter: 'invert(1)' }} />
+                    <img src="/icons_x.svg" alt="X" style={{ width: 24, height: 24, display: 'block' }} />
                   ) : label}
                 </NavItem>
               ))}
@@ -207,7 +215,6 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            cursor: 'pointer',
             border: 'none',
             transition: 'transform 200ms ease, background-color 200ms ease',
           }}
@@ -237,38 +244,53 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
       </div>
 
       <div
-        className="fixed inset-0 z-40 hidden md:flex flex-col items-center justify-center"
+        className="fixed inset-0 z-40 hidden md:flex flex-col"
         style={{
           backgroundColor: 'var(--color-ink)',
           opacity: menuOpen ? 1 : 0,
           pointerEvents: menuOpen ? 'auto' : 'none',
           transition: 'opacity 400ms ease',
         }}
-        onClick={() => setMenuOpen(false)}
       >
+        {/* Logo row */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          padding: 'var(--nav-v-pad) var(--nav-gutter)',
+          height: 'var(--nav-height)',
+          flexShrink: 0,
+        }}>
+          <Logo tone="dark" />
+        </div>
+
+        {/* Full-width link rows */}
         <nav
-          className="flex flex-col items-center"
-          style={{ gap: '48px' }}
-          onClick={e => e.stopPropagation()}
+          className="flex flex-col flex-1"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }}
         >
-          {ALL_LINKS.map(({ label, href, external }) => (
+          {NAV_RIGHT.map(({ label, href, external }, i) => (
             <NavItem
               key={label}
               label={label}
               href={href}
               external={external}
               onClick={() => setMenuOpen(false)}
-              className="hover:opacity-40 transition-opacity duration-200"
+              className="flex-1 flex items-center hover:opacity-40 transition-opacity duration-200"
               style={{
                 fontFamily: 'var(--font-google-sans-flex), sans-serif',
-                fontSize: 'clamp(28px, 4vw, 56px)',
+                fontSize: 'clamp(48px, 7vw, 104px)',
                 fontWeight: 300,
                 letterSpacing: '-0.02em',
                 color: 'var(--color-brand-bg)',
                 textDecoration: 'none',
+                padding: '0 var(--nav-gutter)',
+                borderBottom: i < NAV_RIGHT.length - 1 ? '1px solid rgba(255,255,255,0.12)' : 'none',
               }}
             >
-              {label}
+              {label === 'X' ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src="/icons_x.svg" alt="X" style={{ width: '0.6em', height: '0.6em', display: 'block', filter: 'invert(1)' }} />
+              ) : label}
             </NavItem>
           ))}
         </nav>
