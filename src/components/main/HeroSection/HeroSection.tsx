@@ -426,6 +426,7 @@ export default function HeroSection() {
     };
 
     const burstAt = (x: number, y: number) => {
+      if (modeRef.current === 'c') return;
       if (modeRef.current === 'b') return;
       for (let i = 0; i < CLICK_BURST_A; i++) {
         const spread = (i / CLICK_BURST_A) * Math.PI * 2 + (Math.random() - 0.5) * 0.45;
@@ -916,7 +917,7 @@ export default function HeroSection() {
                   style={{
                     width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
                     background: '#0d0d0d',
-                    border: 'none', padding: 0,
+                    border: 'none', cursor: 'pointer', padding: 0,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     transition: 'background 250ms ease',
                     flexShrink: 0,
