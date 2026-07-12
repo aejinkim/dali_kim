@@ -3,7 +3,7 @@
 import { useRef, useEffect, useLayoutEffect, useState, Fragment } from 'react';
 
 const INTRO = "Hello, My name is Dali Kim.";
-const BODY = "I design products for systems where mistakes have consequences. From blockchain infrastructure and financial networks to aerospace ground stations, my work focuses on turning complexity into clarity, trust, and action.";
+const BODY = "I design products for systems where mistakes have consequences. From blockchain infrastructure and financial networks to aerospace ground stations, I help technical teams turn complex systems into clear, useful, and distinctive products.";
 
 const ALL_WORDS = [...INTRO.split(' '), ...BODY.split(' ')];
 const N = ALL_WORDS.length;
