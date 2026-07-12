@@ -2,6 +2,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { SEED_PATTERNS, plantSeed, stepGameOfLife } from './gameOfLife';
 
 // Classic 8x8 ordered (Bayer) dithering matrix, values 0-63.
 const BAYER: readonly number[] = [
@@ -16,6 +17,8 @@ const BAYER: readonly number[] = [
 ];
 
 const DITHER_CELL = 4;
+const GOL_CELL = 8;
+const GENERATION_INTERVAL_MS = 160;
 
 export default function PixelSignalField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -33,12 +36,30 @@ export default function PixelSignalField() {
     let width = 0;
     let height = 0;
 
+    let golCols = 0;
+    let golRows = 0;
+    let grid: Uint8Array<ArrayBufferLike> = new Uint8Array(0);
+
+    const randomSeed = () => SEED_PATTERNS[Math.floor(Math.random() * SEED_PATTERNS.length)];
+
+    const plantRandom = () => {
+      const ox = Math.floor(Math.random() * golCols);
+      const oy = Math.floor(Math.random() * golRows);
+      plantSeed(grid, golCols, golRows, randomSeed(), ox, oy);
+    };
+
     const resize = () => {
       const rect = canvas.parentElement?.getBoundingClientRect();
       width = Math.round(rect?.width ?? window.innerWidth);
       height = Math.round(rect?.height ?? window.innerHeight);
       canvas.width = width;
       canvas.height = height;
+      golCols = Math.max(1, Math.floor(width / GOL_CELL));
+      golRows = Math.max(1, Math.floor(height / GOL_CELL));
+      grid = new Uint8Array(golCols * golRows);
+      plantRandom();
+      plantRandom();
+      plantRandom();
     };
     resize();
     window.addEventListener('resize', resize);
@@ -68,11 +89,31 @@ export default function PixelSignalField() {
       ctx.globalAlpha = 1;
     };
 
+    const drawGrid = () => {
+      ctx.fillStyle = ink;
+      for (let y = 0; y < golRows; y++) {
+        for (let x = 0; x < golCols; x++) {
+          if (grid[y * golCols + x]) {
+            ctx.fillRect(x * GOL_CELL + 1, y * GOL_CELL + 1, GOL_CELL - 2, GOL_CELL - 2);
+          }
+        }
+      }
+    };
+
     let raf = 0;
-    const frame = () => {
+    let lastStepAt = 0;
+    const frame = (now: number) => {
       raf = requestAnimationFrame(frame);
       ditherTime += 0.015;
       drawDither();
+
+      if (now - lastStepAt > GENERATION_INTERVAL_MS) {
+        lastStepAt = now;
+        const { next } = stepGameOfLife(grid, golCols, golRows);
+        grid = next;
+      }
+
+      drawGrid();
     };
     raf = requestAnimationFrame(frame);
 
