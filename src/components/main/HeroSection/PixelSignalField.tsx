@@ -77,8 +77,14 @@ export default function PixelSignalField() {
 
     const onMouseMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
-      mouseX = e.clientX - rect.left;
-      mouseY = e.clientY - rect.top;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      if (x >= 0 && x < width && y >= 0 && y < height) {
+        mouseX = x;
+        mouseY = y;
+      } else {
+        mouseX = -9999;
+      }
     };
     const onClick = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
