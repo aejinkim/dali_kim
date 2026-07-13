@@ -19,6 +19,9 @@ const BAYER: readonly number[] = [
 const DITHER_CELL = 4;
 const GOL_CELL = 8;
 const GENERATION_INTERVAL_MS = 160;
+const RESEED_LIVE_THRESHOLD = 4;
+const RESEED_IDLE_GENERATIONS = 2;
+const CURSOR_SEED_INTERVAL_MS = 900;
 
 export default function PixelSignalField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -68,6 +71,24 @@ export default function PixelSignalField() {
     resize();
     window.addEventListener('resize', resize);
 
+    let mouseX = -9999;
+    let mouseY = -9999;
+    let lastCursorSeed = 0;
+
+    const onMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+    };
+    const onClick = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const cx = Math.floor((e.clientX - rect.left) / GOL_CELL);
+      const cy = Math.floor((e.clientY - rect.top) / GOL_CELL);
+      plantSeed(grid, golCols, golRows, randomSeed(), cx, cy);
+    };
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
+    canvas.addEventListener('click', onClick);
+
     let ditherTime = Math.random() * 100;
 
     const drawDither = () => {
@@ -106,15 +127,28 @@ export default function PixelSignalField() {
 
     let raf = 0;
     let lastStepAt = 0;
+    let idleGenerations = 0;
     const frame = (now: number) => {
       raf = requestAnimationFrame(frame);
       ditherTime += 0.015;
       drawDither();
 
+      if (mouseX > -1 && now - lastCursorSeed > CURSOR_SEED_INTERVAL_MS) {
+        lastCursorSeed = now;
+        const cx = Math.floor(mouseX / GOL_CELL);
+        const cy = Math.floor(mouseY / GOL_CELL);
+        plantSeed(grid, golCols, golRows, randomSeed(), cx, cy);
+      }
+
       if (now - lastStepAt > GENERATION_INTERVAL_MS) {
         lastStepAt = now;
-        const { next } = stepGameOfLife(grid, golCols, golRows);
+        const { next, liveCount } = stepGameOfLife(grid, golCols, golRows);
         grid = next;
+        idleGenerations = liveCount < RESEED_LIVE_THRESHOLD ? idleGenerations + 1 : 0;
+        if (idleGenerations > RESEED_IDLE_GENERATIONS) {
+          plantRandom();
+          idleGenerations = 0;
+        }
       }
 
       drawGrid();
@@ -124,6 +158,8 @@ export default function PixelSignalField() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', onMouseMove);
+      canvas.removeEventListener('click', onClick);
     };
   }, []);
 
