@@ -99,6 +99,14 @@ export default function PixelSignalField() {
 
     let ditherTime = Math.random() * 100;
 
+    // Low-frequency waves (a handful of cycles across the *whole* canvas,
+    // normalized 0-1 so it scales with viewport size instead of the fixed
+    // per-cell frequency this was originally tuned at on a small mockup)
+    // produce a few large light/dark regions — like a photo's macro shading —
+    // instead of a uniform fine-grained texture repeating everywhere.
+    const DITHER_FREQ_X = 2.2;
+    const DITHER_FREQ_Y = 1.5;
+
     const drawDither = () => {
       const dcols = Math.ceil(width / DITHER_CELL);
       const drows = Math.ceil(height / DITHER_CELL);
@@ -108,11 +116,16 @@ export default function PixelSignalField() {
       ctx.globalAlpha = 0.35;
       for (let y = 0; y < drows; y++) {
         const by = (y % 8) * 8;
-        const sy = Math.sin(y * 0.09 + ditherTime * 0.8);
+        const ny = y / drows;
         for (let x = 0; x < dcols; x++) {
-          const v = Math.sin(x * 0.13 + ditherTime * 1.4 + sy) + Math.sin(x * 0.06 + y * 0.1 - ditherTime * 0.9);
+          const nx = x / dcols;
+          const v = Math.sin(nx * Math.PI * 2 * DITHER_FREQ_X + ny * Math.PI * 1.3 + ditherTime * 0.4)
+                  + Math.sin(ny * Math.PI * 2 * DITHER_FREQ_Y - nx * Math.PI * 0.9 - ditherTime * 0.25);
           const n = (v + 2) / 4;
-          const d = (n - 0.55) * 1.6;
+          // Wider contrast than a plain remap: pushes low regions to fully
+          // empty and high regions to fully solid, instead of every region
+          // sitting in the same mid-density speckle.
+          const d = (n - 0.4) * 2.6;
           if (d <= 0) continue;
           if (BAYER[(x % 8) + by] / 64 < d) {
             ctx.fillRect(x * DITHER_CELL, y * DITHER_CELL, 3, 3);
