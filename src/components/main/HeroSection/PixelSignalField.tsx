@@ -35,6 +35,7 @@ export default function PixelSignalField() {
     const styles = getComputedStyle(document.documentElement);
     const bg = styles.getPropertyValue('--color-bonsai-bg').trim() || '#F3EFE3';
     const ink = styles.getPropertyValue('--color-bonsai-ink').trim() || '#2b2620';
+    const gol = styles.getPropertyValue('--color-bonsai-gol').trim() || '#0F0DFF';
 
     let width = 0;
     let height = 0;
@@ -122,7 +123,7 @@ export default function PixelSignalField() {
     };
 
     const drawGrid = () => {
-      ctx.fillStyle = ink;
+      ctx.fillStyle = gol;
       for (let y = 0; y < golRows; y++) {
         for (let x = 0; x < golCols; x++) {
           if (grid[y * golCols + x]) {
