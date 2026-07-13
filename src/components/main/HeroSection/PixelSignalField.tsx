@@ -48,18 +48,22 @@ export default function PixelSignalField() {
       plantSeed(grid, golCols, golRows, randomSeed(), ox, oy);
     };
 
-    const resize = () => {
-      const rect = canvas.parentElement?.getBoundingClientRect();
-      width = Math.round(rect?.width ?? window.innerWidth);
-      height = Math.round(rect?.height ?? window.innerHeight);
-      canvas.width = width;
-      canvas.height = height;
+    const initGrid = () => {
       golCols = Math.max(1, Math.floor(width / GOL_CELL));
       golRows = Math.max(1, Math.floor(height / GOL_CELL));
       grid = new Uint8Array(golCols * golRows);
       plantRandom();
       plantRandom();
       plantRandom();
+    };
+
+    const resize = () => {
+      const rect = canvas.parentElement?.getBoundingClientRect();
+      width = Math.round(rect?.width ?? window.innerWidth);
+      height = Math.round(rect?.height ?? window.innerHeight);
+      canvas.width = width;
+      canvas.height = height;
+      initGrid();
     };
     resize();
     window.addEventListener('resize', resize);
