@@ -84,6 +84,7 @@ export default function PixelSignalField() {
         mouseY = y;
       } else {
         mouseX = -9999;
+        mouseY = -9999;
       }
     };
     const onClick = (e: MouseEvent) => {

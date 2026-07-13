@@ -294,10 +294,9 @@ export default function HeroSection() {
   const handleModeSwitch = (m: 'a' | 'b' | 'c') => {
     if (m === modeRef.current) return;
     modeRef.current = m;
-    // The 'c' value here is never actually read by the canvas draw loop
-    // (animate() returns early for mode c, see below) — kept in sync only
-    // so the ternary stays exhaustive and typed correctly.
-    bgColorRef.current = m === 'c' ? '#F3EFE3' : m === 'b' ? '#ffffff' : '#000000';
+    // Never read for mode c — animate() returns early before this ref is
+    // consumed — so no mode-c branch is needed here.
+    bgColorRef.current = m === 'b' ? '#ffffff' : '#000000';
     shouldResetRef.current = true;
     setMode(m);
     window.dispatchEvent(new CustomEvent('hero-mode', { detail: m }));
