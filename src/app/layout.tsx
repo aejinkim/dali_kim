@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Press_Start_2P } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import CustomCursor from "@/components/CustomCursor";
 import "./globals.css";
@@ -7,6 +8,16 @@ import "./globals.css";
 const googleSansFlex = localFont({
   src: "../../public/font/Google_Sans_Flex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf",
   variable: "--font-google-sans-flex",
+  display: "swap",
+});
+
+// Retro pixel font — used only inside Hero Mode C's Customize panel, as a
+// deliberate exception to the site-wide Google Sans Flex rule to sell the
+// "old device dialog" look the panel is going for.
+const pressStart2P = Press_Start_2P({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-pixel",
   display: "swap",
 });
 
@@ -38,7 +49,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${googleSansFlex.variable} h-full antialiased`}
+      className={`${googleSansFlex.variable} ${pressStart2P.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}<Analytics /><CustomCursor /></body>
     </html>

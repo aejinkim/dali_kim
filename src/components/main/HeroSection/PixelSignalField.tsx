@@ -42,26 +42,22 @@ interface TunableConfig {
   gol: string;
 }
 
-const DEFAULT_TUNABLES = {
-  ditherCell: 6,
-  cellSize: 5,
-  golCell: 8,
-  generationInterval: 35,
-};
-
 // Curated looks a visitor can jump straight to — pulled from palettes this
 // project actually shipped with at some point, rather than invented fresh.
-const PRESETS: { name: string; bg: string; ink: string; gol: string }[] = [
-  { name: 'Signal Blue', bg: '#68B0FF', ink: '#E0F0FF', gol: '#0003FF' },
-  { name: 'Deep Navy', bg: '#16227A', ink: '#ffffff', gol: '#4AFF0D' },
-  { name: 'Paper Cream', bg: '#F3EFE3', ink: '#2b2620', gol: '#0F0DFF' },
+const PRESETS: (TunableConfig & { name: string })[] = [
+  { name: 'Signal Blue', ditherCell: 4, cellSize: 4, golCell: 7, generationInterval: 35, bg: '#68B0FF', ink: '#F0F8FF', gol: '#0011FF' },
+  { name: 'Ember Paper', ditherCell: 5, cellSize: 5, golCell: 8, generationInterval: 40, bg: '#F3EFE3', ink: '#ffbf70', gol: '#ff4000' },
+  { name: 'Mono Grid', ditherCell: 5, cellSize: 4, golCell: 5, generationInterval: 50, bg: '#adadad', ink: '#ffffff', gol: '#000000' },
 ];
 
 export default function PixelSignalField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hintRef = useRef<HTMLDivElement>(null);
   const configRef = useRef<TunableConfig>({
-    ...DEFAULT_TUNABLES,
+    ditherCell: PRESETS[0].ditherCell,
+    cellSize: PRESETS[0].cellSize,
+    golCell: PRESETS[0].golCell,
+    generationInterval: PRESETS[0].generationInterval,
     bg: PRESETS[0].bg,
     ink: PRESETS[0].ink,
     gol: PRESETS[0].gol,
@@ -71,7 +67,14 @@ export default function PixelSignalField() {
   // Customize panel — visible to every visitor in Mode C, not gated behind
   // a debug flag. Lets them pick a curated preset or drag the raw values.
   const [panelValues, setPanelValues] = useState<TunableConfig>(configRef.current);
-  const [copied, setCopied] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(true);
+
+  // Collapsed by default on mobile and tablet (≤1024px, matching this
+  // project's existing tablet breakpoint) — an expanded 560px-tall panel
+  // would otherwise sit on top of the headline on a phone or tablet screen.
+  useEffect(() => {
+    if (window.matchMedia('(max-width: 1024px)').matches) setPanelOpen(false);
+  }, []);
 
   const updateConfig = <K extends keyof TunableConfig>(key: K, value: TunableConfig[K]) => {
     configRef.current[key] = value;
@@ -80,24 +83,11 @@ export default function PixelSignalField() {
   };
 
   const applyPreset = (preset: typeof PRESETS[number]) => {
-    configRef.current = { ...configRef.current, bg: preset.bg, ink: preset.ink, gol: preset.gol };
+    const golCellChanged = preset.golCell !== configRef.current.golCell;
+    const { name: _name, ...values } = preset;
+    configRef.current = { ...configRef.current, ...values };
     setPanelValues({ ...configRef.current });
-  };
-
-  const copyValues = () => {
-    const c = configRef.current;
-    const text = [
-      `DITHER_CELL: ${c.ditherCell}`,
-      `dither cell size: ${c.cellSize}px`,
-      `GOL_CELL: ${c.golCell}`,
-      `GENERATION_INTERVAL_MS: ${c.generationInterval}`,
-      `--color-bonsai-bg: ${c.bg};`,
-      `--color-bonsai-ink: ${c.ink};`,
-      `--color-bonsai-gol: ${c.gol};`,
-    ].join('\n');
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    if (golCellChanged) reinitGolRef.current();
   };
 
   useEffect(() => {
@@ -363,137 +353,176 @@ export default function PixelSignalField() {
         Click
       </div>
 
-      {/* Customize panel — visible to every visitor while in Mode C. Writes
-          straight into configRef, which the animation loop reads every
-          frame, so every preset pick or slider drag applies live. */}
+      {/* Customize panel — visible to every visitor while in Mode C. Styled
+          as an old monochrome-LCD device dialog: dithered checkerboard
+          frame, pixel bitmap font, hard-edged chrome. Writes straight into
+          configRef, which the animation loop reads every frame, so every
+          preset pick or slider drag applies live. */}
       <div
+        className="retro-panel-frame"
         style={{
           position: 'fixed',
           bottom: 16,
           right: 16,
           zIndex: 50,
-          width: 260,
-          background: 'rgba(10,10,10,0.88)',
-          color: '#ffffff',
-          padding: '16px',
-          borderRadius: '12px',
-          fontFamily: 'monospace',
-          fontSize: '11px',
-          lineHeight: 1.6,
-          backdropFilter: 'blur(6px)',
+          padding: 4,
         }}
       >
-        <div style={{ fontWeight: 700, marginBottom: 10 }}>Customize</div>
-
-        <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
-          {PRESETS.map(preset => (
-            <button
-              key={preset.name}
-              type="button"
-              onClick={() => applyPreset(preset)}
-              title={preset.name}
-              style={{
-                flex: 1,
-                height: 28,
-                borderRadius: 6,
-                border: panelValues.bg === preset.bg && panelValues.gol === preset.gol
-                  ? '2px solid #ffffff'
-                  : '1px solid rgba(255,255,255,0.3)',
-                background: preset.bg,
-                cursor: 'pointer',
-                padding: 0,
-              }}
-            >
-              <span style={{ display: 'block', width: '60%', height: 6, margin: '0 auto', borderRadius: 3, background: preset.gol }} />
-            </button>
-          ))}
-        </div>
-
-          <label style={{ display: 'block', marginBottom: 8 }}>
-            dither cell: {panelValues.ditherCell}px
-            <input
-              type="range" min={2} max={16} step={1}
-              value={panelValues.ditherCell}
-              onChange={e => updateConfig('ditherCell', Number(e.target.value))}
-              style={{ width: '100%' }}
-            />
-          </label>
-
-          <label style={{ display: 'block', marginBottom: 8 }}>
-            dither dot size: {panelValues.cellSize}px
-            <input
-              type="range" min={1} max={16} step={1}
-              value={panelValues.cellSize}
-              onChange={e => updateConfig('cellSize', Number(e.target.value))}
-              style={{ width: '100%' }}
-            />
-          </label>
-
-          <label style={{ display: 'block', marginBottom: 8 }}>
-            GoL cell: {panelValues.golCell}px
-            <input
-              type="range" min={4} max={20} step={1}
-              value={panelValues.golCell}
-              onChange={e => updateConfig('golCell', Number(e.target.value))}
-              style={{ width: '100%' }}
-            />
-          </label>
-
-          <label style={{ display: 'block', marginBottom: 8 }}>
-            generation speed: {panelValues.generationInterval}ms
-            <input
-              type="range" min={10} max={200} step={5}
-              value={panelValues.generationInterval}
-              onChange={e => updateConfig('generationInterval', Number(e.target.value))}
-              style={{ width: '100%' }}
-            />
-          </label>
-
-          <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-            <label style={{ flex: 1 }}>
-              bg
-              <input
-                type="color" value={panelValues.bg}
-                onChange={e => updateConfig('bg', e.target.value)}
-                style={{ width: '100%', height: 24 }}
-              />
-            </label>
-            <label style={{ flex: 1 }}>
-              ink
-              <input
-                type="color" value={panelValues.ink}
-                onChange={e => updateConfig('ink', e.target.value)}
-                style={{ width: '100%', height: 24 }}
-              />
-            </label>
-            <label style={{ flex: 1 }}>
-              GoL
-              <input
-                type="color" value={panelValues.gol}
-                onChange={e => updateConfig('gol', e.target.value)}
-                style={{ width: '100%', height: 24 }}
-              />
-            </label>
-          </div>
-
+        <div
+          style={{
+            width: panelOpen ? 'min(264px, calc(100vw - 40px))' : 'auto',
+            maxHeight: 'min(560px, 80vh)',
+            overflowY: 'auto',
+            background: 'var(--color-retro-panel-bg)',
+            border: '2px solid var(--color-retro-panel-fg)',
+            color: 'var(--color-retro-panel-fg)',
+            fontFamily: 'var(--font-pixel), monospace',
+          }}
+        >
+          {/* Title bar — the whole bar toggles the panel, not just the box */}
           <button
             type="button"
-            onClick={copyValues}
+            onClick={() => setPanelOpen(o => !o)}
+            aria-label={panelOpen ? 'Collapse panel' : 'Expand panel'}
+            aria-expanded={panelOpen}
             style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 10,
               width: '100%',
-              padding: '8px',
-              background: copied ? '#4AFF0D' : '#ffffff',
-              color: '#0a0a0a',
               border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
+              borderBottom: panelOpen ? '2px solid var(--color-retro-panel-fg)' : 'none',
+              padding: '8px 10px',
+              background: 'none',
+              color: 'var(--color-retro-panel-fg)',
               fontFamily: 'inherit',
-              fontSize: '11px',
-              fontWeight: 700,
+              cursor: 'pointer',
             }}
           >
-            {copied ? 'Copied!' : 'Copy values'}
+            <span style={{ fontSize: 9, letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
+              GAME OF LIFE
+            </span>
+            <span
+              aria-hidden="true"
+              style={{
+                width: 16,
+                height: 16,
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '2px solid var(--color-retro-panel-fg)',
+                fontFamily: 'var(--font-pixel), monospace',
+                fontSize: 8,
+                lineHeight: 1,
+                flexShrink: 0,
+              }}
+            >
+              {panelOpen ? 'x' : '+'}
+            </span>
           </button>
+
+          {panelOpen && (
+            <div style={{ padding: '12px 10px', fontSize: 8, lineHeight: 2 }}>
+              <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
+                {PRESETS.map(preset => (
+                  <button
+                    key={preset.name}
+                    type="button"
+                    onClick={() => applyPreset(preset)}
+                    title={preset.name}
+                    style={{
+                      flex: 1,
+                      height: 28,
+                      border: panelValues.bg === preset.bg && panelValues.gol === preset.gol
+                        ? '2px solid var(--color-retro-panel-fg)'
+                        : '2px solid var(--color-retro-panel-dim)',
+                      background: preset.bg,
+                      cursor: 'pointer',
+                      padding: 0,
+                    }}
+                  >
+                    <span style={{ display: 'block', width: '60%', height: 6, margin: '0 auto', background: preset.gol }} />
+                  </button>
+                ))}
+              </div>
+
+              <label style={{ display: 'block', marginBottom: 12 }}>
+                DITHER CELL: {panelValues.ditherCell}PX
+                <input
+                  type="range" min={2} max={16} step={1}
+                  value={panelValues.ditherCell}
+                  onChange={e => updateConfig('ditherCell', Number(e.target.value))}
+                  className="retro-panel-range"
+                  style={{ display: 'block', marginTop: 4 }}
+                />
+              </label>
+
+              <label style={{ display: 'block', marginBottom: 12 }}>
+                DOT SIZE: {panelValues.cellSize}PX
+                <input
+                  type="range" min={1} max={16} step={1}
+                  value={panelValues.cellSize}
+                  onChange={e => updateConfig('cellSize', Number(e.target.value))}
+                  className="retro-panel-range"
+                  style={{ display: 'block', marginTop: 4 }}
+                />
+              </label>
+
+              <label style={{ display: 'block', marginBottom: 12 }}>
+                GOL CELL: {panelValues.golCell}PX
+                <input
+                  type="range" min={4} max={20} step={1}
+                  value={panelValues.golCell}
+                  onChange={e => updateConfig('golCell', Number(e.target.value))}
+                  className="retro-panel-range"
+                  style={{ display: 'block', marginTop: 4 }}
+                />
+              </label>
+
+              <label style={{ display: 'block', marginBottom: 14 }}>
+                SPEED: {panelValues.generationInterval}MS
+                <input
+                  type="range" min={10} max={200} step={5}
+                  value={panelValues.generationInterval}
+                  onChange={e => updateConfig('generationInterval', Number(e.target.value))}
+                  className="retro-panel-range"
+                  style={{ display: 'block', marginTop: 4 }}
+                />
+              </label>
+
+              <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
+                <label style={{ flex: 1 }}>
+                  BG
+                  <input
+                    type="color" value={panelValues.bg}
+                    onChange={e => updateConfig('bg', e.target.value)}
+                    className="retro-panel-color"
+                    style={{ display: 'block', width: '100%', height: 24, marginTop: 4 }}
+                  />
+                </label>
+                <label style={{ flex: 1 }}>
+                  INK
+                  <input
+                    type="color" value={panelValues.ink}
+                    onChange={e => updateConfig('ink', e.target.value)}
+                    className="retro-panel-color"
+                    style={{ display: 'block', width: '100%', height: 24, marginTop: 4 }}
+                  />
+                </label>
+                <label style={{ flex: 1 }}>
+                  GOL
+                  <input
+                    type="color" value={panelValues.gol}
+                    onChange={e => updateConfig('gol', e.target.value)}
+                    className="retro-panel-color"
+                    style={{ display: 'block', width: '100%', height: 24, marginTop: 4 }}
+                  />
+                </label>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
