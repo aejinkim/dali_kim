@@ -16,15 +16,24 @@ const BAYER: readonly number[] = [
   63, 31, 55, 23, 61, 29, 53, 21,
 ];
 
-const DITHER_CELL = 4;
+const DITHER_CELL = 6;
 const GOL_CELL = 8;
-const GENERATION_INTERVAL_MS = 160;
+const GENERATION_INTERVAL_MS = 35;
 const RESEED_LIVE_THRESHOLD = 4;
 const RESEED_IDLE_GENERATIONS = 2;
 const CURSOR_SEED_INTERVAL_MS = 900;
+// A cell is only "stuck" if nothing within this radius has changed recently —
+// checking just the cell itself would misfire on oscillators, which always
+// have a few core cells that stay alive across their whole period (e.g. a
+// blinker's center cell never dies, even though the blinker as a whole is
+// clearly still oscillating).
+const STILL_LIFE_RADIUS = 3;
+const STILL_LIFE_TIMEOUT_GENERATIONS = 24;
+const STILL_LIFE_CHECK_INTERVAL_GENERATIONS = 8;
 
 export default function PixelSignalField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const hintRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -43,6 +52,10 @@ export default function PixelSignalField() {
     let golCols = 0;
     let golRows = 0;
     let grid: Uint8Array<ArrayBufferLike> = new Uint8Array(0);
+    // Generation index each cell last flipped state at — used to tell a
+    // truly-frozen still life apart from an oscillator's unchanging core.
+    let changedAt: Int32Array<ArrayBufferLike> = new Int32Array(0);
+    let generation = 0;
 
     const randomSeed = () => SEED_PATTERNS[Math.floor(Math.random() * SEED_PATTERNS.length)];
 
@@ -56,6 +69,8 @@ export default function PixelSignalField() {
       golCols = Math.max(1, Math.floor(width / GOL_CELL));
       golRows = Math.max(1, Math.floor(height / GOL_CELL));
       grid = new Uint8Array(golCols * golRows);
+      changedAt = new Int32Array(golCols * golRows).fill(-STILL_LIFE_TIMEOUT_GENERATIONS);
+      generation = 0;
       plantRandom();
       plantRandom();
       plantRandom();
@@ -75,6 +90,7 @@ export default function PixelSignalField() {
     let mouseX = -9999;
     let mouseY = -9999;
     let lastCursorSeed = 0;
+    const hint = hintRef.current;
 
     const onMouseMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
@@ -83,9 +99,14 @@ export default function PixelSignalField() {
       if (x >= 0 && x < width && y >= 0 && y < height) {
         mouseX = x;
         mouseY = y;
+        if (hint) {
+          hint.style.transform = `translate3d(${x}px, ${y}px, 0) translate(14px, -50%)`;
+          hint.style.opacity = '1';
+        }
       } else {
         mouseX = -9999;
         mouseY = -9999;
+        if (hint) hint.style.opacity = '0';
       }
     };
     const onClick = (e: MouseEvent) => {
@@ -104,8 +125,11 @@ export default function PixelSignalField() {
     // per-cell frequency this was originally tuned at on a small mockup)
     // produce a few large light/dark regions — like a photo's macro shading —
     // instead of a uniform fine-grained texture repeating everywhere.
-    const DITHER_FREQ_X = 2.2;
-    const DITHER_FREQ_Y = 1.5;
+    const DITHER_FREQ_X = 1.6;
+    const DITHER_FREQ_Y = 1.1;
+    // Slow horizontal scroll — like clouds drifting on wind — instead of the
+    // pattern only oscillating in place.
+    const DITHER_DRIFT = 0.05;
 
     const drawDither = () => {
       const dcols = Math.ceil(width / DITHER_CELL);
@@ -114,21 +138,28 @@ export default function PixelSignalField() {
       ctx.fillRect(0, 0, width, height);
       ctx.fillStyle = ink;
       ctx.globalAlpha = 0.35;
+      const drift = ditherTime * DITHER_DRIFT;
       for (let y = 0; y < drows; y++) {
         const by = (y % 8) * 8;
         const ny = y / drows;
         for (let x = 0; x < dcols; x++) {
-          const nx = x / dcols;
-          const v = Math.sin(nx * Math.PI * 2 * DITHER_FREQ_X + ny * Math.PI * 1.3 + ditherTime * 0.4)
-                  + Math.sin(ny * Math.PI * 2 * DITHER_FREQ_Y - nx * Math.PI * 0.9 - ditherTime * 0.25);
-          const n = (v + 2) / 4;
+          const nx = x / dcols + drift;
+          // Two big, slow waves shape the large cloud-like blobs...
+          const big = Math.sin(nx * Math.PI * 2 * DITHER_FREQ_X + ny * Math.PI * 1.7)
+                    + Math.sin(ny * Math.PI * 2 * DITHER_FREQ_Y - nx * Math.PI * 1.1 + 1.3);
+          // ...multiplied by a finer octave so their edges read as fluffy/
+          // irregular rather than a clean, geometric wave interference line.
+          const detail = Math.sin(nx * Math.PI * 7 + ny * Math.PI * 5.3)
+                        * Math.sin(ny * Math.PI * 6 - nx * Math.PI * 4.1) * 0.35;
+          const v = big + detail;
+          const n = (v + 2.35) / 4.7;
           // Wider contrast than a plain remap: pushes low regions to fully
           // empty and high regions to fully solid, instead of every region
           // sitting in the same mid-density speckle.
-          const d = (n - 0.4) * 2.6;
+          const d = (n - 0.42) * 2.8;
           if (d <= 0) continue;
           if (BAYER[(x % 8) + by] / 64 < d) {
-            ctx.fillRect(x * DITHER_CELL, y * DITHER_CELL, 3, 3);
+            ctx.fillRect(x * DITHER_CELL, y * DITHER_CELL, 5, 5);
           }
         }
       }
@@ -163,7 +194,47 @@ export default function PixelSignalField() {
 
       if (now - lastStepAt > GENERATION_INTERVAL_MS) {
         lastStepAt = now;
+        generation++;
         const { next, liveCount } = stepGameOfLife(grid, golCols, golRows);
+        for (let i = 0; i < next.length; i++) {
+          if (next[i] !== grid[i]) changedAt[i] = generation;
+        }
+
+        // Every so often, clear any alive cell with no recent activity in
+        // its neighborhood — a real still life (nothing nearby has changed
+        // in a long time), as opposed to an oscillator (always has *some*
+        // cell nearby flipping every period). Decide the whole batch first,
+        // against one unmutated snapshot of `changedAt`, then apply it all
+        // at once — clearing cells one at a time as we scan would make the
+        // first cell's own clear look like "recent activity" to its still-
+        // frozen neighbors a moment later, sparing them and leaving a
+        // partial shape that the birth rule immediately regrows from.
+        if (generation % STILL_LIFE_CHECK_INTERVAL_GENERATIONS === 0) {
+          const toClear: number[] = [];
+          for (let y = 0; y < golRows; y++) {
+            for (let x = 0; x < golCols; x++) {
+              const idx = y * golCols + x;
+              if (next[idx] !== 1) continue;
+              let recentlyActive = false;
+              for (let dy = -STILL_LIFE_RADIUS; dy <= STILL_LIFE_RADIUS && !recentlyActive; dy++) {
+                const ny = ((y + dy) % golRows + golRows) % golRows;
+                for (let dx = -STILL_LIFE_RADIUS; dx <= STILL_LIFE_RADIUS; dx++) {
+                  const nx = ((x + dx) % golCols + golCols) % golCols;
+                  if (generation - changedAt[ny * golCols + nx] < STILL_LIFE_TIMEOUT_GENERATIONS) {
+                    recentlyActive = true;
+                    break;
+                  }
+                }
+              }
+              if (!recentlyActive) toClear.push(idx);
+            }
+          }
+          for (const idx of toClear) {
+            next[idx] = 0;
+            changedAt[idx] = generation;
+          }
+        }
+
         grid = next;
         idleGenerations = liveCount < RESEED_LIVE_THRESHOLD ? idleGenerations + 1 : 0;
         if (idleGenerations > RESEED_IDLE_GENERATIONS) {
@@ -185,10 +256,40 @@ export default function PixelSignalField() {
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      aria-hidden="true"
-      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
-    />
+    <div style={{ position: 'absolute', inset: 0 }}>
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
+      />
+      {/* Click affordance: a small label that follows the cursor, hinting
+          that clicking plants a new seed. Purely decorative — never
+          intercepts pointer events, so it can't block the click it's
+          advertising. */}
+      <div
+        ref={hintRef}
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          opacity: 0,
+          pointerEvents: 'none',
+          willChange: 'transform, opacity',
+          transition: 'opacity 150ms ease',
+          fontFamily: 'var(--font-google-sans-flex), sans-serif',
+          fontSize: '11px',
+          fontWeight: 500,
+          letterSpacing: '0.02em',
+          color: 'var(--color-surface-inverse)',
+          backgroundColor: 'var(--color-ink)',
+          padding: '3px 8px',
+          borderRadius: 'var(--radius-button)',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        Click
+      </div>
+    </div>
   );
 }

@@ -845,10 +845,10 @@ export default function HeroSection() {
 
           <div
             className="content-width h-full flex flex-col items-center justify-center px-6 sm:px-10"
-            style={{ position: 'relative', zIndex: 5, gap: 'clamp(24px, 3vh, 40px)' }}
+            style={{ position: 'relative', zIndex: 5, gap: 'clamp(24px, 3vh, 40px)', pointerEvents: 'none' }}
           >
             {/* Mode toggle */}
-            <div style={{ flexShrink: 0 }}>
+            <div style={{ flexShrink: 0, pointerEvents: 'auto' }}>
               <div data-cursor="default" style={{
                 width: 'var(--toggle-pill-width)', height: 'var(--toggle-pill-height)',
                 background: '#3e3e3e',
@@ -867,11 +867,21 @@ export default function HeroSection() {
                   type="button"
                   style={{
                     width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
-                    background: '#0d0d0d',
-                    border: 'none', cursor: 'pointer', padding: 0,
+                    background: mode === 'a' ? 'var(--color-project-card-dark)' : 'transparent',
+                    border: mode === 'a' ? '1.5px solid var(--color-ink)' : 'none',
+                    boxSizing: 'border-box',
+                    cursor: 'pointer', padding: 0,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    transition: 'background 250ms ease',
+                    transition: 'background 250ms ease, border-color 250ms ease',
                     flexShrink: 0,
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = 'var(--color-project-card-dark)';
+                    e.currentTarget.style.border = '1.5px solid var(--color-ink)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = mode === 'a' ? 'var(--color-project-card-dark)' : 'transparent';
+                    e.currentTarget.style.border = mode === 'a' ? '1.5px solid var(--color-ink)' : 'none';
                   }}
                 >
                   <svg style={{ width: 'var(--toggle-icon-size)', height: 'var(--toggle-icon-size)' }} viewBox="0 0 193 194">
@@ -883,29 +893,11 @@ export default function HeroSection() {
                   </svg>
                 </button>
 
-                {/* Mode B — square */}
-                <button
-                  onClick={() => handleModeSwitch('b')}
-                  aria-label="Switch to square interaction mode"
-                  data-cursor="default"
-                  type="button"
-                  style={{
-                    width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
-                    background: '#0d0d0d',
-                    border: '0.926px solid #000000',
-                    cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxSizing: 'border-box',
-                    flexShrink: 0,
-                    transition: 'background 250ms ease',
-                  }}
-                >
-                  <div style={{
-                    width: 'var(--toggle-square-size)', height: 'var(--toggle-square-size)', flexShrink: 0,
-                    border: `2.471px solid ${mode === 'b' ? '#ffffff' : '#555555'}`,
-                    transition: 'border-color 250ms ease',
-                  }} />
-                </button>
+                {/* Mode B — square — temporarily hidden from the toggle UI;
+                    logic kept fully intact (spawn/burst/seedInitial/animate
+                    isB branches, Navbar's mode==='b' light-bg check, etc.)
+                    for a possible later comeback, just unreachable since no
+                    button dispatches handleModeSwitch('b') anymore. */}
 
                 {/* Mode C — pixel signal */}
                 <button
@@ -915,11 +907,21 @@ export default function HeroSection() {
                   type="button"
                   style={{
                     width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
-                    background: '#0d0d0d',
-                    border: 'none', cursor: 'pointer', padding: 0,
+                    background: mode === 'c' ? 'var(--color-project-card-dark)' : 'transparent',
+                    border: mode === 'c' ? '1.5px solid var(--color-ink)' : 'none',
+                    boxSizing: 'border-box',
+                    cursor: 'pointer', padding: 0,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    transition: 'background 250ms ease',
+                    transition: 'background 250ms ease, border-color 250ms ease',
                     flexShrink: 0,
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = 'var(--color-project-card-dark)';
+                    e.currentTarget.style.border = '1.5px solid var(--color-ink)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = mode === 'c' ? 'var(--color-project-card-dark)' : 'transparent';
+                    e.currentTarget.style.border = mode === 'c' ? '1.5px solid var(--color-ink)' : 'none';
                   }}
                 >
                   <svg style={{ width: 'var(--toggle-icon-size)', height: 'var(--toggle-icon-size)' }} viewBox="0 0 24 24">
@@ -961,10 +963,12 @@ export default function HeroSection() {
             </h1>
           </div>
 
-          <div
-            className="absolute bottom-0 left-0 right-0 pointer-events-none"
-            style={{ height: '40%', background: `linear-gradient(to bottom, transparent, ${mode === 'c' ? 'var(--color-bonsai-bg)' : mode === 'b' ? '#ffffff' : '#000000'})`, zIndex: 2 }}
-          />
+          {mode !== 'c' && (
+            <div
+              className="absolute bottom-0 left-0 right-0 pointer-events-none"
+              style={{ height: '40%', background: `linear-gradient(to bottom, transparent, ${mode === 'b' ? '#ffffff' : '#000000'})`, zIndex: 2 }}
+            />
+          )}
         </div>
       </div>
     </section>
