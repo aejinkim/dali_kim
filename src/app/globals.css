@@ -36,9 +36,14 @@
 
   /* ── Hero Mode C: pixel signal field ── */
   --color-bonsai-bg: #68B0FF;
-  --color-bonsai-ink: #E0F0FF;
+  --color-bonsai-ink: #F0F8FF;
   --color-hero-text-bonsai: var(--color-ink);
-  --color-bonsai-gol: #0003FF;
+  --color-bonsai-gol: #0011FF;
+
+  /* ── Hero Mode C: retro "old device dialog" control panel ── */
+  --color-retro-panel-bg: #000000;
+  --color-retro-panel-fg: #D8E8CC;
+  --color-retro-panel-dim: #4A5A44;
 
   /* ── Custom cursor (Figma: node 924:37816) ── */
   --color-cursor-fg: #ffffff;
@@ -67,6 +72,10 @@
 
   /* Fluid hero: 62px@1024 → 86px@1440 */
   --hero-font-size: clamp(62px, calc(2.93px + 5.769vw), 86px);
+  /* Hero Mode C pixel-font headline — deliberately smaller than a flat
+     ratio of --hero-font-size at this tier, since Press Start 2P runs
+     much wider per character than Google Sans Flex. */
+  --hero-font-size-pixel: clamp(28px, calc(1.5px + 2.6vw), 39px);
 
   /* Fluid toggle: 1024 → 1440 */
   --toggle-pill-width:  clamp(88px,  calc(9.23px + 7.692vw), 120px);
@@ -128,6 +137,9 @@
   :root {
     --page-gutter:    clamp(36px,  calc(36px  + (100vw - 1440px) * 0.00833),   48px);
     --hero-font-size: clamp(86px,  calc(86px  + (100vw - 1920px) * 0.08906),  143px);
+    /* 80% of the previously-tuned 0.675 ratio (0.675 * 0.8 = 0.54) of --hero-font-size
+       at this tier, then another 15% off above 1920px (0.54 * 0.85 ≈ 0.459) */
+    --hero-font-size-pixel: clamp(39px, calc(39px + (100vw - 1920px) * 0.041), 65px);
     --toggle-pill-width:  clamp(120px, calc(120px + (100vw - 1920px) * 0.04688), 150px);
     --toggle-pill-height: clamp(54px,  calc(54px  + (100vw - 1920px) * 0.02188),  68px);
     --toggle-btn-size:    clamp(47px,  calc(47px  + (100vw - 1920px) * 0.01875),  59px);
@@ -223,6 +235,7 @@
   :root {
     --page-gutter: 12px;
     --hero-font-size: 48px;
+    --hero-font-size-pixel: 24px;
     --toggle-pill-width: 92.647px;
     --toggle-pill-height: 42px;
     --toggle-btn-size: 36.441px;
@@ -685,3 +698,58 @@ body {
 
 /* Nav text inverts against the page via mix-blend-mode:difference on the
    fixed <header> itself (see Navbar.tsx) — no per-theme color logic needed. */
+
+/* ── Hero Mode C: retro "old device dialog" control panel ──
+   Dithered checkerboard edge instead of a plain border, to read as an old
+   monochrome LCD window frame rather than a modern rounded panel. */
+.retro-panel-frame {
+  background-image:
+    linear-gradient(45deg, var(--color-retro-panel-fg) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--color-retro-panel-fg) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--color-retro-panel-fg) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--color-retro-panel-fg) 75%);
+  background-size: 4px 4px;
+  background-position: 0 0, 0 2px, 2px -2px, -2px 0;
+}
+
+.retro-panel-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 12px;
+  background: var(--color-retro-panel-bg);
+  border: 2px solid var(--color-retro-panel-fg);
+  cursor: pointer;
+}
+.retro-panel-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 16px;
+  background: var(--color-retro-panel-fg);
+  border: none;
+  cursor: pointer;
+}
+.retro-panel-range::-moz-range-thumb {
+  width: 10px;
+  height: 16px;
+  background: var(--color-retro-panel-fg);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+}
+.retro-panel-range::-moz-range-track {
+  background: var(--color-retro-panel-bg);
+}
+
+.retro-panel-color {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 2px solid var(--color-retro-panel-fg);
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+.retro-panel-color::-webkit-color-swatch-wrapper { padding: 2px; }
+.retro-panel-color::-webkit-color-swatch { border: none; }
+.retro-panel-color::-moz-color-swatch { border: none; }

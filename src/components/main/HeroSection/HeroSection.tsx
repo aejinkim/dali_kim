@@ -248,6 +248,7 @@ export default function HeroSection() {
   const [loaded, setLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
   const [mode, setMode] = useState<'a' | 'b' | 'c'>('a');
+  const [colInfoOpen, setColInfoOpen] = useState(false);
   const [hoverMode, setHoverMode] = useState<'a' | 'b' | 'c' | null>(null);
 
   const sectionRef   = useRef<HTMLElement>(null);
@@ -929,25 +930,62 @@ export default function HeroSection() {
             <h1
               className="text-center transition-all duration-1000 ease-out"
               style={{
-                fontFamily: 'var(--font-google-sans-flex), sans-serif',
-                fontSize: 'var(--hero-font-size)',
-                lineHeight: 1.1,
-                letterSpacing: '-0.02em',
+                fontFamily: mode === 'c' ? 'var(--font-pixel), monospace' : 'var(--font-google-sans-flex), sans-serif',
+                fontSize: mode === 'c' ? 'var(--hero-font-size-pixel)' : 'var(--hero-font-size)',
+                lineHeight: mode === 'c' ? 1.5 : 1.1,
+                letterSpacing: mode === 'c' ? '0' : '-0.02em',
                 maxWidth: 'min(1224px, 92vw)',
                 opacity: loaded ? 1 : 0,
                 transform: loaded ? 'translateY(0)' : 'translateY(48px)',
                 transitionDelay: '200ms',
                 fontWeight: 400,
                 color: mode === 'c' ? 'var(--color-hero-text-bonsai)' : mode === 'b' ? '#000000' : '#ffffff',
-                transition: 'color 300ms ease, opacity 1000ms ease, transform 1000ms ease',
+                transition: 'color 300ms ease, opacity 1000ms ease, transform 1000ms ease, font-size 300ms ease',
               }}
             >
-              <span>I design where</span>
-              <br />
-              <span>complexity</span>
-              <span> meets</span>
-              <br />
-              <span style={{ fontWeight: 700 }}>consequence</span>
+              {mode === 'c' ? (
+                <>
+                  <span>Let&apos;s Play:</span>
+                  <br />
+                  <span>
+                    Game of Life
+                    <button
+                      type="button"
+                      onClick={() => setColInfoOpen(true)}
+                      aria-label="What is Conway's Game of Life"
+                      style={{
+                        pointerEvents: 'auto',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '2.3em',
+                        height: '2.3em',
+                        marginLeft: '1em',
+                        verticalAlign: 'middle',
+                        transform: 'translateY(-0.5em)',
+                        background: 'var(--color-retro-panel-bg)',
+                        color: 'var(--color-retro-panel-fg)',
+                        border: '2px solid var(--color-retro-panel-fg)',
+                        fontFamily: 'var(--font-pixel), monospace',
+                        fontSize: '0.45em',
+                        cursor: 'pointer',
+                        padding: 0,
+                      }}
+                    >
+                      ?
+                    </button>
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span>I design where</span>
+                  <br />
+                  <span>complexity</span>
+                  <span> meets</span>
+                  <br />
+                  <span style={{ fontWeight: 700 }}>consequence</span>
+                </>
+              )}
             </h1>
           </div>
 
@@ -959,6 +997,123 @@ export default function HeroSection() {
           )}
         </div>
       </div>
+
+      {colInfoOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="What is Conway's Game of Life"
+          onClick={() => setColInfoOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 100,
+            background: 'rgba(10,10,10,0.55)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 'var(--page-gutter)',
+          }}
+        >
+          <div
+            className="retro-panel-frame"
+            onClick={e => e.stopPropagation()}
+            style={{
+              maxWidth: '560px',
+              width: '100%',
+              maxHeight: '80vh',
+              padding: 4,
+            }}
+          >
+            <div
+              style={{
+                background: 'var(--color-retro-panel-bg)',
+                color: 'var(--color-retro-panel-fg)',
+                border: '2px solid var(--color-retro-panel-fg)',
+                maxHeight: 'calc(80vh - 8px)',
+                overflowY: 'auto',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 10,
+                  borderBottom: '2px solid var(--color-retro-panel-fg)',
+                  padding: '10px 14px',
+                }}
+              >
+                <span style={{ fontFamily: 'var(--font-pixel), monospace', fontSize: '10px', letterSpacing: '0.02em' }}>
+                  CONWAY&apos;S GAME OF LIFE
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setColInfoOpen(false)}
+                  aria-label="Close"
+                  style={{
+                    width: 18,
+                    height: 18,
+                    border: '2px solid var(--color-retro-panel-fg)',
+                    background: 'var(--color-retro-panel-bg)',
+                    color: 'var(--color-retro-panel-fg)',
+                    fontFamily: 'var(--font-pixel), monospace',
+                    fontSize: 9,
+                    lineHeight: 1,
+                    cursor: 'pointer',
+                    padding: 0,
+                    flexShrink: 0,
+                  }}
+                >
+                  x
+                </button>
+              </div>
+
+              <div
+                style={{
+                  fontFamily: 'monospace',
+                  fontSize: '14px',
+                  lineHeight: 1.7,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px',
+                  padding: '20px 14px',
+                }}
+              >
+                <p style={{ margin: 0 }}>
+                  Created by mathematician John Conway in 1970, this is a &quot;zero-player game&quot;
+                  — you set a starting pattern, then watch it evolve entirely on its own, one
+                  generation at a time.
+                </p>
+                <p style={{ margin: 0 }}>
+                  Every cell on the grid is either alive or dead, and the whole simulation runs on
+                  just one rule: a dead cell with exactly 3 live neighbors is born, and a live cell
+                  with 2 or 3 live neighbors survives — otherwise it dies, from loneliness or
+                  overcrowding.
+                </p>
+                <p style={{ margin: 0 }}>
+                  That single rule is enough to produce gliders that drift forever, oscillators that
+                  blink in place, still lifes that never change, and guns that fire off new gliders
+                  indefinitely. It&apos;s even been proven capable of computing anything a computer
+                  can — a whole universe of complexity from one simple rule.
+                </p>
+                <p style={{ margin: 0 }}>
+                  Click anywhere in the field behind this page to plant a new pattern and watch it
+                  unfold.
+                </p>
+                <a
+                  href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'var(--color-retro-panel-fg)', textDecoration: 'underline', textUnderlineOffset: '3px' }}
+                >
+                  Read more on Wikipedia →
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
