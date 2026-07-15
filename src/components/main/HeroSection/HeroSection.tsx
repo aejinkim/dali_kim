@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import PixelSignalField from './PixelSignalField';
 
 const CONNECT_DIST = 108;
 const PHASE_DELAY_MS = 2500;
@@ -246,13 +247,13 @@ const DRAW_FN: Record<ShapeType, (ctx: CanvasRenderingContext2D, size: number) =
 export default function HeroSection() {
   const [loaded, setLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [mode, setMode] = useState<'a' | 'b'>('a');
-  const [hoverMode, setHoverMode] = useState<'a' | 'b' | null>(null);
+  const [mode, setMode] = useState<'a' | 'b' | 'c'>('a');
+  const [hoverMode, setHoverMode] = useState<'a' | 'b' | 'c' | null>(null);
 
   const sectionRef   = useRef<HTMLElement>(null);
   const canvasRef    = useRef<HTMLCanvasElement>(null);
   const rafRef       = useRef<number>(0);
-  const modeRef      = useRef<'a' | 'b'>('a');
+  const modeRef      = useRef<'a' | 'b' | 'c'>('a');
   const bgColorRef   = useRef('#000000');
   const shouldResetRef = useRef(false);
   const sharedMouseRef = useRef({ x: -9999, y: -9999 });
@@ -291,9 +292,11 @@ export default function HeroSection() {
     };
   }, []);
 
-  const handleModeSwitch = (m: 'a' | 'b') => {
+  const handleModeSwitch = (m: 'a' | 'b' | 'c') => {
     if (m === modeRef.current) return;
     modeRef.current = m;
+    // Never read for mode c — animate() returns early before this ref is
+    // consumed — so no mode-c branch is needed here.
     bgColorRef.current = m === 'b' ? '#ffffff' : '#000000';
     shouldResetRef.current = true;
     setMode(m);
@@ -423,6 +426,7 @@ export default function HeroSection() {
     };
 
     const burstAt = (x: number, y: number) => {
+      if (modeRef.current === 'c') return;
       if (modeRef.current === 'b') return;
       for (let i = 0; i < CLICK_BURST_A; i++) {
         const spread = (i / CLICK_BURST_A) * Math.PI * 2 + (Math.random() - 0.5) * 0.45;
@@ -539,6 +543,7 @@ export default function HeroSection() {
     const animate = (now: number) => {
       simRaf = requestAnimationFrame(animate);
       frame += 1;
+      if (modeRef.current === 'c') return;
 
       if (shouldResetRef.current) {
         shouldResetRef.current = false;
@@ -789,7 +794,7 @@ export default function HeroSection() {
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop);
       const { x: mx, y: my } = sharedMouseRef.current;
-      const active = mx > -1;
+      const active = mx > -1 && modeRef.current !== 'c';
       if (active && now - lastSpawn > 90) {
         spawn(mx, my, now);
         lastSpawn = now;
@@ -827,9 +832,11 @@ export default function HeroSection() {
       <div className="sticky top-0 h-screen overflow-hidden">
         <div
           className="absolute inset-0"
-          style={{ transform: `translateY(${translateY}%)`, willChange: 'transform', backgroundColor: mode === 'b' ? '#ffffff' : '#000000' }}
+          style={{ transform: `translateY(${translateY}%)`, willChange: 'transform', backgroundColor: mode === 'c' ? 'var(--color-bonsai-bg)' : mode === 'b' ? '#ffffff' : '#000000' }}
         >
-          <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
+          <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: mode === 'c' ? 'none' : 'block' }} />
+
+          {mode === 'c' && <PixelSignalField />}
 
           {/* Trail shapes layer */}
           <div
@@ -839,10 +846,10 @@ export default function HeroSection() {
 
           <div
             className="content-width h-full flex flex-col items-center justify-center px-6 sm:px-10"
-            style={{ position: 'relative', zIndex: 5, gap: 'clamp(24px, 3vh, 40px)' }}
+            style={{ position: 'relative', zIndex: 5, gap: 'clamp(24px, 3vh, 40px)', pointerEvents: 'none' }}
           >
             {/* Mode toggle */}
-            <div style={{ flexShrink: 0 }}>
+            <div style={{ flexShrink: 0, pointerEvents: 'auto' }}>
               <div data-cursor="hand" style={{
                 width: 'var(--toggle-pill-width)', height: 'var(--toggle-pill-height)',
                 background: '#3e3e3e',
@@ -863,10 +870,12 @@ export default function HeroSection() {
                   type="button"
                   style={{
                     width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
-                    background: mode === 'a' || hoverMode === 'a' ? '#0d0d0d' : 'transparent',
-                    border: 'none', cursor: 'pointer', padding: 0,
+                    background: mode === 'a' || hoverMode === 'a' ? 'var(--color-project-card-dark)' : 'transparent',
+                    border: mode === 'a' || hoverMode === 'a' ? '1.5px solid var(--color-ink)' : 'none',
+                    boxSizing: 'border-box',
+                    cursor: 'pointer', padding: 0,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    transition: 'background 250ms ease',
+                    transition: 'background 250ms ease, border-color 250ms ease',
                     flexShrink: 0,
                   }}
                 >
@@ -879,30 +888,39 @@ export default function HeroSection() {
                   </svg>
                 </button>
 
-                {/* Mode B — square */}
+                {/* Mode B — square — temporarily hidden from the toggle UI;
+                    logic kept fully intact (spawn/burst/seedInitial/animate
+                    isB branches, Navbar's mode==='b' light-bg check, etc.)
+                    for a possible later comeback, just unreachable since no
+                    button dispatches handleModeSwitch('b') anymore. */}
+
+                {/* Mode C — pixel signal */}
                 <button
-                  onClick={() => handleModeSwitch('b')}
-                  onMouseEnter={() => setHoverMode('b')}
+                  onClick={() => handleModeSwitch('c')}
+                  onMouseEnter={() => setHoverMode('c')}
                   onMouseLeave={() => setHoverMode(null)}
-                  aria-label="Switch to square interaction mode"
+                  aria-label="Switch to pixel signal mode"
                   type="button"
                   style={{
                     width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
-                    background: mode === 'b' || hoverMode === 'b' ? '#0d0d0d' : 'transparent',
-                    border: mode === 'b' || hoverMode === 'b' ? '1.5px solid #000000' : '1.5px solid transparent',
-                    cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: mode === 'c' || hoverMode === 'c' ? 'var(--color-project-card-dark)' : 'transparent',
+                    border: mode === 'c' || hoverMode === 'c' ? '1.5px solid var(--color-ink)' : 'none',
                     boxSizing: 'border-box',
+                    cursor: 'pointer', padding: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    transition: 'background 250ms ease, border-color 250ms ease',
                     flexShrink: 0,
-                    transition: 'background 250ms ease',
                   }}
                 >
-                  <div style={{
-                    width: 'var(--toggle-square-size)', height: 'var(--toggle-square-size)', flexShrink: 0,
-                    border: `4px solid ${mode === 'b' || hoverMode === 'b' ? '#ffffff' : '#7b7b78'}`,
-                    boxSizing: 'border-box',
-                    transition: 'border-color 250ms ease',
-                  }} />
+                  <svg style={{ width: 'var(--toggle-icon-size)', height: 'var(--toggle-icon-size)' }} viewBox="0 0 24 24">
+                    <g fill={mode === 'c' || hoverMode === 'c' ? 'var(--color-bonsai-ink)' : '#555555'} style={{ transition: 'fill 250ms ease' }}>
+                      <rect x="11" y="2" width="2" height="7" />
+                      <rect x="11" y="15" width="2" height="7" />
+                      <rect x="2" y="11" width="7" height="2" />
+                      <rect x="15" y="11" width="7" height="2" />
+                      <rect x="10" y="10" width="4" height="4" />
+                    </g>
+                  </svg>
                 </button>
               </div>
             </div>
@@ -920,7 +938,7 @@ export default function HeroSection() {
                 transform: loaded ? 'translateY(0)' : 'translateY(48px)',
                 transitionDelay: '200ms',
                 fontWeight: 400,
-                color: mode === 'b' ? '#000000' : '#ffffff',
+                color: mode === 'c' ? 'var(--color-hero-text-bonsai)' : mode === 'b' ? '#000000' : '#ffffff',
                 transition: 'color 300ms ease, opacity 1000ms ease, transform 1000ms ease',
               }}
             >
@@ -933,10 +951,12 @@ export default function HeroSection() {
             </h1>
           </div>
 
-          <div
-            className="absolute bottom-0 left-0 right-0 pointer-events-none"
-            style={{ height: '40%', background: `linear-gradient(to bottom, transparent, ${mode === 'b' ? '#ffffff' : '#000000'})`, zIndex: 2 }}
-          />
+          {mode !== 'c' && (
+            <div
+              className="absolute bottom-0 left-0 right-0 pointer-events-none"
+              style={{ height: '40%', background: `linear-gradient(to bottom, transparent, ${mode === 'b' ? '#ffffff' : '#000000'})`, zIndex: 2 }}
+            />
+          )}
         </div>
       </div>
     </section>
