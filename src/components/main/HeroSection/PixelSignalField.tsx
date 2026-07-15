@@ -2,6 +2,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { SEED_PATTERNS, plantSeed, stepGameOfLife } from './gameOfLife';
 
 // Classic 8x8 ordered (Bayer) dithering matrix, values 0-63.
@@ -68,11 +69,19 @@ export default function PixelSignalField() {
   // a debug flag. Lets them pick a curated preset or drag the raw values.
   const [panelValues, setPanelValues] = useState<TunableConfig>(configRef.current);
   const [panelOpen, setPanelOpen] = useState(true);
+  // The panel is portaled straight to document.body (see the render below) so
+  // its `position: fixed` resolves against the real viewport — the section
+  // it would otherwise render inside applies a scroll-driven CSS transform,
+  // and any transformed ancestor makes `fixed` descendants resolve against
+  // that ancestor instead of the viewport. Portals only work client-side, so
+  // this flips true after mount rather than rendering the portal during SSR.
+  const [mounted, setMounted] = useState(false);
 
   // Collapsed by default on mobile and tablet (≤1024px, matching this
   // project's existing tablet breakpoint) — an expanded 560px-tall panel
   // would otherwise sit on top of the headline on a phone or tablet screen.
   useEffect(() => {
+    setMounted(true);
     if (window.matchMedia('(max-width: 1024px)').matches) setPanelOpen(false);
   }, []);
 
@@ -357,7 +366,10 @@ export default function PixelSignalField() {
           as an old monochrome-LCD device dialog: dithered checkerboard
           frame, pixel bitmap font, hard-edged chrome. Writes straight into
           configRef, which the animation loop reads every frame, so every
-          preset pick or slider drag applies live. */}
+          preset pick or slider drag applies live. Portaled to document.body
+          (see the `mounted` comment above) so `position: fixed` pins it to
+          the real viewport instead of the scroll-transformed hero section. */}
+      {mounted && createPortal(
       <div
         className="retro-panel-frame"
         style={{
@@ -523,7 +535,9 @@ export default function PixelSignalField() {
             </div>
           )}
         </div>
-      </div>
+      </div>,
+      document.body
+      )}
     </div>
   );
 }
