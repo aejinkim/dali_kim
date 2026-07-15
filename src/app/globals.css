@@ -614,6 +614,24 @@ body {
   margin-top: 0;
 }
 
+.nav-overlay-link {
+  background: transparent;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-overlay-link:hover,
+  .nav-overlay-link:focus-visible {
+    background: var(--color-brand-bg);
+    color: var(--color-ink) !important;
+  }
+
+  .nav-overlay-link:hover img,
+  .nav-overlay-link:focus-visible img {
+    filter: none !important;
+  }
+}
+
 .project-thumbnail img,
 .project-thumbnail video {
   transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -636,7 +654,7 @@ body {
 
 .custom-cursor-blend-layer,
 .custom-cursor-icon-layer {
-  transition: transform 0.09s ease-out;
+  transition: transform 0.045s ease-out;
 }
 
 .custom-cursor-ring,
@@ -651,12 +669,16 @@ body {
 }
 .custom-cursor-blend-layer[data-mode="hover"] .custom-cursor-ring,
 .custom-cursor-blend-layer[data-mode="circle"] .custom-cursor-ring,
+.custom-cursor-blend-layer[data-mode="hand"] .custom-cursor-ring,
 .custom-cursor-blend-layer[data-mode="hover"] .custom-cursor-arrow,
-.custom-cursor-blend-layer[data-mode="circle"] .custom-cursor-arrow {
+.custom-cursor-blend-layer[data-mode="circle"] .custom-cursor-arrow,
+.custom-cursor-blend-layer[data-mode="hand"] .custom-cursor-arrow {
   opacity: 0;
 }
 .custom-cursor-blend-layer[data-mode="hover"] .custom-cursor-circle,
 .custom-cursor-blend-layer[data-mode="circle"] .custom-cursor-circle,
+.custom-cursor-icon-layer[data-mode="circle"] .custom-cursor-hand,
+.custom-cursor-icon-layer[data-mode="hand"] .custom-cursor-hand,
 .custom-cursor-icon-layer[data-mode="hover"] .custom-cursor-hand {
   opacity: 1;
 }

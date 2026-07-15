@@ -248,6 +248,7 @@ export default function HeroSection() {
   const [loaded, setLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
   const [mode, setMode] = useState<'a' | 'b' | 'c'>('a');
+  const [hoverMode, setHoverMode] = useState<'a' | 'b' | 'c' | null>(null);
 
   const sectionRef   = useRef<HTMLElement>(null);
   const canvasRef    = useRef<HTMLCanvasElement>(null);
@@ -849,44 +850,38 @@ export default function HeroSection() {
           >
             {/* Mode toggle */}
             <div style={{ flexShrink: 0, pointerEvents: 'auto' }}>
-              <div data-cursor="default" style={{
+              <div data-cursor="hand" style={{
                 width: 'var(--toggle-pill-width)', height: 'var(--toggle-pill-height)',
                 background: '#3e3e3e',
                 borderRadius: '45.088px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '2.471px 4.941px',
+                justifyContent: 'center',
+                gap: 'calc(var(--toggle-pill-width) - (var(--toggle-btn-size) * 2) - 8px)',
+                padding: '4px',
                 boxSizing: 'border-box',
               }}>
                 {/* Mode A — clover */}
                 <button
                   onClick={() => handleModeSwitch('a')}
+                  onMouseEnter={() => setHoverMode('a')}
+                  onMouseLeave={() => setHoverMode(null)}
                   aria-label="Switch to clover interaction mode"
-                  data-cursor="default"
                   type="button"
                   style={{
                     width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
-                    background: mode === 'a' ? 'var(--color-project-card-dark)' : 'transparent',
-                    border: mode === 'a' ? '1.5px solid var(--color-ink)' : 'none',
+                    background: mode === 'a' || hoverMode === 'a' ? 'var(--color-project-card-dark)' : 'transparent',
+                    border: mode === 'a' || hoverMode === 'a' ? '1.5px solid var(--color-ink)' : 'none',
                     boxSizing: 'border-box',
                     cursor: 'pointer', padding: 0,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     transition: 'background 250ms ease, border-color 250ms ease',
                     flexShrink: 0,
                   }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.background = 'var(--color-project-card-dark)';
-                    e.currentTarget.style.border = '1.5px solid var(--color-ink)';
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.background = mode === 'a' ? 'var(--color-project-card-dark)' : 'transparent';
-                    e.currentTarget.style.border = mode === 'a' ? '1.5px solid var(--color-ink)' : 'none';
-                  }}
                 >
                   <svg style={{ width: 'var(--toggle-icon-size)', height: 'var(--toggle-icon-size)' }} viewBox="0 0 193 194">
                     <path
-                      fill={mode === 'a' ? '#F5E000' : '#555555'}
+                      fill={mode === 'a' || hoverMode === 'a' ? HERO_YELLOW : '#555555'}
                       style={{ transition: 'fill 250ms ease' }}
                       d="M162.285 68.6201C179.159 68.6202 192.839 81.1788 192.839 96.6699C192.839 112.161 179.159 124.719 162.285 124.719C159.991 124.719 157.755 124.485 155.605 124.045C131.388 121.232 102.399 101.345 97.0439 97.5439C100.63 102.598 118.542 128.701 122.911 151.978C124.078 155.338 124.72 158.98 124.72 162.786C124.72 179.66 112.162 193.339 96.6709 193.34C81.1798 193.34 68.6212 179.66 68.6211 162.786C68.6211 160.491 68.8546 158.256 69.2949 156.105C72.1088 131.883 92.0039 102.885 95.7979 97.54C90.4517 101.335 61.4567 121.231 37.2344 124.045C35.0841 124.485 32.8485 124.719 30.5537 124.719C13.6796 124.719 0.000265296 112.161 0 96.6699C7.41128e-05 81.1788 13.6795 68.6202 30.5537 68.6201C34.3616 68.6201 38.0062 69.2623 41.3682 70.4307C65.7862 75.0161 93.3132 94.5007 96.3857 96.7168C96.4076 96.6868 96.4191 96.671 96.4199 96.6699C96.4216 96.6722 96.4319 96.688 96.4521 96.7158C99.5221 94.5015 127.051 75.0165 151.471 70.4307C154.833 69.2623 158.477 68.6202 162.285 68.6201ZM96.1689 0C111.66 0.000260499 124.219 13.6796 124.219 30.5537C124.219 32.8457 123.985 35.0787 123.546 37.2266C120.441 63.9849 96.4891 96.5759 96.4199 96.6699C96.3521 96.5777 74.7871 67.2286 69.9307 41.3682C68.7623 38.0062 68.1201 34.3616 68.1201 30.5537C68.1202 13.6796 80.678 0.000285852 96.1689 0Z"
                     />
@@ -902,30 +897,23 @@ export default function HeroSection() {
                 {/* Mode C — pixel signal */}
                 <button
                   onClick={() => handleModeSwitch('c')}
+                  onMouseEnter={() => setHoverMode('c')}
+                  onMouseLeave={() => setHoverMode(null)}
                   aria-label="Switch to pixel signal mode"
-                  data-cursor="default"
                   type="button"
                   style={{
                     width: 'var(--toggle-btn-size)', height: 'var(--toggle-btn-size)', borderRadius: '50%',
-                    background: mode === 'c' ? 'var(--color-project-card-dark)' : 'transparent',
-                    border: mode === 'c' ? '1.5px solid var(--color-ink)' : 'none',
+                    background: mode === 'c' || hoverMode === 'c' ? 'var(--color-project-card-dark)' : 'transparent',
+                    border: mode === 'c' || hoverMode === 'c' ? '1.5px solid var(--color-ink)' : 'none',
                     boxSizing: 'border-box',
                     cursor: 'pointer', padding: 0,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     transition: 'background 250ms ease, border-color 250ms ease',
                     flexShrink: 0,
                   }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.background = 'var(--color-project-card-dark)';
-                    e.currentTarget.style.border = '1.5px solid var(--color-ink)';
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.background = mode === 'c' ? 'var(--color-project-card-dark)' : 'transparent';
-                    e.currentTarget.style.border = mode === 'c' ? '1.5px solid var(--color-ink)' : 'none';
-                  }}
                 >
                   <svg style={{ width: 'var(--toggle-icon-size)', height: 'var(--toggle-icon-size)' }} viewBox="0 0 24 24">
-                    <g fill={mode === 'c' ? 'var(--color-bonsai-ink)' : '#555555'} style={{ transition: 'fill 250ms ease' }}>
+                    <g fill={mode === 'c' || hoverMode === 'c' ? 'var(--color-bonsai-ink)' : '#555555'} style={{ transition: 'fill 250ms ease' }}>
                       <rect x="11" y="2" width="2" height="7" />
                       <rect x="11" y="15" width="2" height="7" />
                       <rect x="2" y="11" width="7" height="2" />
