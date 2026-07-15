@@ -80,9 +80,19 @@ export default function PixelSignalField() {
   // Collapsed by default on mobile and tablet (≤1024px, matching this
   // project's existing tablet breakpoint) — an expanded 560px-tall panel
   // would otherwise sit on top of the headline on a phone or tablet screen.
+  // Also re-collapses if the viewport is resized down past that breakpoint
+  // later (e.g. a desktop window narrowed, or a tablet rotated), not just on
+  // first mount — `change` only fires on crossing the breakpoint, not on
+  // every resize pixel.
   useEffect(() => {
     setMounted(true);
-    if (window.matchMedia('(max-width: 1024px)').matches) setPanelOpen(false);
+    const mq = window.matchMedia('(max-width: 1024px)');
+    if (mq.matches) setPanelOpen(false);
+    const onChange = (e: MediaQueryListEvent) => {
+      if (e.matches) setPanelOpen(false);
+    };
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
   }, []);
 
   const updateConfig = <K extends keyof TunableConfig>(key: K, value: TunableConfig[K]) => {
@@ -117,25 +127,45 @@ export default function PixelSignalField() {
 
     let golCols = 0;
     let golRows = 0;
-    let grid: Uint8Array<ArrayBufferLike> = new Uint8Array(0);
+    // Two preallocated buffers that `grid` alternates between each
+    // generation, so stepGameOfLife never has to allocate a fresh
+    // Uint8Array on the hot path — only here and in initGrid/resize.
+    let gridA: Uint8Array<ArrayBufferLike> = new Uint8Array(0);
+    let gridB: Uint8Array<ArrayBufferLike> = new Uint8Array(0);
+    let grid: Uint8Array<ArrayBufferLike> = gridA;
     // Generation index each cell last flipped state at — used to tell a
     // truly-frozen still life apart from an oscillator's unchanging core.
     let changedAt: Int32Array<ArrayBufferLike> = new Int32Array(0);
     let generation = 0;
 
-    const randomSeed = () => SEED_PATTERNS[Math.floor(Math.random() * SEED_PATTERNS.length)];
+    // A handful of patterns (up to 48x46) can be wider or taller than the
+    // grid itself at small viewports or a high GOL_CELL setting — planting
+    // one then would wrap the pattern into itself and corrupt its shape.
+    // Prefer patterns that actually fit; only fall back to the full list if
+    // the grid is so small that nothing fits (better than never seeding).
+    const randomSeed = () => {
+      const fitting = SEED_PATTERNS.filter(p => {
+        const height = p.length;
+        const width = Math.max(...p.map(row => row.length));
+        return width <= golCols && height <= golRows;
+      });
+      const pool = fitting.length > 0 ? fitting : SEED_PATTERNS;
+      return pool[Math.floor(Math.random() * pool.length)];
+    };
 
     const plantRandom = () => {
       const ox = Math.floor(Math.random() * golCols);
       const oy = Math.floor(Math.random() * golRows);
-      plantSeed(grid, golCols, golRows, randomSeed(), ox, oy);
+      plantSeed(grid, golCols, golRows, randomSeed(), ox, oy, changedAt, generation);
     };
 
     const initGrid = () => {
       const golCell = configRef.current.golCell;
       golCols = Math.max(1, Math.floor(width / golCell));
       golRows = Math.max(1, Math.floor(height / golCell));
-      grid = new Uint8Array(golCols * golRows);
+      gridA = new Uint8Array(golCols * golRows);
+      gridB = new Uint8Array(golCols * golRows);
+      grid = gridA;
       changedAt = new Int32Array(golCols * golRows).fill(-STILL_LIFE_TIMEOUT_GENERATIONS);
       generation = 0;
       plantRandom();
@@ -144,12 +174,23 @@ export default function PixelSignalField() {
     };
     reinitGolRef.current = initGrid;
 
+    // The dither background is redrawn from a full trig-heavy pass onto this
+    // offscreen buffer only every DITHER_REDRAW_INTERVAL frames (see frame()
+    // below), then cheaply blitted onto the visible canvas every frame — the
+    // "drifting cloud" pattern moves by a fraction of a pixel per frame, so
+    // recomputing it at 60fps was pure waste. Sized to match the visible
+    // canvas in resize() below.
+    const ditherCanvas = document.createElement('canvas');
+    const ditherCtx = ditherCanvas.getContext('2d')!;
+
     const resize = () => {
       const rect = canvas.parentElement?.getBoundingClientRect();
       width = Math.round(rect?.width ?? window.innerWidth);
       height = Math.round(rect?.height ?? window.innerHeight);
       canvas.width = width;
       canvas.height = height;
+      ditherCanvas.width = width;
+      ditherCanvas.height = height;
       initGrid();
     };
     resize();
@@ -160,7 +201,21 @@ export default function PixelSignalField() {
     let lastCursorSeed = 0;
     const hint = hintRef.current;
 
+    // Matches the navBottom exclusion Modes A/B already use — without it,
+    // clicks/hovers in the empty stretch of the fixed navbar (between the
+    // logo and nav links, wherever the header itself doesn't intercept the
+    // event) would plant seeds or seed-hint underneath the nav.
+    const navBottom = () => {
+      const header = document.querySelector('header');
+      return header ? header.getBoundingClientRect().bottom : 0;
+    };
     const onMouseMove = (e: MouseEvent) => {
+      if (e.clientY < navBottom()) {
+        mouseX = -9999;
+        mouseY = -9999;
+        if (hint) hint.style.opacity = '0';
+        return;
+      }
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
@@ -178,10 +233,11 @@ export default function PixelSignalField() {
       }
     };
     const onClick = (e: MouseEvent) => {
+      if (e.clientY < navBottom()) return;
       const rect = canvas.getBoundingClientRect();
       const cx = Math.floor((e.clientX - rect.left) / configRef.current.golCell);
       const cy = Math.floor((e.clientY - rect.top) / configRef.current.golCell);
-      plantSeed(grid, golCols, golRows, randomSeed(), cx, cy);
+      plantSeed(grid, golCols, golRows, randomSeed(), cx, cy, changedAt, generation);
     };
     window.addEventListener('mousemove', onMouseMove, { passive: true });
     canvas.addEventListener('click', onClick);
@@ -203,10 +259,10 @@ export default function PixelSignalField() {
       const { ditherCell, cellSize, bg: bgColor, ink: inkColor } = configRef.current;
       const dcols = Math.ceil(width / ditherCell);
       const drows = Math.ceil(height / ditherCell);
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, width, height);
-      ctx.fillStyle = inkColor;
-      ctx.globalAlpha = 0.35;
+      ditherCtx.fillStyle = bgColor;
+      ditherCtx.fillRect(0, 0, width, height);
+      ditherCtx.fillStyle = inkColor;
+      ditherCtx.globalAlpha = 0.35;
       const drift = ditherTime * DITHER_DRIFT;
       for (let y = 0; y < drows; y++) {
         const by = (y % 8) * 8;
@@ -228,11 +284,11 @@ export default function PixelSignalField() {
           const d = (n - 0.42) * 2.8;
           if (d <= 0) continue;
           if (BAYER[(x % 8) + by] / 64 < d) {
-            ctx.fillRect(x * ditherCell, y * ditherCell, cellSize, cellSize);
+            ditherCtx.fillRect(x * ditherCell, y * ditherCell, cellSize, cellSize);
           }
         }
       }
-      ctx.globalAlpha = 1;
+      ditherCtx.globalAlpha = 1;
     };
 
     const drawGrid = () => {
@@ -250,23 +306,32 @@ export default function PixelSignalField() {
     let raf = 0;
     let lastStepAt = 0;
     let idleGenerations = 0;
+    let ditherFrameCount = 0;
+    // The drift moves ~0.00075/frame at the default speed — recomputing the
+    // full trig-heavy pattern every frame was invisible-difference waste.
+    // Recompute once every 3 frames (still ~20fps for a pattern this slow)
+    // and cheaply blit the cached result on the frames in between.
+    const DITHER_REDRAW_INTERVAL = 3;
     const frame = (now: number) => {
       raf = requestAnimationFrame(frame);
       ditherTime += 0.015;
-      drawDither();
+      if (ditherFrameCount % DITHER_REDRAW_INTERVAL === 0) drawDither();
+      ditherFrameCount++;
+      ctx.drawImage(ditherCanvas, 0, 0);
 
       const golCell = configRef.current.golCell;
       if (mouseX > -1 && now - lastCursorSeed > CURSOR_SEED_INTERVAL_MS) {
         lastCursorSeed = now;
         const cx = Math.floor(mouseX / golCell);
         const cy = Math.floor(mouseY / golCell);
-        plantSeed(grid, golCols, golRows, randomSeed(), cx, cy);
+        plantSeed(grid, golCols, golRows, randomSeed(), cx, cy, changedAt, generation);
       }
 
       if (now - lastStepAt > configRef.current.generationInterval) {
         lastStepAt = now;
         generation++;
-        const { next, liveCount } = stepGameOfLife(grid, golCols, golRows);
+        const nextBuf = grid === gridA ? gridB : gridA;
+        const { next, liveCount } = stepGameOfLife(grid, golCols, golRows, nextBuf);
         for (let i = 0; i < next.length; i++) {
           if (next[i] !== grid[i]) changedAt[i] = generation;
         }

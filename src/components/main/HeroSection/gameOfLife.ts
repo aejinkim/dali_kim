@@ -266,14 +266,24 @@ export const SEED_PATTERNS: readonly SeedPattern[] = [
   ],
 ];
 
-/** Stamps a seed pattern onto the grid, wrapping at the edges. Mutates `grid`. */
+/**
+ * Stamps a seed pattern onto the grid, wrapping at the edges. Mutates `grid`.
+ * Also stamps `changedAt` to `generation` for every planted cell — without
+ * this, a freshly-planted still life (whose cells never flip again) would
+ * keep whatever stale/sentinel value `changedAt` already held, making it
+ * look like it's been stagnant since before generation 0 and eligible for
+ * still-life clearing almost immediately instead of after a real grace
+ * period of inactivity.
+ */
 export function plantSeed(
   grid: Uint8Array,
   cols: number,
   rows: number,
   pattern: SeedPattern,
   originX: number,
-  originY: number
+  originY: number,
+  changedAt: Int32Array,
+  generation: number
 ): void {
   for (let y = 0; y < pattern.length; y++) {
     const row = pattern[y];
@@ -282,11 +292,18 @@ export function plantSeed(
       const gx = ((originX + x) % cols + cols) % cols;
       const gy = ((originY + y) % rows + rows) % rows;
       grid[gy * cols + gx] = 1;
+      changedAt[gy * cols + gx] = generation;
     }
   }
 }
 
-/** Counts live cells in the 8-neighbor (Moore) neighborhood, wrapping at the edges. */
+/**
+ * Counts live cells in the 8-neighbor (Moore) neighborhood, wrapping at the
+ * edges. Wraparound is only reachable via the `x === 0/cols-1` etc. branches
+ * below — a plain modulo (as this used to compute) pays two `%` ops per
+ * neighbor for every cell, when only cells on the grid's four edges ever
+ * actually wrap.
+ */
 export function countLiveNeighbors(
   grid: Uint8Array,
   cols: number,
@@ -294,39 +311,42 @@ export function countLiveNeighbors(
   x: number,
   y: number
 ): number {
-  let count = 0;
-  for (let dy = -1; dy <= 1; dy++) {
-    for (let dx = -1; dx <= 1; dx++) {
-      if (dx === 0 && dy === 0) continue;
-      const nx = ((x + dx) % cols + cols) % cols;
-      const ny = ((y + dy) % rows + rows) % rows;
-      count += grid[ny * cols + nx];
-    }
-  }
-  return count;
+  const xm1 = x === 0 ? cols - 1 : x - 1;
+  const xp1 = x === cols - 1 ? 0 : x + 1;
+  const ym1 = y === 0 ? rows - 1 : y - 1;
+  const yp1 = y === rows - 1 ? 0 : y + 1;
+  const rowUp = ym1 * cols;
+  const rowMid = y * cols;
+  const rowDown = yp1 * cols;
+  return (
+    grid[rowUp + xm1] + grid[rowUp + x] + grid[rowUp + xp1] +
+    grid[rowMid + xm1] + grid[rowMid + xp1] +
+    grid[rowDown + xm1] + grid[rowDown + x] + grid[rowDown + xp1]
+  );
 }
 
 /**
  * Advances the grid by one generation using standard Conway rules (B3/S23)
- * on a toroidal (wrapping) grid. Returns a new grid and the resulting live
- * cell count — does not mutate the input.
+ * on a toroidal (wrapping) grid. Does not mutate `grid`. Accepts an optional
+ * `next` buffer to write into — callers that step every frame should keep
+ * two buffers and ping-pong them across calls instead of letting this
+ * allocate a fresh `Uint8Array` every generation.
  */
 export function stepGameOfLife(
   grid: Uint8Array,
   cols: number,
-  rows: number
+  rows: number,
+  next: Uint8Array = new Uint8Array(cols * rows)
 ): { next: Uint8Array; liveCount: number } {
-  const next = new Uint8Array(cols * rows);
   let liveCount = 0;
   for (let y = 0; y < rows; y++) {
+    const rowMid = y * cols;
     for (let x = 0; x < cols; x++) {
       const neighbors = countLiveNeighbors(grid, cols, rows, x, y);
-      const alive = grid[y * cols + x] === 1;
+      const alive = grid[rowMid + x] === 1;
       const survives = alive ? neighbors === 2 || neighbors === 3 : neighbors === 3;
-      if (survives) {
-        next[y * cols + x] = 1;
-        liveCount++;
-      }
+      next[rowMid + x] = survives ? 1 : 0;
+      if (survives) liveCount++;
     }
   }
   return { next, liveCount };

@@ -111,7 +111,10 @@ export default function Navbar({ alwaysVisible = false, tone = 'dark' }: { alway
   }, []);
 
   useEffect(() => {
-    const onMode = (e: Event) => setLightBg((e as CustomEvent<string>).detail === 'b');
+    const onMode = (e: Event) => {
+      const detail = (e as CustomEvent<string>).detail;
+      setLightBg(detail === 'b' || detail === 'c');
+    };
     window.addEventListener('hero-mode', onMode);
     return () => window.removeEventListener('hero-mode', onMode);
   }, []);

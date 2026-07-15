@@ -259,6 +259,14 @@ export default function HeroSection() {
   const shouldResetRef = useRef(false);
   const sharedMouseRef = useRef({ x: -9999, y: -9999 });
   const trailContainerRef = useRef<HTMLDivElement>(null);
+  // The particle-system rAF loop stops rescheduling itself entirely while
+  // mode is 'c' (see the effect below), since it has no visual output in
+  // that mode — this ref lets handleModeSwitch kick it back into motion
+  // when returning to 'a'/'b'. (The cursor-trail loop is left running: it
+  // still needs to finish fading out any in-flight particles from just
+  // before the mode switch, and its own per-frame cost is already tiny —
+  // at most ~28 pool entries, no DOM/particle spawning while inactive.)
+  const resumeAnimateRef = useRef<() => void>(() => {});
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -295,6 +303,7 @@ export default function HeroSection() {
 
   const handleModeSwitch = (m: 'a' | 'b' | 'c') => {
     if (m === modeRef.current) return;
+    const wasC = modeRef.current === 'c';
     modeRef.current = m;
     // Never read for mode c — animate() returns early before this ref is
     // consumed — so no mode-c branch is needed here.
@@ -302,6 +311,11 @@ export default function HeroSection() {
     shouldResetRef.current = true;
     setMode(m);
     window.dispatchEvent(new CustomEvent('hero-mode', { detail: m }));
+    // The particle-system loop stopped rescheduling itself while mode was
+    // 'c' (it has nothing to draw there) — kick it back into motion now.
+    if (wasC && m !== 'c') {
+      resumeAnimateRef.current();
+    }
   };
 
   useEffect(() => {
@@ -542,9 +556,14 @@ export default function HeroSection() {
     const killDist2 = (CONNECT_DIST * 1.3) ** 2;
 
     const animate = (now: number) => {
+      // Stop rescheduling entirely in mode c instead of scheduling-then-
+      // bailing — this loop has no visual output in mode c, and endlessly
+      // rescheduling an idle callback wastes a frame-tick's worth of work
+      // for as long as a visitor stays on mode c. handleModeSwitch calls
+      // resumeAnimateRef to restart the chain when leaving mode c.
+      if (modeRef.current === 'c') return;
       simRaf = requestAnimationFrame(animate);
       frame += 1;
-      if (modeRef.current === 'c') return;
 
       if (shouldResetRef.current) {
         shouldResetRef.current = false;
@@ -727,6 +746,10 @@ export default function HeroSection() {
     };
 
     simRaf = requestAnimationFrame(animate);
+    resumeAnimateRef.current = () => {
+      cancelAnimationFrame(simRaf);
+      simRaf = requestAnimationFrame(animate);
+    };
     return () => {
       cancelAnimationFrame(simRaf);
       ro.disconnect();
@@ -989,12 +1012,16 @@ export default function HeroSection() {
             </h1>
           </div>
 
-          {mode !== 'c' && (
-            <div
-              className="absolute bottom-0 left-0 right-0 pointer-events-none"
-              style={{ height: '40%', background: `linear-gradient(to bottom, transparent, ${mode === 'b' ? '#ffffff' : '#000000'})`, zIndex: 2 }}
-            />
-          )}
+          <div
+            className="absolute bottom-0 left-0 right-0 pointer-events-none"
+            style={{
+              height: '40%',
+              background: `linear-gradient(to bottom, transparent, ${
+                mode === 'c' ? 'var(--color-bonsai-bg)' : mode === 'b' ? '#ffffff' : '#000000'
+              })`,
+              zIndex: 2,
+            }}
+          />
         </div>
       </div>
 
