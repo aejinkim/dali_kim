@@ -259,6 +259,10 @@ export default function HeroSection() {
   // transition or cut over immediately.
   const [displayMode, setDisplayMode] = useState<'a' | 'b' | 'c'>('a');
   const [heroTextHidden, setHeroTextHidden] = useState(false);
+  // The fade above only plays for the first mode switch — after a visitor
+  // has already seen it once, repeated toggling swaps the headline
+  // immediately instead of paying the ~440ms fade every time.
+  const hasFadedHeroTextRef = useRef(false);
 
   const sectionRef   = useRef<HTMLElement>(null);
   const canvasRef    = useRef<HTMLCanvasElement>(null);
@@ -328,9 +332,15 @@ export default function HeroSection() {
   };
 
   // Fades the hero headline out, swaps its copy/font/color once invisible,
-  // then fades it back in — see the displayMode comment above.
+  // then fades it back in — see the displayMode comment above. Only for the
+  // first switch; after that, later switches jump straight to displayMode.
   useEffect(() => {
     if (mode === displayMode) return;
+    if (hasFadedHeroTextRef.current) {
+      setDisplayMode(mode);
+      return;
+    }
+    hasFadedHeroTextRef.current = true;
     setHeroTextHidden(true);
     const t = setTimeout(() => {
       setDisplayMode(mode);
