@@ -1080,16 +1080,16 @@ export default function HeroSection() {
             </h1>
           </div>
 
-          <div
-            className="absolute bottom-0 left-0 right-0 pointer-events-none"
-            style={{
-              height: '40%',
-              background: `linear-gradient(to bottom, transparent, ${
-                mode === 'c' ? 'var(--color-bonsai-bg)' : mode === 'b' ? '#ffffff' : '#000000'
-              })`,
-              zIndex: 2,
-            }}
-          />
+          {mode !== 'c' && (
+            <div
+              className="absolute bottom-0 left-0 right-0 pointer-events-none"
+              style={{
+                height: '40%',
+                background: `linear-gradient(to bottom, transparent, ${mode === 'b' ? '#ffffff' : '#000000'})`,
+                zIndex: 2,
+              }}
+            />
+          )}
         </div>
       </div>
 
