@@ -1007,7 +1007,13 @@ export default function HeroSection() {
                   letterSpacing: displayMode === 'c' ? '0' : '-0.02em',
                   color: displayMode === 'c' ? 'var(--color-hero-text-bonsai)' : displayMode === 'b' ? '#000000' : '#ffffff',
                   opacity: heroTextHidden ? 0 : 1,
-                  transition: 'color 300ms ease, opacity 200ms ease, font-size 300ms ease',
+                  // Only opacity transitions — font/size/color already swap
+                  // to their target mode's values while still invisible (via
+                  // displayMode), so animating them too would keep rendering
+                  // the outgoing mode's large/white text as a ghost through
+                  // the fade-in, racing its own 300ms against the 200ms
+                  // opacity ramp instead of appearing already-correct.
+                  transition: 'opacity 200ms ease',
                 }}
               >
               {displayMode === 'c' ? (
