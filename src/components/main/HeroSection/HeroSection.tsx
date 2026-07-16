@@ -1017,13 +1017,20 @@ export default function HeroSection() {
                   letterSpacing: displayMode === 'c' ? '0' : '-0.02em',
                   color: displayMode === 'c' ? 'var(--color-hero-text-bonsai)' : displayMode === 'b' ? '#000000' : '#ffffff',
                   opacity: heroTextHidden ? 0 : 1,
-                  // Only opacity transitions — font/size/color already swap
-                  // to their target mode's values while still invisible (via
-                  // displayMode), so animating them too would keep rendering
-                  // the outgoing mode's large/white text as a ghost through
-                  // the fade-in, racing its own 300ms against the 200ms
-                  // opacity ramp instead of appearing already-correct.
-                  transition: 'opacity 200ms ease',
+                  // Scale rides along with opacity (both keyed off
+                  // heroTextHidden, not displayMode) — unlike font/size/
+                  // color, the scale target doesn't depend on which mode's
+                  // copy is showing, so it can animate alongside opacity
+                  // without the ghosting problem those properties had.
+                  transform: heroTextHidden ? 'scale(0.92)' : 'scale(1)',
+                  // Font/size/color skip the transition entirely — they
+                  // already swap to their target mode's values while still
+                  // invisible (via displayMode), so animating them too
+                  // would keep rendering the outgoing mode's large/white
+                  // text as a ghost through the fade-in, racing its own
+                  // 300ms against the 200ms opacity/scale ramp instead of
+                  // appearing already-correct.
+                  transition: 'opacity 200ms ease, transform 200ms ease',
                 }}
               >
               {displayMode === 'c' ? (
