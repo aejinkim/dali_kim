@@ -862,10 +862,23 @@ export default function HeroSection() {
 
           {mode === 'c' && <PixelSignalField />}
 
-          {/* Trail shapes layer */}
+          {/* Trail shapes layer — existing particles keep fading out on their
+              own timers even after switching to mode c (so an in-flight
+              particle doesn't just freeze mid-fade), but that took up to
+              ~2.3s of leftover mode a/b sparkle sitting on top of the new
+              pixel-art hero text. Fading the whole layer out fast hides that
+              residue almost immediately without touching the fade logic. */}
           <div
             ref={trailContainerRef}
-            style={{ position: 'absolute', inset: 0, zIndex: 3, pointerEvents: 'none', overflow: 'hidden' }}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              zIndex: 3,
+              pointerEvents: 'none',
+              overflow: 'hidden',
+              opacity: mode === 'c' ? 0 : 1,
+              transition: 'opacity 200ms ease',
+            }}
           />
 
           <div
