@@ -250,6 +250,15 @@ export default function HeroSection() {
   const [mode, setMode] = useState<'a' | 'b' | 'c'>('a');
   const [colInfoOpen, setColInfoOpen] = useState(false);
   const [hoverMode, setHoverMode] = useState<'a' | 'b' | 'c' | null>(null);
+  // The hero <h1>'s font/size/color/copy all differ per mode and swap in a
+  // single React re-render — with no transition possible on text content
+  // itself, that read as the new headline instantly popping in at full
+  // size. displayMode lags one short fade behind `mode` so the outer text
+  // wrapper can fade out, swap copy while invisible, then fade back in,
+  // instead of everything else (background, canvas, trail) which can
+  // transition or cut over immediately.
+  const [displayMode, setDisplayMode] = useState<'a' | 'b' | 'c'>('a');
+  const [heroTextHidden, setHeroTextHidden] = useState(false);
 
   const sectionRef   = useRef<HTMLElement>(null);
   const canvasRef    = useRef<HTMLCanvasElement>(null);
@@ -317,6 +326,18 @@ export default function HeroSection() {
       resumeAnimateRef.current();
     }
   };
+
+  // Fades the hero headline out, swaps its copy/font/color once invisible,
+  // then fades it back in — see the displayMode comment above.
+  useEffect(() => {
+    if (mode === displayMode) return;
+    setHeroTextHidden(true);
+    const t = setTimeout(() => {
+      setDisplayMode(mode);
+      setHeroTextHidden(false);
+    }, 220);
+    return () => clearTimeout(t);
+  }, [mode, displayMode]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -966,20 +987,30 @@ export default function HeroSection() {
             <h1
               className="text-center transition-all duration-1000 ease-out"
               style={{
-                fontFamily: mode === 'c' ? 'var(--font-pixel), monospace' : 'var(--font-google-sans-flex), sans-serif',
-                fontSize: mode === 'c' ? 'var(--hero-font-size-pixel)' : 'var(--hero-font-size)',
-                lineHeight: mode === 'c' ? 1.5 : 1.1,
-                letterSpacing: mode === 'c' ? '0' : '-0.02em',
                 maxWidth: 'min(1224px, 92vw)',
                 opacity: loaded ? 1 : 0,
                 transform: loaded ? 'translateY(0)' : 'translateY(48px)',
                 transitionDelay: '200ms',
                 fontWeight: 400,
-                color: mode === 'c' ? 'var(--color-hero-text-bonsai)' : mode === 'b' ? '#000000' : '#ffffff',
-                transition: 'color 300ms ease, opacity 1000ms ease, transform 1000ms ease, font-size 300ms ease',
+                transition: 'opacity 1000ms ease, transform 1000ms ease',
               }}
             >
-              {mode === 'c' ? (
+              {/* Fades out, swaps copy/font/color while invisible via
+                  displayMode, then fades back in — decoupled from the
+                  outer h1's own load-in opacity/transform above. */}
+              <span
+                style={{
+                  display: 'inline-block',
+                  fontFamily: displayMode === 'c' ? 'var(--font-pixel), monospace' : 'var(--font-google-sans-flex), sans-serif',
+                  fontSize: displayMode === 'c' ? 'var(--hero-font-size-pixel)' : 'var(--hero-font-size)',
+                  lineHeight: displayMode === 'c' ? 1.5 : 1.1,
+                  letterSpacing: displayMode === 'c' ? '0' : '-0.02em',
+                  color: displayMode === 'c' ? 'var(--color-hero-text-bonsai)' : displayMode === 'b' ? '#000000' : '#ffffff',
+                  opacity: heroTextHidden ? 0 : 1,
+                  transition: 'color 300ms ease, opacity 200ms ease, font-size 300ms ease',
+                }}
+              >
+              {displayMode === 'c' ? (
                 <>
                   <span>Let&apos;s Play:</span>
                   <br />
@@ -1022,6 +1053,7 @@ export default function HeroSection() {
                   <span style={{ fontWeight: 700 }}>consequence</span>
                 </>
               )}
+              </span>
             </h1>
           </div>
 
