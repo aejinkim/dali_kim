@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { CS, TYPE } from '../_shared/tokens';
+import { CS } from '../_shared/tokens';
 
 const CROSS_BLUE = '#272aff';
 const FILL_TRANSITION = 'left 1.1s cubic-bezier(0.16, 1, 0.3, 1), width 1.1s cubic-bezier(0.16, 1, 0.3, 1)';
@@ -37,11 +37,7 @@ export function GaugeBar({ value }: { value: number }) {
   const fill = visible ? value : 0;
 
   return (
-    <div ref={trackRef}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-        <span style={{ ...TYPE.p16, color: CS.color.dim }}>0%</span>
-        <span style={{ ...TYPE.p16, color: CS.color.dim }}>100%</span>
-      </div>
+    <div ref={trackRef} style={{ paddingTop: 13 }}>
       <div style={{ position: 'relative' }}>
         <div style={{
           position: 'absolute',

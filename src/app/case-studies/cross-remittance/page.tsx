@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import type { ReactNode } from 'react';
+import type { ReactNode, CSSProperties } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/main/Navbar';
 import { CS, TYPE } from '../_shared/tokens';
@@ -10,11 +10,13 @@ import {
   Body,
   SubTitle,
   Caption,
+  DisplayText,
   Divider,
   Pill,
   FullBleedImage,
 } from '../_shared/components';
 import { GaugeBar } from './GaugeBar';
+import InViewTrigger from './InViewTrigger';
 
 const CROSS_BLUE = '#272aff';
 const BAR_GRAY = '#aaaebf';
@@ -183,83 +185,21 @@ function HeaderStats() {
 const META = [
   { label: 'Role', value: 'Product Designer' },
   { label: 'Scope', value: 'App, Web Design\nUX Research\nOnboarding & KYC\nRemittance Flow' },
-  { label: 'Impact', value: '7+ Years in Market\nGovernment-Registered Remittance' },
-] as const;
-
-const CONSTRAINTS = [
-  { label: 'Trust', description: 'One unclear fee could break trust permanently.' },
-  { label: 'Identity', description: 'KYC, but users had expired passports and no Korean bank account.' },
-  { label: 'Access', description: 'Multiple languages, low digital literacy, older shared Androids.' },
-  { label: 'Regulation', description: 'Government-certified service; compliance on every screen.' },
+  { label: 'Impact', value: '80% User Retention\n15 Countries Served' },
 ] as const;
 
 function ConstraintsGrid() {
   return (
-    <div style={{
-      backgroundColor: CROSS_BLUE,
-      borderRadius: 16,
-      padding: 'clamp(32px, 6vw, 80px) clamp(24px, 6vw, 96px)',
-    }}>
-      <p style={{
-        fontFamily: TYPE.p16.fontFamily,
-        fontSize: 'clamp(28px, 4vw, 40px)',
-        fontWeight: 400,
-        lineHeight: 1.3,
-        letterSpacing: '-0.01em',
-        color: '#fff',
-        textAlign: 'center',
-        margin: '0 0 clamp(32px, 6vw, 64px)',
-      }}>
-        Four constraints defined everything that followed
-      </p>
-
-      <div className="cs-impact-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)', rowGap: 40 }}>
-        {CONSTRAINTS.map((item, i) => (
-          <div key={item.label} style={{
-            paddingLeft: i % 2 === 1 ? 'var(--spacing-cs-stack)' : undefined,
-            borderLeft: i % 2 === 1 ? '1px solid rgba(255,255,255,0.2)' : undefined,
-            paddingTop: i > 1 ? 40 : undefined,
-            borderTop: i > 1 ? '1px solid rgba(255,255,255,0.2)' : undefined,
-          }}>
-            <ConstraintItem item={item} />
-          </div>
-        ))}
-      </div>
-
-      <div className="cs-impact-stack" style={{ gap: 32 }}>
-        {CONSTRAINTS.map((item, i) => (
-          <Fragment key={item.label}>
-            {i > 0 && <div style={{ height: 1, background: 'rgba(255,255,255,0.2)' }} />}
-            <ConstraintItem item={item} />
-          </Fragment>
-        ))}
-      </div>
+    <div style={{ borderRadius: 16, overflow: 'hidden' }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/assets/cross/cross_02.jpg"
+        alt="Four constraints defined everything that followed: Trust, Identity, Access, Regulation"
+        style={{ width: '100%', height: 'auto', display: 'block' }}
+      />
     </div>
   );
 }
-
-function ConstraintItem({ item }: { item: (typeof CONSTRAINTS)[number] }) {
-  return (
-    <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/assets/cross/cross-mark.png" alt="" style={{ width: 24, height: 16 }} />
-        <span style={{ fontFamily: TYPE.p16.fontFamily, fontSize: 20, fontWeight: 600, color: '#ffb199' }}>{item.label}</span>
-      </div>
-      <p style={{ ...TYPE.p16, color: '#fff', margin: 0 }}>{item.description}</p>
-    </div>
-  );
-}
-
-const BASELINE_KRW = 25000;
-const DECISION_KRW = 5000;
-
-const METHOD_FACTS = [
-  { label: 'Format', value: 'Six-step survey' },
-  { label: 'Respondents', value: '18 migrant workers in Korea' },
-  { label: 'Screening', value: 'Actively sending money home' },
-  { label: 'Sample note', value: 'Sub-questions n = 7–18' },
-] as const;
 
 type ResearchInsight = { headline: string; value: number; description: string };
 
@@ -285,72 +225,52 @@ const RESEARCH_TO_DESIGN = [
   {
     insight: 'Safety beats price',
     decision: 'A fixed, transparent fee and human-language status updates. Predictability became the trust strategy.',
+    icon: '/assets/cross/icon-safety.svg',
+    color: '#3366F2',
+  },
+  {
+    insight: 'It has to be cheap',
+    decision: 'A flat fee set 80% below the average bank charge. When the amount is rent, price isn’t optional.',
+    icon: '/assets/cross/icon-cheap.svg',
+    color: '#3366F2',
   },
   {
     insight: 'Speed is why they switch',
     decision: 'Settlement in about an hour on blockchain rails, surfaced up front instead of buried in an FAQ.',
-  },
-  {
-    insight: 'This is rent money',
-    decision: 'A three-step transfer flow with zero surprises, designed to feel safe to repeat every payday.',
+    icon: '/assets/cross/icon-speed.svg',
+    color: '#3366F2',
   },
 ] as const;
 
 function GaugeCard({ stat }: { stat: ResearchInsight }) {
   return (
     <div>
-      <p style={{ ...TYPE.p16SemiBold, margin: '0 0 20px' }}>{stat.headline}</p>
-      <GaugeBar value={stat.value} />
-      <p style={{ ...TYPE.p56Regular, display: 'flex', alignItems: 'baseline', gap: 4, margin: '24px 0 8px' }}>
-        {stat.value}
-        <span style={{ fontFamily: TYPE.p16.fontFamily, fontSize: 'clamp(22px, 2vw, 32px)', fontWeight: 400, color: CS.color.dim }}>%</span>
-      </p>
-      <p style={{ ...TYPE.p16, color: CS.color.dim }}>{stat.description}</p>
-    </div>
-  );
-}
-
-function BaselineDecisionCompare() {
-  const bars = [
-    { label: 'Korean bank (2018 avg.)', display: '25,000+ KRW', amount: BASELINE_KRW, highlight: false },
-    { label: 'Cross', display: '5,000 KRW', amount: DECISION_KRW, highlight: true },
-  ];
-  return (
-    <div style={{ marginTop: 32 }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-        {bars.map((bar) => (
-          <div key={bar.label}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginBottom: 8 }}>
-              <span style={TYPE.p16}>{bar.label}</span>
-              <span style={{ ...TYPE.p16SemiBold, color: bar.highlight ? CROSS_BLUE : CS.color.ink }}>{bar.display}</span>
-            </div>
-            <div style={{ height: 12, borderRadius: 100, backgroundColor: CS.color.line, overflow: 'hidden' }}>
-              <div style={{
-                height: '100%',
-                width: `${(bar.amount / BASELINE_KRW) * 100}%`,
-                borderRadius: 100,
-                backgroundColor: bar.highlight ? CROSS_BLUE : 'rgba(0,0,0,0.25)',
-              }} />
-            </div>
-          </div>
-        ))}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <p style={{ ...TYPE.p16SemiBold, margin: 0 }}>{stat.headline}</p>
+          <p style={{ ...TYPE.p16, color: CS.color.dim, margin: 0 }}>{stat.description}</p>
+        </div>
+        <p style={{ ...TYPE.p56Regular, fontSize: 44, display: 'flex', alignItems: 'baseline', gap: 2, margin: 0, whiteSpace: 'nowrap' }}>
+          {stat.value}
+          <span style={{ fontFamily: TYPE.p16.fontFamily, fontSize: 30, fontWeight: 400, color: CS.color.dim }}>%</span>
+        </p>
       </div>
-      <p style={{ ...TYPE.p16, color: CS.color.dim, marginTop: 16 }}>
-        {Math.round((1 - DECISION_KRW / BASELINE_KRW) * 100)}% below the bank baseline.
-      </p>
+      <div style={{ marginTop: 8 }}>
+        <GaugeBar value={stat.value} />
+      </div>
     </div>
   );
 }
 
-function StepBlock({ num, label, children }: { num: string; label: string; children: ReactNode }) {
+function StepBlock({ num, label, children, numColor = CROSS_BLUE }: { num: string; label: string; children: ReactNode; numColor?: string }) {
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 16 }}>
-        <span style={{ ...TYPE.p16SemiBold, color: CROSS_BLUE }}>{num}</span>
+        <span style={{ ...TYPE.p16SemiBold, color: numColor }}>{num}</span>
         <span style={{ ...TYPE.p16SemiBold, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</span>
       </div>
       <Divider />
-      <div style={{ marginTop: 40 }}>{children}</div>
+      <div style={{ marginTop: 24 }}>{children}</div>
     </div>
   );
 }
@@ -358,50 +278,51 @@ function StepBlock({ num, label, children }: { num: string; label: string; child
 function ResearchQuote() {
   return (
     <div>
-      <p style={{ ...TYPE.p56Regular, fontSize: 'clamp(28px, 2.6vw, 44px)', maxWidth: 900, margin: 0 }}>
+      <DisplayText>
         Price wasn’t the deciding factor.<br />Trust and speed were.
-      </p>
-      <p style={{ fontFamily: TYPE.p16.fontFamily, fontSize: 12, color: CS.color.dim, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '20px 0 0' }}>
-        Research synthesis · 2018 survey
-      </p>
+      </DisplayText>
     </div>
   );
 }
 
-function MethodStep() {
+function InsightsStep() {
   return (
-    <StepBlock num="01" label="Method">
-      <div style={{ display: 'flex', gap: '24px 48px', flexWrap: 'wrap' }}>
-        {METHOD_FACTS.map((f) => (
-          <div key={f.label} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <span style={{ fontFamily: TYPE.p16.fontFamily, fontSize: 14, color: 'rgba(0,0,0,0.4)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{f.label}</span>
-            <span style={TYPE.p16SemiBold}>{f.value}</span>
-          </div>
+    <StepBlock num="01" label="Insights">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: CS.space.stack }}>
+        {RESEARCH_INSIGHTS.map((s) => (
+          <GaugeCard key={s.headline} stat={s} />
         ))}
       </div>
     </StepBlock>
   );
 }
 
-function InsightsStep() {
+function OutcomeCard({ row }: { row: (typeof RESEARCH_TO_DESIGN)[number] }) {
   return (
-    <StepBlock num="02" label="Insights">
-      <div className="cs-impact-grid">
-        {RESEARCH_INSIGHTS.map((s, i) => (
-          <div key={s.headline} style={{
-            paddingLeft: i > 0 ? CS.space.stack : undefined,
-            paddingRight: i < RESEARCH_INSIGHTS.length - 1 ? CS.space.captionText : undefined,
-            borderLeft: i > 0 ? `1px solid ${CS.color.line}` : undefined,
-          }}>
-            <GaugeCard stat={s} />
-          </div>
+    <div>
+      <div style={{ height: 101, display: 'flex', alignItems: 'flex-start', marginBottom: 16 }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={row.icon} alt="" style={{ height: '100%', width: 'auto' }} />
+      </div>
+      <p style={{ ...TYPE.p16SemiBold, color: row.color, margin: '0 0 8px' }}>{row.insight}</p>
+      <p style={{ ...TYPE.p16, margin: 0 }}>{row.decision}</p>
+    </div>
+  );
+}
+
+function OutcomeStep() {
+  return (
+    <StepBlock num="02" label="What It Changed" numColor="#3366F2">
+      <div className="cs-impact-grid" style={{ gap: 30 }}>
+        {RESEARCH_TO_DESIGN.map((row) => (
+          <OutcomeCard key={row.insight} row={row} />
         ))}
       </div>
       <div className="cs-impact-stack">
-        {RESEARCH_INSIGHTS.map((s, i) => (
-          <Fragment key={s.headline}>
+        {RESEARCH_TO_DESIGN.map((row, i) => (
+          <Fragment key={row.insight}>
             {i > 0 && <Divider />}
-            <GaugeCard stat={s} />
+            <OutcomeCard row={row} />
           </Fragment>
         ))}
       </div>
@@ -409,73 +330,22 @@ function InsightsStep() {
   );
 }
 
-function OutcomeStep() {
-  return (
-    <StepBlock num="03" label="What It Changed">
-      <div>
-        {RESEARCH_TO_DESIGN.map((row, i) => (
-          <div key={row.insight}>
-            {i > 0 && <Divider />}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 32px', padding: 'var(--cs-list-item-gap) 0' }}>
-              <span style={{ ...TYPE.p16SemiBold, flex: '0 0 220px' }}>{row.insight}</span>
-              <p style={{ ...TYPE.p16, flex: '1 1 280px', margin: 0 }}>{row.decision}</p>
-            </div>
-          </div>
-        ))}
-        <Divider />
-      </div>
-
-      <div style={{ marginTop: 56 }}>
-        <Caption>The decision this research earned</Caption>
-        <div style={{ marginTop: 24 }}>
-          <ImpactStat stat={{
-            value: '5,000',
-            unit: 'KRW',
-            unitPosition: 'inline',
-            description: 'Flat, to any country. 80% below the bank baseline, settled in about an hour, on a government-licensed blockchain rail (Oct 2018).',
-          }} />
-          <BaselineDecisionCompare />
-        </div>
-      </div>
-
-      <Body muted style={{ marginTop: 56 }}>
-        The same research named the primary design target: not the average user, but the most constrained one.
-      </Body>
-    </StepBlock>
-  );
-}
-
 function EvidenceSection() {
   return (
-    <>
-      <SplitSection title={<SectionTitle>User Research</SectionTitle>} pt={CS.space.section} pb={64}>
+    <SplitSection title={<SectionTitle>User Research</SectionTitle>} pt={100} pb={100}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 64 }}>
         <Body>
-          The 5,000 KRW flat fee wasn’t a branding choice. It came out of research with the people Cross was built for, migrant workers in Korea sending real remittances home.
+          A six-step survey in 2018 with 30 migrant workers in Korea, all actively sending money home. What they said mattered shaped every decision below.
         </Body>
-      </SplitSection>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 64, paddingBottom: 100 }}>
-        <MethodStep />
         <InsightsStep />
         <ResearchQuote />
         <OutcomeStep />
       </div>
-    </>
+    </SplitSection>
   );
 }
 
 const DESIGN_DIRECTION = [
-  {
-    caption: 'Radical Simplicity in the Transfer Flow',
-    body: 'Recipient → amount → confirm. Everything else was hidden until needed.',
-  },
-  {
-    caption: 'Fixed, Transparent Fee',
-    body: '5,000 KRW to any country. No exchange rate anxiety, no hidden math. Trust through predictability.',
-  },
-  {
-    caption: 'Status as Story, Not Code',
-    body: 'Transaction states were designed as human-language milestones ("Sent to bank", "Arriving in Vietnam"), not technical statuses.',
-  },
   {
     caption: 'KYC as a Conversation, Not a Form',
     body: 'Each verification step explained why it existed and what happened if the user didn’t have it, with fallback paths for expired documents.',
@@ -539,14 +409,25 @@ function ProcessTimeline() {
   );
 }
 
-const IMPACT_STATS = [
+const RETENTION_PCT = 80;
+
+const IMPACT_CARDS = [
   {
-    value: '+50%',
-    unit: 'MoM',
-    unitPosition: 'below',
-    description: 'Monthly transaction volume growth in year one (Ripple, 2019). The blockchain stayed invisible; the trust compounded.',
+    kind: 'waffle',
+    value: '80%',
+    unit: 'retention',
+    unitPosition: 'inline',
+    description: 'of Cross users came back month after month after launch (Ripple, 2019).',
   },
   {
+    kind: 'bars',
+    value: '+50%',
+    unit: 'MoM',
+    unitPosition: 'inline',
+    description: 'Monthly transaction volume growth in year one (Ripple, 2019).',
+  },
+  {
+    kind: 'dots',
     value: '15',
     unit: 'countries',
     unitPosition: 'inline',
@@ -554,48 +435,105 @@ const IMPACT_STATS = [
   },
 ] as const;
 
-const RETENTION_PCT = 80;
-
-function RetentionWaffle() {
-  const dots = Array.from({ length: 100 });
+function WaffleGraphic() {
   return (
-    <div style={{
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: 40,
-      alignItems: 'center',
-      backgroundColor: '#0a0a0d',
-      borderRadius: 16,
-      padding: 'clamp(24px, 4vw, 48px)',
-    }}>
-      <div style={{ flex: '1 1 240px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <p style={{ fontFamily: TYPE.p16.fontFamily, fontSize: 'clamp(48px, 6vw, 72px)', fontWeight: 300, lineHeight: 1, color: '#fff', margin: 0 }}>{RETENTION_PCT}%</p>
-        <p style={{ fontFamily: TYPE.p16.fontFamily, fontSize: 20, fontWeight: 400, lineHeight: 1.4, color: 'rgba(255,255,255,0.7)', margin: 0 }}>
-          of Cross users <span style={{ color: '#8d90ff' }}>came back month after month</span> after launch
-        </p>
-        <span style={{ fontFamily: TYPE.p16.fontFamily, fontSize: 12, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Ripple, 2019</span>
-      </div>
+    <div style={{ width: '100%', maxWidth: 473, display: 'grid', gridTemplateColumns: 'repeat(17, 1fr)', columnGap: '1.3%', rowGap: 5 }}>
+      {Array.from({ length: 100 }).map((_, i) => (
+        <div key={i} className="waffle-dot" style={{
+          '--i': i,
+          width: '100%',
+          aspectRatio: '1',
+          borderRadius: '30%',
+          backgroundColor: i < RETENTION_PCT ? '#415ee8' : '#fabfb7',
+        } as CSSProperties} />
+      ))}
+    </div>
+  );
+}
+
+function BarsGraphic() {
+  const heights = [8.9, 15.8, 20.3, 35.4, 61.4, 100];
+  return (
+    <div style={{ width: '100%', maxWidth: 436, height: '100%', display: 'flex', alignItems: 'flex-end', gap: '3.4%' }}>
+      {heights.map((h, i) => (
+        <div key={h} className="bar-graphic" style={{
+          '--i': i,
+          flex: 1,
+          height: `${h}%`,
+          borderRadius: '10px 10px 0 0',
+          backgroundColor: i === heights.length - 1 ? '#415ee8' : '#fabfb7',
+        } as CSSProperties} />
+      ))}
+    </div>
+  );
+}
+
+// Robinson-projected positions (% of map width/height) for Korea and the 15 corridor countries
+const MAP_DOTS = [
+  { id: 'kr', left: 81.1, top: 27.3, origin: true },
+  { id: 'vn', left: 77.2, top: 37.7 },
+  { id: 'ph', left: 82.5, top: 41.9 },
+  { id: 'th', left: 76.1, top: 42.2 },
+  { id: 'id', left: 78.5, top: 54.5 },
+  { id: 'kh', left: 77.4, top: 43.5 },
+  { id: 'mm', left: 74.8, top: 40.2 },
+  { id: 'np', left: 71.3, top: 33.5 },
+  { id: 'bd', left: 72.9, top: 36.0 },
+  { id: 'in', left: 69.1, top: 33.0 },
+  { id: 'lk', left: 71.2, top: 46.2 },
+  { id: 'pk', left: 67.6, top: 29.8 },
+  { id: 'cn', left: 78.2, top: 26.0 },
+  { id: 'uz', left: 66.0, top: 25.1 },
+  { id: 'mn', left: 74.5, top: 21.1 },
+  { id: 'my', left: 76.6, top: 48.8 },
+] as const;
+
+// Zoom the map to the Korea + Southeast Asia cluster instead of showing the whole world
+const MAP_ZOOM = 3;
+const MAP_ZOOM_CENTER = { left: 78.65, top: 40.9 };
+
+function DotsGraphic() {
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
       <div style={{
-        flex: '1 1 240px',
-        maxWidth: 340,
-        display: 'grid',
-        gridTemplateColumns: 'repeat(10, 1fr)',
-        gap: 6,
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        height: `${MAP_ZOOM * 100}%`,
+        aspectRatio: '2754 / 1398',
+        transform: `translate(-${MAP_ZOOM_CENTER.left}%, -${MAP_ZOOM_CENTER.top}%)`,
       }}>
-        {dots.map((_, i) => (
-          <div key={i} style={{
-            width: '100%',
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/assets/cross/world-map.svg"
+          alt="Map showing the 15 remittance corridors Cross served across Southeast Asia, from Korea"
+          style={{ width: '100%', height: '100%' }}
+        />
+        {MAP_DOTS.map((d, i) => (
+          <span key={d.id} className="map-dot" style={{
+            '--i': i,
+            position: 'absolute',
+            left: `${d.left}%`,
+            top: `${d.top}%`,
+            width: 'origin' in d && d.origin ? '2.6%' : '1.9%',
             aspectRatio: '1',
             borderRadius: '50%',
-            backgroundColor: i < RETENTION_PCT ? CROSS_BLUE : 'rgba(255,255,255,0.12)',
-          }} />
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'origin' in d && d.origin ? '#ffb199' : '#415ee8',
+          } as CSSProperties} />
         ))}
       </div>
     </div>
   );
 }
 
-type StatData = { value: string; unit?: string | null; unitPosition?: 'inline' | 'below'; description: string };
+const IMPACT_GRAPHICS = {
+  waffle: <WaffleGraphic />,
+  bars: <BarsGraphic />,
+  dots: <DotsGraphic />,
+} as const;
+
+type StatData = { value: string; unit?: string | null; unitPosition?: 'inline' | 'below'; description: string; kind?: string };
 
 function ImpactStat({ stat }: { stat: StatData }) {
   const unitStyle = { fontFamily: TYPE.p16.fontFamily, fontSize: 'clamp(22px, 2vw, 32px)', fontWeight: 400, color: CS.color.dim, margin: 0 };
@@ -606,39 +544,118 @@ function ImpactStat({ stat }: { stat: StatData }) {
         {stat.unit && stat.unitPosition === 'inline' && <span style={unitStyle}>{stat.unit}</span>}
       </p>
       {stat.unit && stat.unitPosition === 'below' && <p style={unitStyle}>{stat.unit}</p>}
-      <p style={{ ...TYPE.p16, color: CS.color.dim, marginTop: 8 }}>{stat.description}</p>
+      <p className="impact-desc" style={{ ...TYPE.p16, marginTop: 8 }}>{stat.description}</p>
     </div>
+  );
+}
+
+function ImpactCard({ card }: { card: (typeof IMPACT_CARDS)[number] }) {
+  return (
+    <InViewTrigger className="impact-card" style={{
+      border: '1px solid rgba(0,0,0,0.08)',
+      borderRadius: 16,
+      padding: 24,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 24,
+    }}>
+      <div style={{
+        height: 180,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        {IMPACT_GRAPHICS[card.kind]}
+      </div>
+      <ImpactStat stat={card} />
+    </InViewTrigger>
   );
 }
 
 function ImpactSection() {
   return (
     <section style={{ display: 'flex', flexDirection: 'column', paddingTop: CS.space.section, paddingBottom: 100 }}>
+      <style>{`
+        .impact-card {
+          background-color: #fafafa;
+          transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .impact-card:hover {
+          background-color: #ffffff;
+          transform: translateY(-10px);
+        }
+        .impact-desc {
+          color: ${CS.color.dim} !important;
+          transition: color 0.3s ease;
+        }
+        .impact-card:hover .impact-desc {
+          color: ${CS.color.ink} !important;
+        }
+        @keyframes waffle-pop {
+          from { transform: scale(0); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+        @keyframes waffle-pop-hover {
+          from { transform: scale(0); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+        .impact-card.in-view .waffle-dot {
+          animation: waffle-pop 0.4s ease both;
+          animation-delay: calc(var(--i) * 4ms);
+        }
+        .impact-card:hover .waffle-dot {
+          animation: waffle-pop-hover 0.4s ease both;
+          animation-delay: calc(var(--i) * 4ms);
+        }
+        @keyframes bar-grow {
+          from { transform: scaleY(0); }
+          to { transform: scaleY(1); }
+        }
+        @keyframes bar-grow-hover {
+          from { transform: scaleY(0); }
+          to { transform: scaleY(1); }
+        }
+        .bar-graphic {
+          transform-origin: bottom;
+        }
+        .impact-card.in-view .bar-graphic {
+          animation: bar-grow 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+          animation-delay: calc(var(--i) * 70ms);
+        }
+        .impact-card:hover .bar-graphic {
+          animation: bar-grow-hover 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+          animation-delay: calc(var(--i) * 70ms);
+        }
+        @keyframes map-pop {
+          from { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+          to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        @keyframes map-pop-hover {
+          from { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+          to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        .impact-card.in-view .map-dot {
+          animation: map-pop 0.45s ease both;
+          animation-delay: calc(var(--i) * 25ms);
+        }
+        .impact-card:hover .map-dot {
+          animation: map-pop-hover 0.45s ease both;
+          animation-delay: calc(var(--i) * 25ms);
+        }
+      `}</style>
       <div style={{ display: 'flex', alignItems: 'flex-start' }}>
         <SectionTitle>The Impact</SectionTitle>
       </div>
 
-      <div style={{ marginTop: 40 }}>
-        <RetentionWaffle />
-      </div>
-
-      <div className="cs-impact-grid" style={{ marginTop: 40 }}>
-        {IMPACT_STATS.map((stat, i) => (
-          <div key={stat.value} style={{
-            paddingLeft: i > 0 ? 'var(--spacing-cs-stack)' : undefined,
-            borderLeft: i > 0 ? `1px solid ${CS.color.line}` : undefined,
-          }}>
-            <ImpactStat stat={stat} />
-          </div>
+      <div className="cs-impact-grid" style={{ marginTop: 40, gap: 16 }}>
+        {IMPACT_CARDS.map((card) => (
+          <ImpactCard key={card.value} card={card} />
         ))}
       </div>
 
-      <div className="cs-impact-stack" style={{ paddingTop: 40 }}>
-        {IMPACT_STATS.map((stat, i) => (
-          <Fragment key={stat.value}>
-            {i > 0 && <Divider />}
-            <ImpactStat stat={stat} />
-          </Fragment>
+      <div className="cs-impact-stack" style={{ paddingTop: 40, gap: 16 }}>
+        {IMPACT_CARDS.map((card) => (
+          <ImpactCard key={card.value} card={card} />
         ))}
       </div>
     </section>
@@ -744,10 +761,6 @@ export default function CrossRemittancePage() {
 
         <ConstraintsGrid />
 
-        <div style={{ paddingTop: CS.space.section }}>
-          <Divider />
-        </div>
-
         <EvidenceSection />
 
         <div style={{ paddingTop: 0 }}>
@@ -766,27 +779,6 @@ export default function CrossRemittancePage() {
         <Divider />
 
         <ImpactSection />
-
-        <div style={{ paddingTop: 0 }}>
-          <Divider />
-        </div>
-
-        <SplitSection title={<SectionTitle>Reflection</SectionTitle>} pt={CS.space.section}>
-          <Stack gap={CS.space.paragraph}>
-            <Body>
-              Designing for high-stakes financial trust is different from designing for engagement. The goal isn&apos;t to maximize interaction. It&apos;s to make each interaction feel safe enough to repeat next month.
-            </Body>
-            <Body>
-              Regulation turned out to be a design constraint, not a design ceiling. The most restrictive requirements often produced the clearest UX, as forcing KYC transparency became a trust asset rather than a burden.
-            </Body>
-            <Body>
-              Designing for foreign workers in Korea forced me to unlearn assumptions about digital literacy, language, and device context. Those unlearnings shaped every product I designed afterward.
-            </Body>
-            <Body>
-              Blockchain worked best when it was invisible. Users didn&apos;t need to know Ripple existed. They needed to know the money arrived. The design&apos;s job was to make the infrastructure disappear.
-            </Body>
-          </Stack>
-        </SplitSection>
 
         <Footer />
       </div>
