@@ -57,6 +57,14 @@ const CASE_META: Record<string, {
     scope: 'Brand Identity\nVisual Design\nLanding Page',
     company: 'Virtuswap',
   },
+  'cross-remittance': {
+    thumbnail: '',
+    subtitle: 'Blockchain Remittance UX for Migrant Workers',
+    year: '2018 – 2019',
+    role: 'Product Designer',
+    scope: 'UX Research\nOnboarding & KYC\nRemittance Flow',
+    company: 'Coinone Transfer (Cross)',
+  },
 };
 
 function PageHeader({ title, subtitle, tags, meta }: {

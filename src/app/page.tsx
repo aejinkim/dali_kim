@@ -16,9 +16,10 @@ const PROJECT_META: Record<string, { subtitle: string; thumbnail: string; date: 
   'satrec-satellite-control': { subtitle: 'GEO-KOMPSAT Mission Ground Control UX',    thumbnail: '',                  date: '2018' },
   'virtuswap':                { subtitle: 'DeFi Exchange Visual Identity',             thumbnail: '/assets/virtuswap/virtuswap_thum.jpg', date: '2022', href: '/case-studies/virtuswap' },
   'satreci-ci-renewal':       { subtitle: 'Corporate Identity Redesign for a Satellite Technology Company', thumbnail: '', date: '2014', href: '/case-studies/satreci' },
+  'cross-remittance':         { subtitle: 'Blockchain remittance UX for migrant workers in Korea — trust, KYC, and simplicity for underserved users', thumbnail: '', date: '2019', href: '/case-studies/cross-remittance' },
 };
 
-const VISIBLE_SLUGS = ['initia-ecosystem', 'initia-app-v2', 'anchor', 'fount-robo-advisor', 'virtuswap'];
+const VISIBLE_SLUGS = ['initia-ecosystem', 'initia-app-v2', 'anchor', 'fount-robo-advisor', 'virtuswap', 'cross-remittance'];
 
 export default async function HomePage() {
   const allStudies = await getCaseStudies();
