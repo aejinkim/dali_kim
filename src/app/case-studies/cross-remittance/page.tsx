@@ -190,7 +190,7 @@ const META = [
 
 function ConstraintsGrid() {
   return (
-    <div style={{ borderRadius: 16, overflow: 'hidden' }}>
+    <div style={{ borderRadius: 8, overflow: 'hidden' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/assets/cross/cross_02.jpg"
@@ -370,6 +370,51 @@ function DesignDirectionList() {
         </div>
       ))}
     </Stack>
+  );
+}
+
+const DESIGN_GALLERY_ROWS = [
+  { kind: 'solo', src: '/assets/cross/cross_03.jpg' },
+  { kind: 'pair', images: ['/assets/cross/cross_04.jpg', '/assets/cross/cross_05.jpg'] },
+  { kind: 'solo', src: '/assets/cross/cross_06.jpg' },
+  { kind: 'solo', src: '/assets/cross/cross_07.jpg' },
+  { kind: 'pair', images: ['/assets/cross/cross_08.jpg', '/assets/cross/cross_09.jpg'] },
+] as const;
+
+function GalleryImage({ src }: { src: string }) {
+  return (
+    <div style={{ borderRadius: 8, overflow: 'hidden' }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt="" style={{ width: '100%', height: 'auto', display: 'block' }} />
+    </div>
+  );
+}
+
+function DesignDirectionGallery() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      <style>{`
+        .design-gallery-pair {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 24px;
+        }
+        @media (max-width: 900px) {
+          .design-gallery-pair {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
+      {DESIGN_GALLERY_ROWS.map((row) => (
+        row.kind === 'solo' ? (
+          <GalleryImage key={row.src} src={row.src} />
+        ) : (
+          <div key={row.images.join('-')} className="design-gallery-pair">
+            {row.images.map((src) => <GalleryImage key={src} src={src} />)}
+          </div>
+        )
+      ))}
+    </div>
   );
 }
 
@@ -727,7 +772,9 @@ export default function CrossRemittancePage() {
       >
         <PageHeader />
 
-        <FullBleedImage src="/assets/cross/cross_01.jpg" />
+        <div style={{ borderRadius: 8, overflow: 'hidden' }}>
+          <FullBleedImage src="/assets/cross/cross_01.jpg" />
+        </div>
 
         <SplitSection title={<SectionTitle>Project Overview</SectionTitle>}>
           <Stack>
@@ -775,6 +822,10 @@ export default function CrossRemittancePage() {
             <DesignDirectionList />
           </Stack>
         </SplitSection>
+
+        <div style={{ paddingTop: CS.space.section, paddingBottom: CS.space.section }}>
+          <DesignDirectionGallery />
+        </div>
 
         <Divider />
 
