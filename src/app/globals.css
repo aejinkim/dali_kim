@@ -59,6 +59,24 @@
   /* ── Case study tokens ── */
   --color-cs-line: rgba(0, 0, 0, 0.08);
   --spacing-cs-stack: 44px;
+
+  /* ── Semantic roles ──
+     Name says what the color is FOR, not what it looks like. New code uses
+     these; the tokens above are the palette they point to. See docs/DESIGN.md › Color. */
+  --color-text-primary: var(--color-ink);
+  --color-text-secondary: var(--color-text-muted);
+  --color-text-tertiary: var(--color-text-dim);
+  --color-text-on-inverse: var(--color-surface-inverse);
+  --color-surface-page: var(--color-brand-bg);
+  --color-surface-hero: var(--color-hero-bg);
+  --color-surface-inverse-page: var(--color-about-bg);
+  --color-surface-raised-inverse: var(--color-about-card-bg);
+  --color-surface-placeholder: var(--color-thumbnail-placeholder);
+  --color-surface-hover: var(--color-hover-light);
+  --color-border-strong: var(--color-brand-line);
+  --color-border-subtle: var(--color-cs-line);
+  --color-border-inverse: var(--color-about-card-border);
+  --color-accent-attention: var(--color-nav-accent);
 }
 
 :root {

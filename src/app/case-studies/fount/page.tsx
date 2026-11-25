@@ -271,7 +271,7 @@ export default function FountPage() {
         </div>
 
         <SplitSection title={<SectionTitle>Outcome</SectionTitle>}>
-          <Stack gap={20}>
+          <Stack gap={CS.space.paragraph}>
             <Body>
               Fount reached 1.5 trillion KRW in assets under management, establishing itself as South Korea&apos;s leading robo-advisor by AUM.
             </Body>

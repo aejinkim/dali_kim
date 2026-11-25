@@ -202,7 +202,7 @@ export default function InitiaAppV2Page() {
 
         <SplitSection
           title={<div><SectionTitle>Initia App V1</SectionTitle><p style={{ ...TYPE.p16, marginTop: 8 }}>Designing Without Data</p></div>}
-          pt={CS.space.section} pb={100}
+          pt={CS.space.section} pb={CS.space.section}
         >
           <div>
             <Body>

@@ -332,7 +332,7 @@ function OutcomeStep() {
 
 function EvidenceSection() {
   return (
-    <SplitSection title={<SectionTitle>User Research</SectionTitle>} pt={100} pb={100}>
+    <SplitSection title={<SectionTitle>User Research</SectionTitle>} pt={CS.space.section} pb={CS.space.section}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 64 }}>
         <Body>
           A six-step survey in 2018 with 30 migrant workers in Korea, all actively sending money home. What they said mattered shaped every decision below.
@@ -795,7 +795,7 @@ export default function CrossRemittancePage() {
 
         <ProcessTimeline />
 
-        <SplitSection title={<SectionTitle>The Challenge</SectionTitle>} pt={CS.space.section} pb={40}>
+        <SplitSection title={<SectionTitle>The Challenge</SectionTitle>} pt={CS.space.section} pb={CS.space.stack}>
           <div>
             <Body>
               Korea&apos;s large population of migrant workers, students, and expats sends money home not as a convenience, but as a monthly obligation tied to family survival.

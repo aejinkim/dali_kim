@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Navbar from '@/components/main/Navbar';
 
-import { CS, TYPE, MEDIA_STYLE } from '../_shared/tokens';
+import { CS, TYPE, MEDIA_STYLE, offScale } from '../_shared/tokens';
 import {
   SplitSection, Stack, SectionTitle, Body, SubTitle, DisplayText,
   Caption, Divider, Pill, FullBleedImage, FluidVideo, CaptionMediaRow, HalfCaptionBlock,
@@ -124,7 +124,7 @@ export default function InitiaPage() {
         <FullBleedImage src="/assets/initia/initia_02.png" aspect="16 / 9" />
 
         <SplitSection title={<SectionTitle>The Philosophy</SectionTitle>}>
-          <Stack gap={36}>
+          <Stack gap={offScale(36)}>
             <Body>
               Technology alone doesn&apos;t build loyalty. What resonates is who you are, what you believe, and how you see the world. When building Initia&apos;s ecosystem identity, we needed more than a visual system — we needed a narrative that could explain the relationship between independent chains, shared infrastructure, and a growing ecosystem.
             </Body>
