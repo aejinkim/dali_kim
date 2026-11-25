@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import type { CssToken, TokenVar } from '@/lib/tokens';
 
 export const FONT = 'var(--font-google-sans-flex), sans-serif';
 
@@ -39,6 +40,25 @@ export const CS = {
     headerTop: 'var(--cs-header-top)',
   },
 } as const;
+
+declare const offScaleBrand: unique symbol;
+export type OffScale = number & { readonly [offScaleBrand]: true };
+
+/** A spacing value from CS.space, a declared CSS token, or 0. Anything else needs offScale(). */
+export type Space =
+  | (typeof CS.space)[keyof typeof CS.space]
+  | 0
+  | OffScale
+  | TokenVar
+  | `var(${CssToken}, ${string})`;
+
+/** A value outside the spacing scale, on purpose. Lint counts every call (ds/no-off-scale). */
+export function offScale(px: number): OffScale {
+  return px as OffScale;
+}
+
+/** Image/video intrinsic ratio, e.g. "16 / 9" or "3200 / 1436". */
+export type AspectRatio = `${number} / ${number}`;
 
 export function text(
   fontSize: number | string,

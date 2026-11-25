@@ -172,7 +172,7 @@ export default function AnchorPage() {
 
         <Divider />
 
-        <SplitSection title={<SectionTitle>The Problem</SectionTitle>} pt={CS.space.section} pb={100}>
+        <SplitSection title={<SectionTitle>The Problem</SectionTitle>} pt={CS.space.section} pb={CS.space.section}>
           <div>
             <Body>
               DeFi in 2021 was built by engineers for engineers. The assumption baked into every interface was that the user already understood the underlying mechanics. Most did not.

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { CS, TYPE, MEDIA_STYLE } from './tokens';
+import type { Space, AspectRatio } from './tokens';
 
 export function SplitSection({
   title,
@@ -11,8 +12,8 @@ export function SplitSection({
 }: {
   title?: ReactNode;
   children: ReactNode;
-  pt?: number | string;
-  pb?: number | string;
+  pt?: Space;
+  pb?: Space;
   noStack?: boolean;
 }) {
   return (
@@ -23,7 +24,7 @@ export function SplitSection({
   );
 }
 
-export function Stack({ children, gap = CS.space.stack }: { children: ReactNode; gap?: number }) {
+export function Stack({ children, gap = CS.space.stack }: { children: ReactNode; gap?: Space }) {
   return <div style={{ display: 'flex', flexDirection: 'column', gap }}>{children}</div>;
 }
 
@@ -86,7 +87,7 @@ export function Pill({ children, href }: { children: ReactNode; href?: string })
   return <span style={style}>{children}</span>;
 }
 
-export function FullBleedImage({ src, aspect }: { src: string; aspect?: string }) {
+export function FullBleedImage({ src, aspect }: { src: string; aspect?: AspectRatio }) {
   const isVideo = /\.(mp4|webm|mov)$/i.test(src);
   if (aspect) {
     return (
@@ -106,7 +107,7 @@ export function FullBleedImage({ src, aspect }: { src: string; aspect?: string }
     : <img src={src} alt="" style={MEDIA_STYLE.fluid} />;
 }
 
-export function FluidVideo({ src, aspect, cover = false }: { src: string; aspect?: string; cover?: boolean }) {
+export function FluidVideo({ src, aspect, cover = false }: { src: string; aspect?: AspectRatio; cover?: boolean }) {
   return (
     <div style={{ width: '100%', aspectRatio: aspect, overflow: 'hidden' }}>
       <video src={src} autoPlay muted loop playsInline style={cover ? MEDIA_STYLE.cover : MEDIA_STYLE.fluid} />
@@ -123,7 +124,7 @@ export function CaptionMediaRow({
   children: ReactNode;
   media: ReactNode;
   height?: number | string;
-  mt?: number | string;
+  mt?: Space;
 }) {
   return (
     <section
@@ -138,7 +139,7 @@ export function CaptionMediaRow({
   );
 }
 
-export function HalfCaptionBlock({ caption, children, pt = 0 }: { caption: string; children: ReactNode; pt?: number | string }) {
+export function HalfCaptionBlock({ caption, children, pt = 0 }: { caption: string; children: ReactNode; pt?: Space }) {
   return (
     <section className="cs-half-caption-block" style={{ paddingTop: pt, paddingBottom: CS.space.captionBottom }}>
       <div className="cs-half-spacer" />
@@ -150,7 +151,7 @@ export function HalfCaptionBlock({ caption, children, pt = 0 }: { caption: strin
   );
 }
 
-export function WideCaptionBlock({ caption, children, pt = CS.space.section }: { caption: string; children: ReactNode; pt?: number | string }) {
+export function WideCaptionBlock({ caption, children, pt = CS.space.section }: { caption: string; children: ReactNode; pt?: Space }) {
   return (
     <section style={{ paddingTop: pt, paddingBottom: CS.space.captionBottom }}>
       <div style={{ width: 'var(--cs-wide-caption-width, 50%)' }}>

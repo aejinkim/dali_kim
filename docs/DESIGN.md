@@ -81,6 +81,31 @@ ComponentName/
 | Project card theme 2 | `var(--color-project-card-blue)` `#1B4EFD` |
 | Project card theme 3 | `var(--color-project-card-dark)` `#0d0d0d` |
 
+### 시맨틱 토큰 (역할 이름) — 새 코드는 이것만 쓴다
+
+토큰 이름이 "어떻게 생겼는지"(`--color-about-card-bg`)가 아니라 "무엇에 쓰는지"(`--color-surface-raised-inverse`)를 말한다. 위 표의 토큰은 팔레트이고, 아래 역할 토큰이 그 팔레트를 가리킨다. 색을 바꿀 때는 팔레트 값만 바꾸면 역할 토큰을 쓰는 모든 곳이 같이 바뀐다.
+
+| 역할 토큰 | 가리키는 값 | 언제 |
+|---|---|---|
+| `--color-text-primary` | `--color-ink` | 밝은 배경 위 본문·제목 |
+| `--color-text-secondary` | `--color-text-muted` | 보조 설명, 메타 정보 |
+| `--color-text-tertiary` | `--color-text-dim` | 가장 약한 텍스트, hover 전 상태 |
+| `--color-text-on-inverse` | `--color-surface-inverse` | 어두운 배경 위 텍스트 |
+| `--color-surface-page` | `--color-brand-bg` | 기본 페이지 배경 |
+| `--color-surface-hero` | `--color-hero-bg` | Hero 배경 |
+| `--color-surface-inverse-page` | `--color-about-bg` | 어두운 페이지 배경(About) |
+| `--color-surface-raised-inverse` | `--color-about-card-bg` | 어두운 배경 위 카드 |
+| `--color-surface-placeholder` | `--color-thumbnail-placeholder` | 이미지 로딩 전 자리 |
+| `--color-surface-hover` | `--color-hover-light` | hover 반전 배경 |
+| `--color-border-strong` | `--color-brand-line` | 강한 구분선 |
+| `--color-border-subtle` | `--color-cs-line` | 케이스스터디 얇은 구분선 |
+| `--color-border-inverse` | `--color-about-card-border` | 어두운 배경 위 테두리 |
+| `--color-accent-attention` | `--color-nav-accent` | 시선을 끌어야 하는 단 하나(INDEX 버튼) |
+
+- 새 역할이 필요하면 `globals.css`의 "Semantic roles" 블록에 추가하고 `npm run tokens`를 돌린다. 생성된 타입(`src/lib/design-tokens.generated.ts`)이 없는 토큰 이름을 type-check에서 막는다.
+- TS에서 토큰을 넘길 때는 `cssVar('--color-text-primary')`(`src/lib/tokens.ts`)를 쓴다. 오타는 컴파일 에러가 된다.
+- 기존 코드가 팔레트 토큰을 직접 쓰는 것은 당장 고치지 않는다. 그 파일을 수정할 때 역할 토큰으로 옮긴다.
+
 ---
 
 ## 타이포그래피
@@ -242,6 +267,64 @@ className="bg-[#F3F0E6]"
 - `Display` 크기 텍스트를 2개 이상 사용
 - 카드 안에 카드 중첩
 - 4가지 이상 색상 조합
+
+## 케이스스터디 컴포넌트 — 언제, 어떻게 쓰는가
+
+`src/app/case-studies/_shared/components.tsx`가 케이스스터디 페이지의 컴포넌트 라이브러리다. 새 케이스스터디는 이 조각만으로 조립한다. 여기 없는 형태가 필요하면 페이지 안에 새로 만들기 전에 먼저 묻는다.
+
+| 컴포넌트 | 언제 쓰나 | 규칙 |
+|---|---|---|
+| `SplitSection` | 왼쪽 제목 + 오른쪽 본문 섹션. 케이스스터디의 기본 단위 | `title`에는 `<SectionTitle>`. `pt`/`pb`는 `Space` 타입(아래)만 받는다. 기본값은 `CS.space.section` |
+| `SectionTitle` | 섹션 제목(h2 역할) | 페이지당 여러 개 가능. 페이지 제목(h1)은 따로 하나 |
+| `SubTitle` | 섹션 안 소제목 | `SectionTitle` 없이 단독으로 쓰지 않는다 |
+| `Body` | 본문 단락 | `muted`로 보조 톤. `style`은 margin 같은 배치 조정에만 쓰고 색·폰트는 넣지 않는다 |
+| `DisplayText` | 한 문장을 크게 보여줄 때(인용, 핵심 주장) | 섹션당 하나 |
+| `Stack` | 세로로 쌓인 요소 사이 간격 | `gap`은 `CS.space.*`. 기본 `stack`(40), 단락 사이는 `paragraph`(20) |
+| `Caption` | 이미지·영상 설명 라벨(점 + 굵은 텍스트) | 미디어 바로 위나 옆에만 |
+| `Divider` | 섹션 사이 1px 구분선 | 섹션 경계에만. 장식으로 반복하지 않는다 |
+| `Pill` | 역할·툴·기간 같은 태그 | `href`가 있으면 외부 링크로 새 탭 |
+| `FullBleedImage` | 페이지 폭 이미지/영상 | 날것의 `<img>` 대신 이것. `aspect`는 원본 픽셀 비율 `"3200 / 1436"` 형식(`AspectRatio` 타입) |
+| `FluidVideo` | 비율을 고정한 영상 | `cover`는 잘려도 되는 영상에만 |
+| `CaptionMediaRow` | 왼쪽 설명 + 오른쪽 미디어 한 줄 | `mt`는 `Space` 타입 |
+| `HalfCaptionBlock` / `WideCaptionBlock` | 이미지 아래 설명 블록(반폭/넓은 폭) | `pt`는 `Space` 타입 |
+
+**`Space` 타입**: `CS.space.*` 값, `0`, 선언된 CSS 토큰(`var(--…)`), 또는 `offScale(n)`만 받는다. `pt={100}`처럼 숫자를 바로 넣으면 type-check가 실패한다.
+
+**`offScale(n)`**: 스케일 밖의 값이 정말 필요할 때 쓰는 탈출구다. lint(`ds/no-off-scale`)가 매번 센다. 쓸 때는 이유를 여기에 적는다.
+
+| 위치 | 값 | 이유 |
+|---|---|---|
+| `initia-ecosystem` The Philosophy | `offScale(36)` | 확인 필요 |
+
+- 2026-11-26: `anchor`, `initia-app`, `cross-remittance`의 `pt`/`pb={100}` 4곳은 모바일에서도 100px로 고정돼 있었다. 의도가 아니라고 확인돼 `CS.space.section`(데스크톱 100px, 모바일 60px)으로 바꿨다. 섹션 상하 여백은 숫자로 고정하지 않는다.
+
+---
+
+## Enforcement — 문장 대신 검사
+
+규칙을 문서에만 두면 에이전트가 컨텍스트가 찼을 때 건너뛴다. 그래서 코드로 판별할 수 있는 규칙은 검사로 만든다.
+
+| 검사 | 무엇을 막나 | 어디서 |
+|---|---|---|
+| `ds/no-raw-color` | `#21201c`, `rgba(…)` 같은 날것의 색 | lint (`eslint-rules/design-system.mjs`) |
+| `ds/no-one-off-value` | `style`의 `padding: 13`, `'13px'`, Tailwind `p-[13px]` | lint |
+| `ds/no-raw-element` | 날것의 `<img>`(→ `FullBleedImage`/`next/image`), 내부 경로 `<a href="/…">`(→ `Link`) | lint |
+| `ds/single-h1` | 한 파일에 `<h1>` 두 개 | lint |
+| `ds/font-family` | 토큰이 아닌 폰트(`var(--font-google-sans-flex)`, Hero Mode C의 `var(--font-pixel)`만 허용) | lint |
+| `ds/no-off-scale` | `offScale()` 호출을 센다 | lint |
+| `Space`, `AspectRatio`, `TokenVar` 타입 | 컴포넌트 prop에 스케일 밖 값, 없는 토큰 이름 | type-check |
+| 토큰 타입 최신 여부 | `globals.css`를 바꾸고 `npm run tokens`를 안 돌린 경우 | `npm run ds:check` |
+
+**예외 (2026-11-26 결정)**
+- 토큰 원본(`_shared/tokens.ts`, `design-tokens.generated.ts`)은 색·px 검사에서 뺀다.
+- 캔버스로 그리는 파일(`PixelSignalField.tsx`, `gameOfLife.ts`, `FooterSection.tsx`)은 색 검사에서 뺀다. 캔버스는 CSS 변수를 바로 읽지 못한다.
+- `_shared/components.tsx`는 `<img>`/`<a>`를 감싸는 원본이라 날것 태그 검사에서 뺀다.
+
+**래칫(ratchet) 방식**
+- 모든 `ds/*` 규칙은 warning이다. 기존 코드는 그대로 빌드된다.
+- `eslint-rules/ds-baseline.json`에 파일별 위반 수가 기록돼 있다. `npm run ds:check`는 어느 파일이든 위반이 하나라도 늘면 실패한다. CI(`.github/workflows/design-system.yml`)가 PR마다 이것과 type-check를 돌린다.
+- 위반을 고쳐서 숫자가 줄면 `npm run ds:baseline`으로 낮춘 값을 고정한다. 이 명령은 숫자를 올리는 것을 거부한다. 정말 올려야 하면 `--force`를 붙이고 PR에 이유를 적는다.
+- 2026-11-26 시작 시점: one-off 값 287, 날것의 색 91, 날것 태그 23, offScale 1, 폰트 1.
 
 ---
 

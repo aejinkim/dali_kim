@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "type-check": "tsc --noEmit",
+    "tokens": "node scripts/gen-token-types.mjs",
+    "ds:check": "node scripts/gen-token-types.mjs --check && node scripts/ds-check.mjs",
+    "ds:baseline": "node scripts/ds-check.mjs --update"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

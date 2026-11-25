@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useLayoutEffect, useState, Fragment } from 'react';
+import type { TokenVar, ColorToken } from '@/lib/tokens';
 
 const INTRO = "Hello, My name is Dali Kim.";
 const BODY = "I design products for systems where mistakes have consequences. From blockchain infrastructure and financial networks to aerospace ground stations, I help technical teams turn complex systems into clear, useful, and distinctive products.";
@@ -17,7 +18,7 @@ const wordRevealThreshold = (idx: number) =>
 
 const TAGS_START = 0.91;   // tags appear after reveal
 
-const SKILL_TAGS: Array<{ label: string; color: string }> = [
+const SKILL_TAGS: Array<{ label: string; color: TokenVar<ColorToken> }> = [
   { label: 'AI-Native Product',   color: 'var(--color-tag-pink)' },
   { label: 'Vibe coding',         color: 'var(--color-tag-mint)' },
   { label: 'Financial UX',        color: 'var(--color-canvas-bg)' },
